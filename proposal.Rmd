@@ -1,0 +1,45 @@
+---
+title: "First year project proposal"
+author: "Erin Bennett"
+output:
+  pdf_document:
+    toc: true
+    highlight: zenburn
+    toc_depth: 3
+---
+
+# Abstract
+
+# Introduction
+
+People have rich causal knowledge about the world, and this knowledge guides their actions and interpretations.
+
+Some of this knowledge is concrete and specific to a particular domain, like the rules of a soccor game. Other knowledge is intuitive and ubiquitous but difficult to verbalize, like people's naive understanding of physics and epistemology. Some is abstract and variable across individuals, like people's different theories about the nature of intelligence or the potential for cultural change.
+
+[previous work on lay theories]
+How were they elicited? Were they hypothesized? How were they tested? Why is that inefficient? Why would we want something automatic? (subjectivity, the need for blind coders and carefully crafted surveys)
+
+[previous work on representation]
+
+How would we know if we had an similar representation of causal knowledge of a domain? There are many tasks in natural language understanding that a computer can do reasonably well with the approprate background knowledge, but very poorly without it. [winnegrad schemas, etc.]
+
+In this project, for a few concrete domains, we would like to fine-tune the representation of common sense knowledge in scripts to include more causal information. We would like to test these induced scripts against human participants on the natural language understanding tasks I mentioned above. What kinds of features of events might predict their  
+
+# Methods
+
+## Evaluating induced scripts
+
+[what script induction will i use?]
+
+[what nlp tasks will i use to evaluate referent's roles, events, and temporal order are correct?]
+
+[what sorts of things do i predict the model might get wrong? how can i fix them?]
+
+## Extending theories with structured elicitation
+
+[what sorts of questions can i ask to fine-tune events and their sequence?]
+
+[what sorts of questions can i ask to get at cause?]
+
+[how can i validate resulting causal knowledge?]
+
