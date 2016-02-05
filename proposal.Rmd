@@ -1,45 +1,129 @@
 ---
 title: "First year project proposal"
 author: "Erin Bennett"
+bibliography: bibliography.bib
 output:
   pdf_document:
-    toc: true
+    toc: false
     highlight: zenburn
     toc_depth: 3
 ---
 
-# Abstract
-
 # Introduction
 
-People have rich causal knowledge about the world, and this knowledge guides their actions and interpretations.
+Psychologists study what people believe and how this influences their perception, actions, goals, etc. To determine what theory a person or group of people hold, we often have to design subtle experiments, careful surveys, or coding schemes. This is effective at isolating people's theories, but it requires a lot of effort on the part of experimentors and participants. If we were able to automatically elicit a structured, quantitative representation of people's beliefs, this could help make psychological research more efficient.
 
-Some of this knowledge is concrete and specific to a particular domain, like the rules of a soccor game. Other knowledge is intuitive and ubiquitous but difficult to verbalize, like people's naive understanding of physics and epistemology. Some is abstract and variable across individuals, like people's different theories about the nature of intelligence or the potential for cultural change.
+Learning commonsense knowledge from humans is a problem that artificial intelligence researchers have been working on for a long time. <!-- and...? -->
 
-[previous work on lay theories]
-How were they elicited? Were they hypothesized? How were they tested? Why is that inefficient? Why would we want something automatic? (subjectivity, the need for blind coders and carefully crafted surveys)
+Different forms of representation have been proposed for representing commonsense knowledge in computer systems.
+Some candidates include causal bayes nets [ @pearl_causality_2003; and see @sloman_causality_2015], neural networks, fist-order logic, probabilistic programs, schemas, and scripts [@schank_scripts_1977]. Scripts are sequences of events that are connected to eachother via the entities that are shared across them. They represent stereotypical knowledge of the kinds of things that happen in a given domain.
 
-[previous work on representation]
+<!-- note: conceptnet includes causal information -->
 
-How would we know if we had an similar representation of causal knowledge of a domain? There are many tasks in natural language understanding that a computer can do reasonably well with the approprate background knowledge, but very poorly without it. [winnegrad schemas, etc.]
-
-In this project, for a few concrete domains, we would like to fine-tune the representation of common sense knowledge in scripts to include more causal information. We would like to test these induced scripts against human participants on the natural language understanding tasks I mentioned above. What kinds of features of events might predict their  
+Recently, natural language processing techniques have been developed that can actually learn scripts for some
+domains from text corpora. We will build off of this work in the proposed project. First we will test the psychological validity of learned scripts using a variety of dependent measures on Amazon's Mechanical Turk. Based on these results, we will turn to strategies for improving the representation and learning.
 
 # Methods
 
-## Evaluating induced scripts
+## Script induction
+@rudinger_rachel_learning_2015 used a representation of scripts from @chambers_unsupervised_2008 and @jans_skip_2012.
+In this representation, events are related to one another whenever their subjects corefer to one another, e.g. an instance of "eat" is related to "pay" if the same person does both actions.
+@rudinger_rachel_learning_2015 ran several script induction techniques on a relatively small dataset of stories about restaurants (pulled from the blog ["Dinners from Hell"](http://www.dinnersfromhell.com/)) and have made [their code](https://github.com/rudinger/nachos) publicly available online.
+They express concern that a richer representation that includes subject *and* object information, such as that of @pichotta_statistical_2014 might face trouble with data sparsity given the size of the "Dinners from Hell" dataset.
+@chambers_event_2013 provide a generative model approach to script induction, but their model includes much less information about sequences of events, which will prove important for eventually integrating causal relationships into the learned theories.
+In this project, we will minimally reproduce @rudinger_rachel_learning_2015's results and attempt to extend them to @pichotta_statistical_2014's representation. We will also attempt to implement @chambers_event_2013's model, which though limited in sequential information has been shown to require much less training data than a pipeline approach.
 
-[what script induction will i use?]
+The results of these replications will be groups of events that share subjects (and possibly objects) and some information about the sequence of those events.
 
-[what nlp tasks will i use to evaluate referent's roles, events, and temporal order are correct?]
+## Experiments
 
-[what sorts of things do i predict the model might get wrong? how can i fix them?]
+To further test the psychological validity of these learned scripts, we will run survey experiments on Amazon's Mechanical Turk. We will confirm the cohesion of the learned groups of event groups, coreferences among their arguments, and their sequential order, and we will also try to elicit what other commonsense information might be relevant to these situations. Because we hypothesize that the model will perform worse for events that frequently occur but are not frequently talked about, we will also try to elicit from participants their estimates of the probabilities of the event occuring and the event being talked about.
 
-## Extending theories with structured elicitation
+### Validation of learned scripts
 
-[what sorts of questions can i ask to fine-tune events and their sequence?]
+For the following tasks, it is relatively straigtforward to determine what the script would predict as a response, and so we use these questions to assess the accuracy of the information learned.
 
-[what sorts of questions can i ask to get at cause?]
+* **Cohesion:** 
 
-[how can i validate resulting causal knowledge?]
+* **Sequence:** 
 
+* **Coreference:** 
+
+* **Human narrative cloze:**  In much of the literature on script induction, the narrative cloze task is used to evaluate performance. In this task a subset of documents is held out from training, and at test the model is given some of the events that occurred and asked to guess another event that occurred at some time relative to the known events. The general script knowledge is used to try to fill in the missing information. {{someone said humans can't actually do this probably, but both the model and humans can make guesses}} We will compare the responses of the model to responses that humans give, determining the amount of overlap.
+
+    For the original narrative cloze task, only events mentioned in the held-out script could be tested. But asking humans means that we can elicit events that were not mentioned in the text but that probably occurred between two sequential events that *were* mentioned. This will hopefully start to probe people's intuitions about events so commonplace they don't initially think to mention it.
+    
+* **Conditional probabilities:** 
+
+* **Categorization:** We can categorize entities in the script by what event frames they occur in. If "rice" and "soup" both occur as the objects of "order" and "eat", then it is possible that they are semantically related. We can calculate a similarity metric between entities with this information and also ask people how similar they think the different entities in the dataset are. We can compare these distances as a way of evaluating the knowledge encoded in the script. In doing this, we will leave out proper nouns and use the coreference-resolved noun phrases that correspond to pronouns.
+
+### Additional information for evaluating and extending scripts
+
+We can also ask participants some additional questions that the script will not be able to address because of the limitations of our current representation. These answers will be useful in understanding places where the model differs from people on the above tasks and for extending these scripts to a richer representation.
+
+* **Counterfatual dependence:** We can present a sequence of events in a script as having occurred. Then we can ask participants "If it had not been the case that *[event]*, how likely would each of the other events have been?" We can provide participants with sliders for each of the other events in the script, from "extremely unlikely" to "extremely likely". This paradigm is very similar to that used by @lucas_improved_2015 in validating their model of counterfactual reasoning.
+
+* **Causal dependence:** For each pair of connected events, we can ask whether participants believe the first event is a cause of the second event.
+
+* **Actual frequency:** For each event, we can ask participants, "How often do you think *[event]* occurs at a restaurant?" and allow participants to respond by adjusting a slider between "almost never" to "almost all the time".
+
+    We can also ask this questions about the responses that people give to the narrative cloze task, allowing us to compare people's estimates for real-world frequency with the ability of the learned script to infer its occurrance.
+    
+    We predict that the highest frequency events in the real world (or those that are completely dependent on other events) would consequently have few mentions in language and so be more difficult for the learned script to predict.
+    
+* **Discourse frequency:** For each event, we can ask participants, "If *[event]* happens at a restaurant, how often do you think someone will talk about it?" and allow participants to respond by adjusting a slider between "almost never" to "almost all the time". We can compare participants' responses to this question to the actual frequencies of mentioning this event in the corpus. Having both measures will provide us with richer information about relative frequencies and allow us to assess people's awareness of the frequency of mentioning these events in language.
+
+    As is the case for the actual frequency events, we can also ask this question for the responses in the narrative cloze task.
+
+# Followup directions
+
+* extend to other corpora
+* extend to include categorical or causal information explicitly
+
+# References
+
+<!--
+# To do:
+
+    * sequences of events and what arguments they share
+  * cohesion
+    * do these events go together? (previous work)
+    * are these the same kind of event? (previous work)
+  * arguments
+    * in a restaurant, does a person who pays usually also eat?
+    * is the thing that is served also the thing that is eaten?
+  * sequences
+    * is this sequence correct (previous work)
+    * also drag and drop ranking
+  * for each event:
+    * how often does it occur in the corpus?
+    * how often do people think this happens in a restaurant?
+    * how often do people think people talk about this happening in a restaurant?
+    (could use ranking measure for this?)
+    * complexity of events? taboo events?
+
+Causal Bayes nets are one possible representation of human commonsense knowledge. {{Causal Bayes nets involve monolithic events.}}
+
+The notion of scripts partially solves this problem.
+Scripts are sequences of general event-kinds (e.g. eating, giving) and connections between them, where the connections are represented in terms of whether there tend to be actors common to both events and what role (agent or patient) the actors play in the events.
+Scripts include a partial ordering of these events and in their connections they include structured information about actors that causal Bayes nets do not, but they do not represent causation, a key component of human reasoning.
+
+Another representation for human theories, a superset of both scripts and causal Bayes nets, are probabilistic programs. Probabilistic programs . Probabilistic programs can represent complex relationshipts between events and causation, but their complexity makes them difficult to learn automatially without sufficient constraints.
+
+    Previous work has used survey questions on Amazon's Mechanical Turk to validate the cohesion of events.
+
+    Previous work has used survey questions on Amazon's Mechanical Turk to validate the partial ordering of events in the learned script. {{}}
+   {{ We'll just give people events as HTML divs and have them order them.}}
+    
+* argument coreference across events in a script
+
+    {{winnograd schemas?}}
+    
+    e.g. "At a restaurant, someone serves something and then someone eats something. How likely is it that the same person does both the eating and the serving?" or "How likely is it that the same thing is both served and eaten?"
+
+# We would like to understand better the enormous amount of common sense knowledge that people aquire over time and use to interpret new stories and situations. We will focus on concrete declarative knowledge of simple domains.
+# 
+# This knowledge is necessary for successful interpretation of many natural language utterances [@someone]. It is alse essential for the extrapolation from a single utterance to the many inferences peole naturally make about what other events must have transpired, and what might have occurred instead under different conditions [@someone]. The kinds of theories that people have about many domains, e.g. intelligence [@dweck_social-cognitive_1988], nuitrition [@gripshover_teaching_2013], or cultural change [@halperin_promoting_2012] can greatly affect people's attributions, predictions, and actions, and consquently their well-being. Humans have knowledge about many domains, and being able to better (and more efficiently) characterize this knowledge is important for improved aritificial intelligence and for improving our understanding of human intelligence.
+# corpora:
+# Other researchers have used crowdsourcing on Mechanical Turk, asking workers to generate short stories in simple language relating to an environment (Li et al., 2012).
+-->
