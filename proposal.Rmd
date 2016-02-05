@@ -13,7 +13,7 @@ output:
 
 Psychologists study what people believe and how this influences their perception, actions, goals, etc. To determine what theory a person or group of people hold, we often have to design subtle experiments, careful surveys, or coding schemes. This is effective at isolating people's theories, but it requires a lot of effort on the part of experimentors and participants. If we were able to automatically elicit a structured, quantitative representation of people's beliefs, this could help make psychological research more efficient.
 
-Learning commonsense knowledge from humans is a problem that artificial intelligence researchers have been working on for a long time. <!-- and...? -->
+Learning commonsense knowledge from humans is a problem that artificial intelligence researchers have been working on for a long time. <!-- and...?! -->
 
 Different forms of representation have been proposed for representing commonsense knowledge in computer systems.
 Some candidates include causal bayes nets [ @pearl_causality_2003; and see @sloman_causality_2015], neural networks, fist-order logic, probabilistic programs, schemas, and scripts [@schank_scripts_1977]. Scripts are sequences of events that are connected to eachother via the entities that are shared across them. They represent stereotypical knowledge of the kinds of things that happen in a given domain.
@@ -26,36 +26,36 @@ domains from text corpora. We will build off of this work in the proposed projec
 # Methods
 
 ## Script induction
-@rudinger_rachel_learning_2015 used a representation of scripts from @chambers_unsupervised_2008 and @jans_skip_2012.
+@rudinger_learning_2015 used a representation of scripts from @chambers_unsupervised_2008 and @jans_skip_2012.
 In this representation, events are related to one another whenever their subjects corefer to one another, e.g. an instance of "eat" is related to "pay" if the same person does both actions.
-@rudinger_rachel_learning_2015 ran several script induction techniques on a relatively small dataset of stories about restaurants (pulled from the blog ["Dinners from Hell"](http://www.dinnersfromhell.com/)) and have made [their code](https://github.com/rudinger/nachos) publicly available online.
+@rudinger_learning_2015 ran several script induction techniques on a relatively small dataset of stories about restaurants (pulled from the blog ["Dinners from Hell"](http://www.dinnersfromhell.com/)) and have made [their code](https://github.com/rudinger/nachos) publicly available online.
 They express concern that a richer representation that includes subject *and* object information, such as that of @pichotta_statistical_2014 might face trouble with data sparsity given the size of the "Dinners from Hell" dataset.
 @chambers_event_2013 provide a generative model approach to script induction, but their model includes much less information about sequences of events, which will prove important for eventually integrating causal relationships into the learned theories.
-In this project, we will minimally reproduce @rudinger_rachel_learning_2015's results and attempt to extend them to @pichotta_statistical_2014's representation. We will also attempt to implement @chambers_event_2013's model, which though limited in sequential information has been shown to require much less training data than a pipeline approach.
+In this project, we will minimally reproduce @rudinger_learning_2015's results and attempt to extend them to @pichotta_statistical_2014's representation. We will also attempt to implement @chambers_event_2013's model, which though limited in sequential information has been shown to require much less training data than a pipeline approach.
 
 The results of these replications will be groups of events that share subjects (and possibly objects) and some information about the sequence of those events.
 
 ## Experiments
 
-To further test the psychological validity of these learned scripts, we will run survey experiments on Amazon's Mechanical Turk. We will confirm the cohesion of the learned groups of event groups, coreferences among their arguments, and their sequential order, and we will also try to elicit what other commonsense information might be relevant to these situations. Because we hypothesize that the model will perform worse for events that frequently occur but are not frequently talked about, we will also try to elicit from participants their estimates of the probabilities of the event occuring and the event being talked about.
+To further test the psychological validity of these learned scripts, we will run survey experiments on Amazon's Mechanical Turk. We will confirm the coherence of the learned groups of event groups, coreferences among their arguments, and their sequential order, and we will also try to elicit what other commonsense information might be relevant to these situations. Because we hypothesize that the model will perform worse for events that frequently occur but are not frequently talked about, we will also try to elicit from participants their estimates of the probabilities of the event occuring and the event being talked about.
 
 ### Validation of learned scripts
 
 For the following tasks, it is relatively straigtforward to determine what the script would predict as a response, and so we use these questions to assess the accuracy of the information learned.
 
-* **Cohesion:** 
+* **Coherence & Sequence:** Following @li_story_2013, we will produce simple "stories" from the learned script. Participants will be able to edit the story to make them more coherent. Using a simple drag-and-drop environment, they will be able to delete events, reorder them, and add new events. The more edits participants make, the less "coherent" the events in the story are. The sequence that participants chose for the events in the script will be taken as the correct ordering.  Any added events indicate lower coherence (because they are edits), and they can additionally supplement the responses to the narrative cloze task, described in more detail below. As an attention check, we will insert one obviously out-of-place event that must be deleted.
 
-* **Sequence:** 
+* **Sequence:** Previous work has evaluated the sequence learned in a script induction by comparing the learned sequence to a randomly ordered sequence. We will instead use a drag-and-drop ranking measure such that people can arrange the events in order spatially on a computer screen. We will compare participants' orderings to the script's.
 
-* **Coreference:** 
+* **Coreference:** We can ask participants whether the coreferences that link the script events actually do co-refer. We can also ask the frequency with which a particular coreference holds acrros events. E.g. "At a restaurant, someone serves something and then someone eats something. How likely is it that the same person does both the eating and the serving?" or "How likely is it that the same thing is both served and eaten?" The coreference information in scripts gives them the ability to potentially solve Winnegrad schemas, which have been posed as a good challenge for successful artificial intelligence [@levesque_winograd_2012].
 
-* **Human narrative cloze:**  In much of the literature on script induction, the narrative cloze task is used to evaluate performance. In this task a subset of documents is held out from training, and at test the model is given some of the events that occurred and asked to guess another event that occurred at some time relative to the known events. The general script knowledge is used to try to fill in the missing information. {{someone said humans can't actually do this probably, but both the model and humans can make guesses}} We will compare the responses of the model to responses that humans give, determining the amount of overlap.
+* **Human narrative cloze:**  In much of the literature on script induction, the narrative cloze task is used to evaluate performance. In this task a subset of documents is held out from training, and at test the model is given some of the events that occurred and asked to guess another event that occurred at some time relative to the known events. The general script knowledge is used to try to fill in the missing information. Although neither humans nor machines can perform this task perfectly, both the model and humans can make guesses. We will compare the responses of the model to responses that humans give, determining the amount of overlap.
 
     For the original narrative cloze task, only events mentioned in the held-out script could be tested. But asking humans means that we can elicit events that were not mentioned in the text but that probably occurred between two sequential events that *were* mentioned. This will hopefully start to probe people's intuitions about events so commonplace they don't initially think to mention it.
     
-* **Conditional probabilities:** 
+* **Conditional probabilities:** For pairs of related events, we can ask participants the probability of one event happening given the other occurred. We can also estimate this value from the PMI or the bigram frequency of the events.
 
-* **Categorization:** We can categorize entities in the script by what event frames they occur in. If "rice" and "soup" both occur as the objects of "order" and "eat", then it is possible that they are semantically related. We can calculate a similarity metric between entities with this information and also ask people how similar they think the different entities in the dataset are. We can compare these distances as a way of evaluating the knowledge encoded in the script. In doing this, we will leave out proper nouns and use the coreference-resolved noun phrases that correspond to pronouns.
+* **Categorization:** We can categorize entities in the script by what event frames they occur in. If "rice" and "soup" both occur as the objects of "order" and "eat", then it is possible that they are semantically related. We can calculate a similarity metric between entities with this information and also ask people how similar they think the different entities in the dataset are. We can compare these distances as a way of evaluating the knowledge encoded in the script. In doing this, we will leave out proper nouns and only use coreference-resolved noun phrases.
 
 ### Additional information for evaluating and extending scripts
 
@@ -77,8 +77,7 @@ We can also ask participants some additional questions that the script will not 
 
 # Followup directions
 
-* extend to other corpora
-* extend to include categorical or causal information explicitly
+Once we have a sense of which script induction techniques were successful on this dataset and in what ways their results differed from people's intuitions, we can revise and extend the representation and algorithms for learning scripts. We can also extend to other corpora, e.g. other collections of blog posts. We can start to include explicity categorical and causal information into the scripts.
 
 # References
 
@@ -86,7 +85,7 @@ We can also ask participants some additional questions that the script will not 
 # To do:
 
     * sequences of events and what arguments they share
-  * cohesion
+  * coherence
     * do these events go together? (previous work)
     * are these the same kind of event? (previous work)
   * arguments
@@ -110,7 +109,7 @@ Scripts include a partial ordering of these events and in their connections they
 
 Another representation for human theories, a superset of both scripts and causal Bayes nets, are probabilistic programs. Probabilistic programs . Probabilistic programs can represent complex relationshipts between events and causation, but their complexity makes them difficult to learn automatially without sufficient constraints.
 
-    Previous work has used survey questions on Amazon's Mechanical Turk to validate the cohesion of events.
+    Previous work has used survey questions on Amazon's Mechanical Turk to validate the coherence of events.
 
     Previous work has used survey questions on Amazon's Mechanical Turk to validate the partial ordering of events in the learned script. {{}}
    {{ We'll just give people events as HTML divs and have them order them.}}
@@ -119,7 +118,7 @@ Another representation for human theories, a superset of both scripts and causal
 
     {{winnograd schemas?}}
     
-    e.g. "At a restaurant, someone serves something and then someone eats something. How likely is it that the same person does both the eating and the serving?" or "How likely is it that the same thing is both served and eaten?"
+   
 
 # We would like to understand better the enormous amount of common sense knowledge that people aquire over time and use to interpret new stories and situations. We will focus on concrete declarative knowledge of simple domains.
 # 
