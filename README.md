@@ -1,1 +1,1 @@
-Erin Bennett's first year project for Psychology PhD program at Stanford.
+Erin's FYP.
