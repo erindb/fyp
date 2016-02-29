@@ -10,7 +10,9 @@
 	* takes in `documents/dinnersfromhell-document-*.txt` files and outputs `documents/*.json` files
 4. cavemanify (reads `documents/*.json` files, writes `restaurants_train`)
 5. extract one document from `restaurants_train` to generate cloze tests using nachos scripts
+	* `model.py` and `utils.py` come from `https://github.com/rudinger/nachos`
 6. run nachos and cache model (reads `restaurants_train` and the corresponding cloze tests, writes `restaurant_model.dill`)
+7. visualize_script makes a graph of the events
 
 # notes
 
@@ -20,7 +22,6 @@ not at restaurants)"
 
 # to-do
 
-* visualize learned scripts
 * all the documents
 * select a few good cloze tasks
 * start making JS with those cloze tasks
