@@ -1,0 +1,25 @@
+<script>
+function pad(num, size) {
+    var s = "000000000" + num;
+    return s.substr(s.length-size);
+}
+function cloze(doc, chn, clz) {
+	$(".document" + doc + ".chain" + chn).show();
+	$(".document" + doc + ".chain" + chn + ".cloze" + clz).hide();
+	$(".document" + doc + ".chain" + chn + ".cloze" + clz).before(
+		"<input type=\'text\'></input>"
+	);
+}
+for (var d=0; d<50; d++) {
+	var doc = pad(d, 3);
+	var chains = $(".document" + doc + ".chain");
+	var nChains = chains.length;
+	var chn = _.sample(_.range(nChains));
+	var clozes = $(".document" + doc + ".chain" + chn + ".cloze");
+	var nClozes = clozes.length;
+	var clz = _.sample(_.range(nClozes));
+	cloze(doc, chn, clz)
+}
+</script>
+</body>
+</html>
