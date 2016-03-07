@@ -1,5 +1,5 @@
 <DOCNAME>documents/dinnersfromhell-document-002.txt.json
-<UUID>00a5cc1b-7df3-4f56-b72e-d569928acdfe
+<UUID>76babd2b-d0a1-4752-8753-4d1a96e68579
 call->nsubj group->nsubj
 phone->nmod:poss rush->nsubj unusual->nsubj
 one->nsubj write->dobj one->nsubj
@@ -10,7 +10,7 @@ call->nsubj ask->nsubj wonder->nsubj say->nsubj get->nsubj daughter->nmod:poss w
 work->nsubj carry->nsubj work->nsubj get->nsubj think->nsubj prepare->nsubj say->nsubj tell->nsubj give->nsubj give->nsubj tell->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-004.txt.json
-<UUID>d31e0cf5-d98b-4fff-8e8d-2ad51186e1e9
+<UUID>bb90ac3f-fb2f-4e91-b5a0-ed2338853870
 
 meat->nmod:poss see->nsubj waiter->nmod:poss
 
@@ -37,7 +37,7 @@ bring->dobj
 
 
 <DOCNAME>documents/dinnersfromhell-document-008.txt.json
-<UUID>cd7b389f-2523-4408-a87e-12acf682303b
+<UUID>75982044-7b93-4f3a-9464-07c4538b4fd8
 call->nsubj group->nsubj
 phone->nmod:poss rush->nsubj unusual->nsubj
 one->nsubj write->dobj one->nsubj
@@ -48,7 +48,7 @@ call->nsubj ask->nsubj wonder->nsubj say->nsubj get->nsubj daughter->nmod:poss w
 work->nsubj carry->nsubj work->nsubj get->nsubj think->nsubj prepare->nsubj say->nsubj tell->nsubj give->nsubj give->nsubj tell->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-010.txt.json
-<UUID>a2427a8a-e976-43cf-aff8-3c922a341879
+<UUID>ae9db51c-5110-4edc-a8f9-6031e1d60b23
 
 meat->nmod:poss see->nsubj waiter->nmod:poss
 
@@ -75,7 +75,7 @@ bring->dobj
 
 
 <DOCNAME>documents/dinnersfromhell-document-012.txt.json
-<UUID>33c42eea-d174-4a98-ae11-d8313be64530
+<UUID>389021f0-d9bc-48e3-9412-792eea12b807
 
 look->nmod:poss heel->nmod:poss walk->nmod:poss phone->nmod:poss go->nsubj just->nmod:poss
 attempt->nsubj decide->nsubj
@@ -84,7 +84,7 @@ boyfriend->nmod:poss attempt->nsubj boyfriend->nmod:poss decide->nsubj point->ns
 hear->nsubj tell->dobj have->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-013.txt.json
-<UUID>2518a4fa-c1e3-41e0-a8a3-ed03df2a9718
+<UUID>7b7cf36d-23f5-4e04-901d-f0128f4bc8ac
 
 good->nsubj have->nsubj
 work->nsubj shift->nmod:poss boss->nmod:poss volunteer->nsubj look->nsubj get->nsubj boss->nmod:poss call->dobj story->nmod:poss sit->nsubj inform->nsubj section->nmod:poss inform->dobj place->nsubj be->nsubj tell->nsubj tell->dobj take->nsubj do->nsubj start->nsubj talk->nsubj speech->nmod:poss begin->nsubj stand->nsubj call->nsubj have->nsubj strike->dobj speech->nmod:poss get->nsubj say->nsubj hope->nsubj know->nsubj buy->nsubj know->nsubjpass hope->nsubj forgive->dobj have->nsubj steer->nsubj leave->nsubj walk->nsubj drink->nsubj have->nsubj action->nmod:poss
@@ -107,7 +107,7 @@ slur->nsubj clear->nsubj strong->nsubj
 tell->nsubjpass
 
 <DOCNAME>documents/dinnersfromhell-document-015.txt.json
-<UUID>f3411bad-6df1-46de-a56c-444f81452b66
+<UUID>164f23e8-da6d-45cd-b15c-909e7f97abab
 work->nsubj hair->nmod:poss straggler->nsubj mouth->nmod:poss eye->nmod:poss stare->nsubj brain->nmod:poss see->dobj take->nsubj take->nsubj show->nsubj run->dobj acknowledge->nsubj pull->nsubj feather->nmod:poss become->nsubj stop->nsubj ask->dobj reply->nsubj steal->nsubj plight->nmod:poss
 notice->dobj charge->dobj
 
@@ -123,7 +123,7 @@ pick->dobj
 request->dobj take->nsubj ask->nsubj get->nsubj ask->nsubj tell->nsubj face->nmod:poss offer->nsubj make->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-017.txt.json
-<UUID>7aff8664-6f61-4a08-9e09-8e726bdbe81d
+<UUID>082f7f2e-f968-4d5c-bb42-df9a134efdf0
 man->nsubj dishwasher->nsubj cook->nsubj son->nmod:poss manager->nsubj manager->nsubj piece->nsubj open->nsubj stay->nsubj have->nsubj show->nsubj break->nmod:poss refuse->nsubj be->nsubj have->nsubj 24->nsubj look->nsubj hire->nsubj
 need->dobj go->nsubj get->nsubj look->nsubj
 tip->nsubj paycheck->nmod:poss
@@ -135,7 +135,7 @@ send->dobj do->dobj
 suffer->nsubj cheap->nsubj pay->nsubjpass buy->nsubj put->nsubj put->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-018.txt.json
-<UUID>8a16cb07-33b2-4d35-bc73-90e16bee073e
+<UUID>d048d68e-4ee7-46df-9bad-f84029679baa
 see->dobj give->nsubj
 high->nsubj
 go->nsubjpass horrible->nsubj
@@ -146,7 +146,7 @@ tell->dobj mad->nsubj bill->nmod:poss give->nsubj say->nsubj have->nsubj husband
 work->nsubj try->nsubj table->nmod:poss surprise->dobj have->nsubj give->nsubj think->nsubj think->dobj notice->nsubj check->nsubj take->nsubj run->nsubj see->nsubj manager->nmod:poss manager->nmod:poss give->nsubj pocket->nmod:poss say->nsubj say->dobj be->nsubj fault->nmod:poss tip->nmod:poss think->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-020.txt.json
-<UUID>7525430f-0910-462c-841f-b9cb40872683
+<UUID>d8f5bc58-1e6e-44c4-bfd5-4f9ce3957df2
 slow->nsubj
 know->nsubj get->nsubj friend->nmod:poss ready->nsubj tell->nsubj ready->nsubj do->nsubj deep->nsubj tell->nsubj fine->nsubj
 wait->nsubj bill->nmod:poss
@@ -165,7 +165,7 @@ this->nsubj know->nsubj
 get->nsubj look->nsubj become->nsubj start->nsubj leave->nsubj give->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-021.txt.json
-<UUID>8c1b57f7-3148-40e8-8597-ad5b33c70835
+<UUID>507ef899-b9ee-489b-9e09-a86ca8750540
 come->nsubj set->dobj couple->nsubj grab->dobj
 say->nsubj ask->dobj like->nsubj decline->nsubj try->nsubj tell->dobj allow->nsubjpass food->nmod:poss ask->dobj food->nmod:poss say->nsubj take->nsubj food->nmod:poss
 have->dobj appetizer->nmod:poss entree->nmod:poss
@@ -177,7 +177,7 @@ have->nsubj tell->dobj service->nmod:poss try->nsubj do->nsubj thing->nsubj feel
 washroom->nsubj drink->nmod:poss interrupt->nsubj ask->nsubj ask->nsubj tell->dobj like->nsubj say->nsubj refuse->nsubj meal->nmod:poss ask->dobj want->nsubj wife->nmod:poss calm->dobj tell->nsubj refuse->nsubj let->nsubj tell->nsubj drink->nmod:poss speak->nsubj wife->nmod:poss
 
 <DOCNAME>documents/dinnersfromhell-document-022.txt.json
-<UUID>3b281d60-7e19-445a-ae9b-cc262a353eca
+<UUID>8f8f4224-ea85-40ce-8bc8-d128be36cce5
 dump->nsubj glass->nmod:poss rude->nsubj finish->nsubj martini->nmod:poss carry->nsubj storm->nsubj scoop->nsubj wife->nmod:poss
 license->nmod:poss manager->nsubj try->nsubj allow->nsubj
 keep->dobj finish->dobj carry->dobj hide->dobj
@@ -191,7 +191,7 @@ try->nsubj martini->nmod:poss sense->nmod:poss
 think->nsubj think->nsubj say->nsubj think->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-023.txt.json
-<UUID>438d6c4c-c8fc-4e20-8ce2-f88c7fb0034b
+<UUID>2105d841-776d-48e1-8272-956ded2f7faa
 server->nsubj misunderstand->nsubj think->nsubj manager->nmod:poss get->nsubj have->nsubj state->nsubj try->nsubj do->nsubj job->nmod:poss interrupt->dobj interrupt->nsubj walk->nsubj go->nsubj manager->nmod:poss want->nsubj walk->nsubj go->nsubj get->nsubj explain->nsubj manager->nmod:poss tell->nsubj do->nsubj manager->nmod:poss server->nsubj polite->nsubj do->nsubj best->nmod:poss job->nmod:poss go->nsubj manager->nmod:poss walk->nsubj
 have->dobj husband->nmod:poss interrupt->nsubj raise->nsubj voice->nmod:poss interrupt->dobj grandson->nmod:poss raise->nsubj voice->nmod:poss raise->nsubj voice->nmod:poss tell->dobj husband->nmod:poss
 have->nsubj plate->nmod:poss allow->nsubj accept->nsubj accept->nsubj
@@ -202,7 +202,7 @@ raise->dobj raise->dobj raise->dobj raise->dobj
 have->dobj tell->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-024.txt.json
-<UUID>405bce81-9b60-479b-9840-29b34e40f59c
+<UUID>bf46a159-bddf-4fe6-9e7d-6e3817a6b950
 give->nsubj restaurant->nmod:poss get->nsubj hear->nsubj know->nsubj make->nsubj customer->nmod:poss have->nsubj have->nsubj
 soup->nmod:poss
 motion->dobj there->nsubj say->nsubj say->nsubj retort->nsubj cut->nsubj please->nsubj ask->nsubj cook->nmod:poss do->nsubj collect->nsubj go->nsubj think->nsubj tell->nsubj grow->nsubj take->nsubj take->nsubj
@@ -219,7 +219,7 @@ family->nmod:poss use->nsubj
 say->nsubj mean->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-025.txt.json
-<UUID>990d1cd7-378a-4419-a578-6ce9915926a6
+<UUID>70d4de54-26df-49d2-a629-ae02367ac8c1
 be->nsubj freezing->nsubj
 take->dobj take->dobj
 
@@ -230,7 +230,7 @@ stir->dobj cook->nsubjpass stir->dobj
 come->nsubj take->nsubj come->nsubj proceed->nsubj explain->nsubj mention->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-027.txt.json
-<UUID>a5154566-eb03-400e-9c45-a1b8cffe2442
+<UUID>444a872c-a05a-4b37-aa61-a25dc9323917
 understand->nsubj have->nsubj way->nmod:poss let->nsubj do->nsubj
 husband->nsubj own->nsubj
 be->nsubj know->nsubj work->nsubj do->nsubj can->nsubj give->nsubjpass listen->nsubj say->nsubj employee->nmod:poss do->dobj push->dobj hand->nmod:poss know->nsubj leave->nsubj
@@ -248,7 +248,7 @@ old/moldy->nsubj serve->dobj forget->nsubjpass
 have->dobj cheap->nsubj restaurant->nmod:poss shut->nsubjpass
 
 <DOCNAME>documents/dinnersfromhell-document-028.txt.json
-<UUID>97e48717-5342-4987-b0aa-194028346f26
+<UUID>81907323-e50a-4be2-b9db-939251b3c699
 busy->nsubj come->nsubj
 poach->dobj want->dobj order->dobj stab->dobj get->dobj
 serve->dobj like->dobj prepare->nsubjpass
@@ -259,7 +259,7 @@ young->nsubj seem->nsubj be->nsubj ask->dobj give->nsubj tell->dobj say->nsubj f
 popular->nsubj be->nsubj do->nsubj egg->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-029.txt.json
-<UUID>7243dd71-e510-426a-80b5-c787327a131d
+<UUID>a4ba716c-c69e-4554-b3a3-d846670215d7
 give->dobj come->nsubj eat->nsubj
 nothing->nsubj give->nsubj walk->nsubj attentive->nsubj
 attention->nmod:poss more->nsubj less->nsubj
@@ -270,7 +270,7 @@ one->nsubj sister->nmod:poss visit->nsubj guess->nsubj understand->nsubj expect-
 be->nsubj rant->nsubj mood->nmod:poss tip->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-030.txt.json
-<UUID>3e7ed25e-2b39-46e9-b830-e01b89b0e6f0
+<UUID>58a9a16d-39ab-4d0f-b802-29e5090b0ac0
 have->nsubj
 hear->nsubj
 newlywed->nsubj parent->nmod:poss be->nsubj
@@ -283,14 +283,14 @@ family->nmod:poss out->nsubj want->nsubj
 hair->nmod:poss bleach->nsubj eye->nmod:poss ring->nmod:poss
 
 <DOCNAME>documents/dinnersfromhell-document-031.txt.json
-<UUID>b2781f5a-6acf-42ca-b5a1-55625a7e6fe1
+<UUID>1f63e1af-eef6-44f9-9735-f69a7fc28a93
 math->nsubj time->nmod:poss
 share->dobj enjoy->dobj contest->nsubj
 dine->nsubj bill->nmod:poss have->nsubj give->nsubj check->nmod:poss bother->nsubj get->nsubj
 company->nmod:poss bill->nmod:poss
 
 <DOCNAME>documents/dinnersfromhell-document-032.txt.json
-<UUID>223a8fbc-c96a-47f4-bae2-f7d0840895a8
+<UUID>236ceab0-d661-477c-9930-fb02167a946c
 scratch->nsubj scratch->dobj match->nsubj match->dobj
 let->nsubj fall->nsubj fall->nsubj fall->nsubj
 go->nsubj buddy->nmod:poss buddy->nmod:poss fall->nsubj friend->nmod:poss
@@ -302,7 +302,7 @@ offer->dobj comp->dobj
 seat->nsubjpass meal->nmod:poss eat->nsubj chair->nmod:poss ask->nsubj server->nmod:poss table->nmod:poss leave->nsubj need->nsubj ask->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-033.txt.json
-<UUID>51466eb0-7ce7-48e8-8636-71ff13569750
+<UUID>7c6d49c9-a3d5-4df2-a4df-64b1fb870534
 come->nsubj claim->nsubj need->nsubj hurry->nsubj food->nmod:poss sit->nsubj get->nsubj phone->nmod:poss make->nsubj order->nmod:poss continue->nsubj phone->nmod:poss try->nsubj teabag->nmod:poss tooth->nmod:poss other->nmod:poss break->nsubj decide->nsubj get->nsubj need->nsubj order->nmod:poss hurry->nsubj replace->nsubj take->nsubj order->nmod:poss waste->nsubj stay->nsubj roll->nsubj eye->nmod:poss do->nsubj tip->nsubj
 hold->dobj get->dobj
 take->dobj place->dobj take->dobj
@@ -312,7 +312,7 @@ have->nsubj go->nsubj come->nsubj order->nsubj pay->nsubj finish->nsubj bill->nm
 attach->nsubj bring->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-034.txt.json
-<UUID>56e4f836-c645-4da2-a5d0-3da0bb7f5c71
+<UUID>c6ebb3fa-8257-4fc2-b84a-4919e4a1394d
 make->nsubj
 ask->nsubj table->nsubj deliver->nsubj push->nsubj ask->dobj come->nsubj try->nsubj come->nsubj keep->nsubj
 set->dobj
@@ -332,7 +332,7 @@ have->dobj use->dobj use->dobj give->dobj run->dobj work->nsubj decline->nsubjpa
 be->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-035.txt.json
-<UUID>f0e4ae00-990a-488f-9444-f8fd9a864bfa
+<UUID>3b529927-37ec-4f54-982e-924c5061e4df
 have->dobj sound->nsubj order->dobj
 good->nsubj come->nsubj
 go->nsubj seat->nsubjpass order->nsubj drink->nmod:poss order->nsubj drinker->nsubj meal->nmod:poss waiter->nmod:poss ignore->dobj get->nsubj get->dobj ask->nsubj bill->nmod:poss table->nmod:poss leave->nsubj send->nsubjpass
@@ -342,7 +342,7 @@ husband->nmod:poss go->nsubj order->nsubj order->nsubj see->nsubj recall->nsubj 
 go->nsubj go->nsubj have->nsubj have->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-037.txt.json
-<UUID>124189f5-5ca9-4cce-a33a-36ef2e703db4
+<UUID>87f51115-6f4c-4ea9-ae6b-e5f69bf35614
 ask->dobj say->nsubj leave->nsubj ask->nsubj
 high->nsubj change->dobj
 wife->nmod:poss look->nsubj
@@ -350,7 +350,7 @@ change->nsubj have->nsubj
 delight->nsubjpass hear->nsubj take->nsubj friend->nmod:poss decide->nsubj go->nsubj want->nsubj have->nsubj ask->nsubj waiter->nmod:poss table->nmod:poss tell->dobj cross->nsubj list->nmod:poss
 
 <DOCNAME>documents/dinnersfromhell-document-038.txt.json
-<UUID>6df969f5-ad04-4deb-8ca5-f6505caf4ca4
+<UUID>42c904aa-8c34-4962-902b-5da2f09c1a0e
 take->dobj take->dobj take->dobj
 have->dobj check->nmod:poss
 seat->dobj table->nsubj order->nmod:poss order->nsubj order->nmod:poss ignore->dobj bill->nmod:poss
@@ -362,7 +362,7 @@ go->dobj go->dobj write->nsubj leave->nsubj come->nsubj ask->nsubj look->nsubj t
 
 
 <DOCNAME>documents/dinnersfromhell-document-039.txt.json
-<UUID>b9b4907f-e750-45ca-b0cf-2eac5267bfdb
+<UUID>37c2f960-73a6-4f77-9459-0709a46d37dc
 
 see->dobj go->nsubj start->nsubj get->nsubj
 print->dobj slam->dobj
@@ -386,7 +386,7 @@ get->nsubj order->nsubj
 ask->dobj tell->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-041.txt.json
-<UUID>8b9e3d5a-8f64-418e-9d3b-f38ce12fae44
+<UUID>0959deb2-6eeb-4d77-ae64-feab18db2e5d
 correct->dobj incorrect->nsubj
 place->dobj mess->dobj receive->dobj correct->nsubj
 place->nsubj call->nmod:poss order->nmod:poss get->nsubj extra->nsubj wait->nsubj receive->nsubj ask->nsubj ask->nsubj state->nsubj follow->dobj antagonize->dobj shoot->dobj use->nsubj think->nsubj
@@ -395,7 +395,7 @@ want->nsubj care->nsubj day->nmod:poss follow->nsubj continue->nsubj threaten->n
 system->nmod:poss try->nsubj mess->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-043.txt.json
-<UUID>54103cf9-4024-4e0d-bcc4-69776ca3ef2c
+<UUID>8a4fb747-f3e1-49f4-aa86-fb617f16a010
 like->dobj send->dobj take->dobj arrive->nsubj
 
 request->nsubj upset->nsubjpass see->nsubj
@@ -425,7 +425,7 @@ tell->nsubj
 fix->dobj take->dobj spill->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-045.txt.json
-<UUID>8d8fc129-1bd4-443f-a335-9740622ed89c
+<UUID>d95d6472-062b-4877-bc50-6719b5ecc9ad
 tell->nsubj make->nsubj accomplice->nmod:poss arrive->nsubj teammate->nmod:poss
 
 there->nsubj
@@ -433,7 +433,7 @@ make->nsubj make->nsubj arrive->nsubj arrive->nsubj find->nsubj stun->dobj bothe
 shut->nsubjpass open->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-046.txt.json
-<UUID>9b03433e-e8d5-4118-b8d1-e7114b45b11f
+<UUID>95e7d5a2-a691-41ea-887f-a9ec04cc1df8
 
 way->nsubj way->nmod:poss parent->nmod:poss
 want->dobj contain->nsubj have->dobj
@@ -446,7 +446,7 @@ call->nsubj ready->nsubj
 come->nsubj want->nsubj ask->nsubj ask->dobj say->nsubj host->nsubj kid->nsubj expect->nsubj run->nsubj happy->nsubj remark->nsubj come->nsubj help->nsubj order->nmod:poss make->nsubj ring->dobj tell->dobj tell->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-047.txt.json
-<UUID>07da1a5b-6c56-4caa-a0b1-b293fe10726a
+<UUID>edcf42ea-857b-4adb-94d4-d780626d00fc
 father->nmod:poss way->nsubj pancake->nmod:poss father->nmod:poss ask->nsubj confound->nsubjpass ask->nsubj grab->nsubj poke->nsubj opinion->nmod:poss father->nmod:poss understand->nsubj
 someone->nsubj deal->nsubj
 grab->dobj
@@ -456,7 +456,7 @@ way->nsubj take->nsubj egg->nmod:poss pull->nsubj mouth->nmod:poss ask->dobj pul
 take->dobj serve->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-049.txt.json
-<UUID>2648c6e2-ea2f-4a3c-a494-832fa8a8ae2e
+<UUID>c0c96aa6-21f9-4883-a5ea-5997a1e338e6
 like->dobj
 wife->nmod:poss visit->nsubj taste->nsubj sure->nsubj wife->nmod:poss astonish->nsubjpass god->nmod:poss say->nsubj wife->nmod:poss
 visit->nsubj visit->nsubj specialize->nsubj make->nsubj pizza->nmod:poss astonish->nsubjpass astonish->nsubjpass
@@ -466,7 +466,7 @@ visit->nsubj tell->dobj food->nmod:poss come->nsubjpass turn->nsubj put->nsubj b
 go->nsubj table->nmod:poss thank->dobj patronage->nmod:poss tell->nsubj like->nsubj ask->dobj exchange->nsubj do->nsubj finish->nsubj exchange->nsubj look->nsubj walk->nsubj come->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-050.txt.json
-<UUID>1b0d4d0a-ae04-40a1-be0d-6a84ea3bfbf8
+<UUID>5bbdfbf7-5acb-44ac-816e-56bc8dd2d188
 not->nsubj use->nsubj
 polite->nsubjpass surprise->nsubjpass gratuity->nmod:poss
 retire->nsubjpass retire->nsubjpass active->nsubj secure->nsubj enjoy->nsubj appetite->nmod:poss drink->nsubj split->nsubj have->nsubj know->nsubj tip->nmod:poss go->nsubj recognize->nsubj waiter->nmod:poss let->nsubj go->nsubj table->nmod:poss order->nsubj water->nmod:poss prepare->nsubjpass tip->nmod:poss hear->nsubj call->nsubj habit->nmod:poss meal->nmod:poss be->nsubj do->nsubj take->nsubj
@@ -477,7 +477,7 @@ be->nsubj comp->dobj
 wife->nmod:poss retire->nsubjpass believe->nsubj refuse->nsubj decline->nsubj wonder->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-051.txt.json
-<UUID>e8ca37fe-3bf8-49f8-b6cf-19bbad4800bd
+<UUID>242b6e28-3bdf-4321-ac62-7a9280627483
 weekend->nsubj day->nsubj
 think->nsubj read->nsubj work->nsubj area->nmod:poss work->nsubj shift->nmod:poss shift->nmod:poss have->nsubj register->nmod:poss ask->nsubj help->nsubj go->nsubj get->nsubj ring->nsubj take->nsubj give->nsubj ask->dobj reply->nsubj ask->dobj tell->nsubj apologize->nsubj void->nsubj refund->nsubj do->nsubj call->nsubj manager->nmod:poss manager->nmod:poss berate->dobj idiot->nsubj like->nsubj tell->dobj see->nsubj mean->nsubj
 
@@ -492,7 +492,7 @@ have->dobj cheaper->nsubj
 myself->nsubj void->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-053.txt.json
-<UUID>20cdaff1-d519-45c8-bda2-521b277e9159
+<UUID>f7a99c60-c22b-41d2-af6b-4a0149a564ae
 charge->nsubj have->nsubj
 come->nsubj eat->nsubj could->nsubj want->nsubj ask->dobj say->nsubj check->nsubj come->nsubj call->nsubj sister->nmod:poss
 decide->nsubj get->nsubj house->nmod:poss seat->dobj waitress->nmod:poss order->nsubj drink->nmod:poss ready->nsubj ask->nsubj waitress->nmod:poss favor->nsubj figure->nsubj own->nmod:poss go->nsubj
@@ -502,7 +502,7 @@ mignon->nsubj
 go->nsubj birthday->nmod:poss birthday->nmod:poss tell->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-054.txt.json
-<UUID>4a5a6e54-02a6-4ae4-abd5-1fe9b1926ccb
+<UUID>bd95ab1a-53c9-43d5-a3d5-bc70f96914c0
 exit->dobj
 work->nsubj work->nsubj regular->nsubj come->nsubj assign->nsubjpass come->nsubj 5->nsubj happy->nsubj exit->nsubj reappear->nsubj gesture->nsubj hand->nmod:poss do->nsubj bill->nsubj unfold->nsubj meet->dobj freeze->nsubj get->nsubj offer->nsubj mortified->nsubj give->nsubj tell->nsubj go->nsubj manager->nmod:poss section->nmod:poss learn->nsubj do->nsubj coworker->nmod:poss stop->nsubj think->nsubj able->nsubj more->nsubj blog->nmod:poss
 unfold->dobj say->nsubj give->dobj
@@ -514,7 +514,7 @@ stand->nsubj enjoy->nsubj seem->nsubj request->nmod:poss come->nsubj customer->n
 find->dobj meet->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-056.txt.json
-<UUID>834b1efd-db54-4594-a546-29a2c04c8156
+<UUID>e09260c1-454c-4778-b655-dad5ad54c149
 decide->nsubj order->nsubj
 nice->nsubj problem->nsubj name->nmod:poss cream->nmod:poss serve->nsubj serve->dobj order->nsubj give->nsubj tip->nsubj
 take->dobj
@@ -522,7 +522,7 @@ friend->nsubj eat->nsubj leave->nsubj
 grandmother->nmod:poss decide->nsubj grandmother->nmod:poss sister->nmod:poss
 
 <DOCNAME>documents/dinnersfromhell-document-057.txt.json
-<UUID>950ef8a5-b3ad-4917-a015-648a24c0b632
+<UUID>55e733f9-2e2a-43bc-9815-5224ef829bd9
 put->dobj dry->nsubj
 pour->dobj pour->dobj do->dobj clean->dobj
 go->nsubj go->nsubj think->nsubj check->nmod:poss
@@ -532,7 +532,7 @@ say->nsubj sorry->nsubj get->nsubj snooty->nsubj leave->nsubj take->nsubj
 husband->nmod:poss go->nsubj put->nsubj purse->nmod:poss purse->nmod:poss phone->nmod:poss leave->nsubjpass pour->nsubj purse->nmod:poss phone->nmod:poss purse->nmod:poss realize->nsubj sorry->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-058.txt.json
-<UUID>47c49f99-33a1-4205-a12f-6819d7d0eea7
+<UUID>f9bee38a-73fd-410a-a495-1879965ee287
 copy->nsubj
 patient->nsubj polite->nsubj steak->nsubj be->nsubj
 fish->nsubj
@@ -547,7 +547,7 @@ place->dobj drink->nmod:poss choice->nmod:poss wait->nsubj wait->nsubj ask->nsub
 order->nsubj want->nsubj re-order->nsubj food->nmod:poss miss->nsubj side->nmod:poss miss->nsubj applesauce->nmod:poss refuse->nsubj blame->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-059.txt.json
-<UUID>bb669773-6657-41f8-bb19-fa16aa2489f7
+<UUID>008e0e0c-ff5f-4b19-878a-b5f72605c241
 ask->dobj constrain->dobj proceed->nsubj decide->nsubj order->nsubj have->nsubj
 order->dobj pronounce->dobj
 track->dobj say->nsubj tell->dobj reply->nsubj stiff->dobj
@@ -561,7 +561,7 @@ see->dobj come->nsubj say->nsubj mistake->nmod:poss proceed->nsubj
 proceed->nsubj proceed->nsubj threaten->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-062.txt.json
-<UUID>906b9f4d-05b2-47ec-b8c3-03e5fcfa66a2
+<UUID>05212685-23cb-4dba-a9f2-31175101bb2d
 approach->dobj join->nsubj
 try->nsubj have->nsubj drench->nsubjpass
 leave->dobj
@@ -577,14 +577,14 @@ jump->nsubj close->nsubj send->nsubj assure->nsubj have->nsubj wife->nmod:poss k
 join->nsubj join->nsubj assure->nsubj get->nsubj vacation->nmod:poss decide->nsubj night->nmod:poss
 
 <DOCNAME>documents/dinnersfromhell-document-064.txt.json
-<UUID>8d82ccea-80e2-4216-a6cd-f941b0a97c84
+<UUID>16ddfe9a-1fb2-4103-9b4a-f3aa13e29ee4
 be->nsubj daddy->nmod:poss ignore->dobj keep->nsubj teenager->nsubj
 clean->nsubj work->nsubj job->nmod:poss pick->nsubj hear->nsubj wish->nsubj cool->nsubj phone->nmod:poss pocket->nmod:poss ignore->nsubj job->nmod:poss miss->nsubj know->nsubj mean->nsubj girl->nsubj ’11->nsubj threat->nsubj finish->nsubj go->nsubj finish->nsubj come->nsubj throw->nsubj turn->nsubj smear->nsubj say->nsubj hope->nsubj
 
 side->nmod:poss go->nsubjpass leave->nsubj pull->nsubj give->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-065.txt.json
-<UUID>6528a408-9ffd-495b-a584-c2599bf152e0
+<UUID>21aac26f-41df-43b2-a131-ada5abffadde
 take->nsubj see->nsubj hear->nsubj
 quality->nmod:poss reputation->nmod:poss
 sit->nsubj stuff->nmod:poss be->nsubj
@@ -595,7 +595,7 @@ hungry->nsubj tired->nsubj decide->nsubj try->nsubj place->nsubj be->nsubj hungr
 town->nmod:poss shopping->nmod:poss have->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-068.txt.json
-<UUID>e6e556ac-6d33-4d80-b6a7-707dbee25617
+<UUID>2c91bd16-c0af-4a44-bae2-523fbc6fd7a9
 wait->nsubj
 take->dobj come->nsubj come->nsubj
 lead->nsubj do->nsubj
@@ -607,7 +607,7 @@ have->nsubj control->nmod:poss
 go->nsubj have->nsubj know->nsubj be->nsubj seat->nsubj surprise->nsubjpass have->nsubj order->nmod:poss meal->nmod:poss keep->nsubj talk->nsubj spirit->nmod:poss prefer->nsubj mention->nsubj pig->nsubj tip->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-069.txt.json
-<UUID>bdbf3e78-f96e-4498-a4c3-01c43461c728
+<UUID>d9b467db-b73d-498b-aa2f-f1fa0eaa9d30
 meet->dobj creep->nsubj
 extend->dobj shake->dobj extend->dobj shake->dobj shake->dobj
 get->nsubj chip->nmod:poss menu->nmod:poss
@@ -620,13 +620,13 @@ get->dobj wrapper->nmod:poss
 be->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-071.txt.json
-<UUID>8defb09b-6c4f-472f-b9ee-d30033b86209
+<UUID>119f7854-555b-4c4e-8924-08ef860a6424
 have->nsubj try->nsubj encourage->nsubjpass
 restaurant->nmod:poss server->nsubj tell->dobj granddaughter->nmod:poss money->nmod:poss appal->nsubjpass
 tell->nsubj have->nsubj ask->nsubj table->nmod:poss consider->nsubj understand->nsubj behavior->nmod:poss
 
 <DOCNAME>documents/dinnersfromhell-document-072.txt.json
-<UUID>0b8ec166-9f5e-49b6-bf58-466739daa6aa
+<UUID>cd208221-d89b-4c84-a256-158b6486fbfd
 restaurant->nsubj place->nsubj
 decide->nsubj have->nsubj food->nmod:poss take->nsubj blame->dobj
 leave->dobj funny->nsubj
@@ -637,7 +637,7 @@ old->nsubj family->nmod:poss stay->nsubj family->nmod:poss grandmother->nmod:pos
 order->dobj come->nsubj have->dobj box->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-073.txt.json
-<UUID>da2708cc-12ff-4651-a72e-07063fa6524a
+<UUID>62ec6ede-eeb2-4855-abe8-5744cd04f5a3
 place->nsubj water->nmod:poss ask->nsubj
 place->nsubj place->nsubj customer->nsubj walk->nsubj decide->nsubj wait->nsubj flag->nsubj wait->nsubj drink->nmod:poss thirsty->nsubj server->nmod:poss order->nmod:poss wait->nsubj table->nmod:poss hungry->nsubj decide->nsubj
 nice->nsubj share->nsubj offer->nsubj
@@ -648,7 +648,7 @@ interrupt->nsubj say->nsubj get->nsubj
 seem->nsubj flag->dobj take->nsubj snappish->nsubj look->nsubj stop->nsubj throw->nsubj throw->dobj see->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-074.txt.json
-<UUID>03fcdf76-bf85-46e6-8989-9b64a9d7da70
+<UUID>67bb127a-b471-41b9-85c5-0bfd619e552b
 share->nsubj mother->nmod:poss do->nsubj plant->nsubj try->nsubj end->nsubj see->nsubj reaction->nmod:poss do->nsubj daughter->nmod:poss get->nsubj seat->nmod:poss
 be->nsubj see->dobj
 share->nsubj attack->dobj
@@ -658,7 +658,7 @@ go->nsubj go->nsubj seat->nsubjpass order->nsubj drink->nmod:poss end->nsubj are
 end->nsubj end->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-075.txt.json
-<UUID>bb268c21-e160-4738-b75b-96d66614a544
+<UUID>7fbb1520-80f7-4933-94f9-1d4f58fba418
 earn->dobj increase->dobj
 meat->nmod:poss veggy->nmod:poss chef->nmod:poss kitchen->nmod:poss
 take->dobj take->dobj know->dobj put->dobj
@@ -679,7 +679,7 @@ have->dobj
 find->dobj track->dobj introduce->dobj introduce->dobj say->nsubj reply->nsubj sigh->nsubj leave->nsubj reappear->nsubj pop->nsubj slap->nsubj say->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-080.txt.json
-<UUID>064709e2-f58f-4b12-9c7d-664173ed51e0
+<UUID>f599e61c-2dd4-4e0e-929c-a8d777282aec
 work->nsubj decide->nsubj get->nsubj table->nmod:poss hear->nsubj server->nmod:poss drink->nmod:poss order->nmod:poss meal->nmod:poss say->dobj starter->nmod:poss food->nmod:poss finish->nsubj lunch->nmod:poss leave->nsubj leave->nsubj
 live->nsubj waitress->nsubj town->nmod:poss be->nsubj boss->nmod:poss husband->nmod:poss go->nsubj husband->nmod:poss ask->nsubj lemon->nmod:poss ask->nsubj order->nsubj husband->nmod:poss ask->nsubj know->nsubj response->nmod:poss allergic->nsubj ask->nsubj get->nsubj food->nmod:poss husband->nmod:poss fill->nsubj think->nsubj
 go->nsubj order->nsubj order->nsubj
@@ -695,7 +695,7 @@ miss->nsubj be->nsubj
 come->nsubj say->nsubj get->dobj
 
 <DOCNAME>documents/dinnersfromhell-document-084.txt.json
-<UUID>191a046b-b801-4611-983d-9050ea6ab015
+<UUID>ed426f84-d6bf-4d4e-95fe-ae915f02ba61
 chewy->nsubj dry->nsubj
 bring->dobj suggest->nsubj
 free->nsubj add->nsubj scam->nsubj
@@ -707,7 +707,7 @@ take->nsubj ask->nsubj demeanor->nmod:poss bring->nsubj tip->nmod:poss intercept
 accident->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-085.txt.json
-<UUID>074f6f93-fd67-4a8d-ac96-9fea1b32f4fc
+<UUID>44f63781-cd2d-4ef1-8351-e81ac5ced81c
 take->dobj buy->dobj
 hour->nsubj mediocre->nsubj expensive->nsubj
 call->dobj mistake->nsubj
@@ -721,7 +721,7 @@ take->nsubj take->nsubj niece->nmod:poss have->nsubj seat->nsubjpass waitress->n
 buy->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-086.txt.json
-<UUID>24267253-97e1-4181-ad1e-f34abae6d518
+<UUID>1ea69cbd-a192-4211-85c4-150b9864f27e
 refill->dobj
 dine->nsubj mother->nmod:poss bother->dobj mother->nmod:poss need->nsubj have->nsubj feel->nsubj
 nice->nsubj come->nsubj come->nsubj
@@ -731,7 +731,7 @@ stand->nsubj leave->nsubj offer->nsubj ask->nsubj attention->nmod:poss asian->ns
 experience->nsubj leave->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-091.txt.json
-<UUID>b16dd0e3-3f24-4f9e-9aeb-f6dfd93c1584
+<UUID>4e0ca1cf-4e4f-4414-837c-865fc9606dea
 receive->dobj taste->dobj grab->dobj
 livid->nsubj assist->dobj
 
@@ -743,7 +743,7 @@ house->nmod:poss establishment->nmod:poss incident->nmod:poss
 hold->nsubj tend->nsubj wait->nsubj friend->nmod:poss see->nsubj work->nsubj blog->nmod:poss
 
 <DOCNAME>documents/dinnersfromhell-document-092.txt.json
-<UUID>4a0a9b70-7d95-4fc5-9cd3-b0201a889b23
+<UUID>5d3bf985-8cdf-4458-8f4c-cd077a3d94ea
 see->dobj high-tail->dobj
 seem->nsubj enthused->nsubj treat->nsubj open->nsubj check->nsubj know->nsubj proceed->nsubj pants->nmod:poss person->nsubj interaction->nmod:poss spank->nsubj make->nsubj beloved->nsubj terminate->nsubjpass
 spank->dobj girl->nmod:poss
@@ -752,7 +752,7 @@ be->nsubj get->nsubj point->nsubj
 craving->nsubj wholesome->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-093.txt.json
-<UUID>5b12802f-b59b-4f81-b392-e54401dc9cf3
+<UUID>2dbec5c4-63d3-4dfd-ab9f-3c0a55e148d1
 open->nsubj chain->nsubj have->nsubj Wednesday->nmod:poss
 name->dobj
 
@@ -767,7 +767,7 @@ offer->nsubj lobby->nmod:poss
 think->nsubj give->nsubj take->nsubj call->dobj tell->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-094.txt.json
-<UUID>e6bb11d5-5e5e-46c9-a0ba-16050688b523
+<UUID>27644dd8-c38f-41de-b170-d7f9bd8bff62
 have->nsubj want->nsubj figure->nsubj play->nsubj order->nsubj order->nsubj phone->nsubj have->nsubj phone->nsubj decline->nsubj
 play->dobj play->dobj
 apologize->nsubj promise->nsubj say->nsubj ship->nsubj give->nsubj
@@ -775,7 +775,7 @@ phone->dobj phone->dobj pm->nsubj
 ship->dobj come->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-095.txt.json
-<UUID>696b97a6-b6f8-468b-8bbd-66b381d95e91
+<UUID>7950a6b0-39e2-4a97-a8fa-03cfbd1c2061
 try->nsubj try->nsubj try->nsubj notice->nsubj get->nsubj think->nsubj
 notice->nsubj
 charge->dobj have->nsubj have->nsubj have->nsubj
@@ -794,7 +794,7 @@ give->nsubj do->nsubj
 quick->nsubj slow->nsubj
 
 <DOCNAME>documents/dinnersfromhell-document-096.txt.json
-<UUID>7551c0df-d96c-488e-b07c-e237baff34d8
+<UUID>23cb1a62-fcc4-4e71-af55-04c882e41a6b
 
 take->nsubj come->nsubj introduce->dobj demeanor->nmod:poss become->nsubj scribble->nsubj leave->nsubj plunk->nsubj ask->nsubj ask->dobj manner->nmod:poss do->nsubj have->nsubj flirt->nsubj treatment->nmod:poss treatment->nmod:poss go->nsubj glance->nsubj ignore->nsubj attention->nmod:poss begin->nsubj continue->nsubj attitude->nmod:poss attitude->nmod:poss manage->dobj bull->nsubj ask->dobj reply->nsubj whip->nsubj rude->nsubj think->nsubj speak->nsubj inability->nmod:poss hope->nsubj regret->nmod:poss action->nmod:poss character->nmod:poss service->nmod:poss
 leave->dobj see->nsubj afford->nsubj lunch->nmod:poss have->nsubj agree->nsubj wait->nsubj seat->nsubjpass friend->nmod:poss like->nsubj say->nsubj split->nsubj ask->dobj want->nsubj cup->nmod:poss have->nsubj friend->nmod:poss booth->nmod:poss friend->nmod:poss party->nmod:poss attempt->nmod:poss get->nsubj end->nsubj water->nmod:poss friend->nmod:poss drink->nsubj waitress->nmod:poss wait->nsubj bill->nmod:poss manage->nsubj ask->nsubj bill->nmod:poss have->nsubj come->nsubj assume->nsubj sort->nsubj clean->nsubj disgust->nsubjpass leave->nsubj 5->nmod:poss
@@ -811,7 +811,7 @@ sister->nmod:poss self->nmod:poss sister->nmod:poss sister->nmod:poss confused->
 
 
 <DOCNAME>documents/dinnersfromhell-document-097.txt.json
-<UUID>0c1affab-5f5d-4cb8-b026-248a51c6b2f4
+<UUID>f6afa481-8b07-4bb2-a57e-1bef728cacda
 hear->dobj share->dobj
 turn->nsubj reply->nsubj see->nsubj state->nsubj
 say->nsubj hear->dobj have->nsubj
@@ -822,7 +822,7 @@ wife->nmod:poss call->nsubj tell->dobj
 tell->nsubj have->nsubj dine->nsubj mother->nmod:poss mother->nmod:poss see->nsubj take->nsubjpass say->nsubjpass hear->nsubj mother->nmod:poss know->nsubj mother->nmod:poss grab->nsubj make->nsubj mom->nmod:poss
 
 <DOCNAME>documents/dinnersfromhell-document-098.txt.json
-<UUID>67ce2815-4b6c-4c73-9b56-8cabf1f9f7b3
+<UUID>41e60ebb-f591-47f5-b4ad-278ac1800b6a
 reunite->nsubj leave->nsubj go->nsubj seat->nsubjpass table->nmod:poss like->nsubj drink->nmod:poss food->nmod:poss have->nsubj drink->nmod:poss make->nsubj area->nmod:poss table->nmod:poss watch->dobj do->nsubjpass need->nsubj see->nsubj flag->nsubj meal->nmod:poss ask->nsubj mood->nmod:poss laugh->nsubj marry->nsubjpass consider->nsubjpass laugh->nsubj mood->nsubj
 meet->dobj car->nmod:poss
 get->dobj finish->dobj
@@ -841,7 +841,7 @@ ruin->nsubjpass laugh->dobj
 drive->nsubj love->nmod:poss meet->nsubj fiance->nmod:poss order->dobj question->nmod:poss say->nsubj reply->nsubj have->nsubj tell->nsubj ask->nsubj know->nsubj show->nsubj want->nsubj date->nmod:poss laugh->nsubj order->nsubj date->nmod:poss wine->nmod:poss date->nmod:poss open->nsubj eye->nmod:poss move->nsubj fiance->nmod:poss
 
 <DOCNAME>documents/dinnersfromhell-document-099.txt.json
-<UUID>524011b6-d1ea-4d00-8fe3-b6f3fded0967
+<UUID>0f641de6-7845-4e16-8d29-6b1c2e27e94e
 quote->nsubj assure->nsubj
 order->dobj restaurant->nsubj minute->nsubj do->nsubjpass call->dobj
 love->nsubj know->nsubj quote->dobj fine->nsubj have->nsubj continue->nsubj call->nsubj assure->dobj wait->nsubj call->nsubj hungry->nsubj pizza->nmod:poss
