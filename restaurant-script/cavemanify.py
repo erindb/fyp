@@ -107,6 +107,8 @@ for filename in parsed_documents:
 							i+=1
 						assert(within(governor_index, lower, upper))
 
+						if entity_start == lower:
+							lower = entity_end
 						chain_entity_starts[sentence_index].append(entity_start)
 						chain_entity_ends[sentence_index].append(entity_end)
 						chain_event_starts[sentence_index].append(lower)
@@ -134,6 +136,10 @@ for filename in parsed_documents:
 				cloze_index = 0
 				for s in range(len(sentences)):
 					sentence = sentences[s]
+					if s not in chain_sentence_indices:
+						# add a ... if i'm skipping something and the ... is not already there
+						if cloze_div[-1] != '...':
+							cloze_div.append('...')
 					for t in range(len(sentence['tokens'])):
 						token = sentence['tokens'][t]
 						wordform = token['originalText']

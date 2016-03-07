@@ -14,7 +14,7 @@ function time() {
   return now - startTime;
 }
 
-var chains = [
+var chains = _.shuffle([
   { document: '002', chain: 3 },
   { document: '004', chain: 13 },
   { document: '008', chain: 2 },
@@ -25,7 +25,7 @@ var chains = [
   { document: '020', chain: 13 },
   { document: '021', chain: 3 },
   { document: '022', chain: 2 }
-]
+]);
 
 // Shows slides. We're using jQuery here - the **$** is the jQuery selector function, which takes as input either a DOM element or a CSS selector string.
 function showSlide(id) {
@@ -41,7 +41,7 @@ $(".slide").append('<div class="progress"><span>Progress: </span>' +
 
 // -------- experiment structure ----------
 var experiment = {
-  totalNQns: 10 + 3, /*instructions, demographic, debriefing*/
+  totalNQns: 10 + 4, /*intro, instructions, demographic, debriefing*/
   // log data to send to mturk here
   data: {
     trials: [],
@@ -52,18 +52,29 @@ var experiment = {
   // store state information here
   state: {
     trialnum: -1,
-    next: function() {
-      experiment.next()
+    next: function() { return experiment.defaultNext() },
+    log: function() { return experiment.defaultLog() },
+    responseError: function() { return experiment.defaultResponseError() },
+  },
+  defaultLog: function() {
+    return true;
+  },
+  defaultNext: function() {
+    var logSuccess = experiment.state.log();
+    if (logSuccess) {
+      experiment.state.trialnum++;
+      experiment.progress();
+      var state = experimentStates.shift();
+      experiment[state]();
+    } else {
+      experiment.state.responseError();
     }
   },
-  next: function() {
-    experiment.log();
-    var state = experimentStates.shift();
-    experiment[state]();
-  },
-  log: function() {
+  defaultResponseError: function() {
+    $('.err').show();
   },
   progress: function() {
+    $('.err').hide();
     var nQns = experiment.state.trialnum;
     $('.bar').css('width', ( (nQns / experiment.totalNQns)*100 + "%"));
   },
@@ -80,7 +91,8 @@ var experiment = {
   },
   // run at start of block
   trial: function() {
-    $('#response').remove();
+    var trialStartTime = time();
+    $('.response').remove();
     $('#continue').remove();
     showSlide("trial");
     var chain = chains.shift();
@@ -90,12 +102,31 @@ var experiment = {
     $('.chain.document' + chain.document + '.chain' + chain.chain).show();
     $('.cloze.document' + chain.document + '.chain' + chain.chain).show();
     $('.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).hide();
-    var responseInput = $('<input>', {type: 'text', id: 'response', size: '40'});
+    var responseInput = $('<input/>', {type: 'text', class: 'response', size: '40'});
     $('.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).before(responseInput);
+    experiment.state.log = function() {
+      var trialResponseTime = time();
+      var response = $('.response').val();
+      if (response.length > 0) {
+        experiment.data.trials.push({
+          document: chain.document,
+          chain: chain.chain,
+          response: response,
+          original: $('.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).html(),
+          clozeIndex: clozeIndex,
+          clozeHTML: $('.chain.document' + chain.document + '.chain' + chain.chain).html(),
+          trialnum: experiment.state.trialnum,
+          rt: trialResponseTime - trialStartTime
+        })
+        return true;
+      } else {
+        return false;
+      }
+    }
   },
   demographic: function() {
+    $(".languageFree").hide();
     showSlide("demographic");
-    $(".language_free").css({display: 'none'});
     $("#language").change(function() {
       if ($("#language").val() == 'eng+other' | $("#language").val() == 'other') {
         $(".languageFree").show();
@@ -103,7 +134,7 @@ var experiment = {
         $(".languageFree").hide();
       }
     })
-    experiment.state.next = function() {
+    experiment.state.log = function() {
       var language = $("#language").val();
       var languageFree = $("#languageFree").val();
       var gender = $("#gender").val();
@@ -113,16 +144,8 @@ var experiment = {
       var studyQuestionGuess = $("#studyQuestionGuess").val();
       var comments = $("#comments").val();
       if (language=='' | gender=='' | education=='') {
-        $(".footnote").css({color: "red"});
-        $("#language").click(function() {
-          $(".footnote").css({color: "black"});
-        })
-        $("#gender").click(function() {
-          $(".footnote").css({color: "black"});
-        })
-        $("#education").click(function() {
-          $(".footnote").css({color: "black"});
-        })
+        // if blanks, no successful log
+        return false;
       } else {
         var demographics = [
           'language', 'languageFree', 'gender', 'age',
@@ -135,11 +158,24 @@ var experiment = {
             qtype: demographic
           })
         }
-        experiment.nextBlock()
+        return true;
       }
+    }
+    experiment.state.responseError = function() {
+      $(".footnote").css({color: "red"});
+      $("#language").click(function() {
+        $(".footnote").css({color: "black"});
+      })
+      $("#gender").click(function() {
+        $(".footnote").css({color: "black"});
+      })
+      $("#education").click(function() {
+        $(".footnote").css({color: "black"});
+      })
     }
   },
   finished: function() {
+    experiment.state.log = experiment.defaultLog();
     clearInterval(mouseLoggerId);
     experiment.data.startTime = startTime;
     experiment.data.seed =  aRandomSeed;
@@ -148,11 +184,9 @@ var experiment = {
     // Wait 1.5 seconds and then submit the whole experiment object to Mechanical Turk (mmturkey filters out the functions so we know we're just submitting properties [i.e. data])
     setTimeout(function() { turk.submit(experiment.data) }, 1500);
     console.log(JSON.stringify(experiment.data));
-    experiment.state.next = experiment.sn
   },
   debriefing: function() {
     showSlide("debriefing");
-    experiment.state.next = experiment.nextBlock;
   }
 };
 
