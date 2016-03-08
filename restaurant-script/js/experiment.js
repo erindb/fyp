@@ -221,6 +221,7 @@ var experimentStates = ["intro", "instructions"].concat(
 $(document).ready(function() {
 
   // $('.slide').hide(); //hide everything
+  $('#intro').show();
 
   //make sure turkers have accepted HIT (or you're not in mturk)
   if (turk.previewMode) {
