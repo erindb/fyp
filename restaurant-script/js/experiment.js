@@ -41,7 +41,7 @@ $(".slide").append('<div class="progress"><span>Progress: </span>' +
 
 // -------- experiment structure ----------
 var experiment = {
-  totalNQns: 10 + 4, /*intro, instructions, demographic, debriefing*/
+  totalNQns: 10 + 4 + 1, /*intro, instructions, demographic, debriefing, attention*/
   // log data to send to mturk here
   data: {
     trials: [],
@@ -124,6 +124,29 @@ var experiment = {
       }
     }
   },
+  attention: function() {
+    var trialStartTime = time();
+    showSlide("attention");
+    experiment.state.log = function() {
+      var trialResponseTime = time();
+      var response = $('.attentionResponse').val();
+      if (response.length > 0) {
+        experiment.data.trials.push({
+          document: 'attention',
+          chain: 'attention',
+          response: response,
+          original: 'apples',
+          clozeIndex: 'attention',
+          clozeHTML: $('.attention').html(),
+          trialnum: experiment.state.trialnum,
+          rt: trialResponseTime - trialStartTime
+        })
+        return true;
+      } else {
+        return false;
+      }
+    }
+  },
   demographic: function() {
     $(".languageFree").hide();
     showSlide("demographic");
@@ -192,7 +215,7 @@ var experiment = {
 
 // -------- run experiment ----------
 var experimentStates = ["intro", "instructions"].concat(
-      rep("trial", 10)
+      _.shuffle(rep("trial", 10).concat(['attention']))
     ).concat(["demographic", "debriefing", "finished"]);
 
 $(document).ready(function() {
