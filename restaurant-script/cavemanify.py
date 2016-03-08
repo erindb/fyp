@@ -132,7 +132,7 @@ for filename in parsed_documents:
 					'<title>Chain Reference Document' + file_number + ' Chain' + str(chain_index) + '</title></head>\n' +
 					'<body><script src="jquery-2.2.0.min.js"></script>\n' ]
 				### write cloze html for experiment
-				cloze_div = ['<div class="chain document' + file_number + ' chain' + str(chain_index) + '">']
+				cloze_div = ['<div class="chain document' + file_number + ' chain' + str(chain_index) + '"><p>']
 				cloze_index = 0
 				for s in range(len(sentences)):
 					sentence = sentences[s]
@@ -163,7 +163,7 @@ for filename in parsed_documents:
 									cloze_div.append('</span>')
 						else:
 							chain_reference_doc.append(wordform)
-				cloze_div.append('</div>')
+				cloze_div.append('</p></div>')
 				chain_reference_doc.append('</body></html>')
 
 				## write chain reference
