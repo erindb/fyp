@@ -6,6 +6,37 @@ import uuid
 import codecs
 import re
 from nltk.tree import *
+from nltk.corpus import wordnet
+
+synsets = []
+synkeys = []
+cached_computer_goggles = {}
+
+OPTION_SYNSETS = False
+
+## pick out just the head word of the phrase
+def computer_goggles(head_word):
+	if head_word in cached_computer_goggles.keys():
+		return cached_computer_goggles[head_word]
+
+	synonyms = []
+	for i,j in enumerate(wordnet.synsets(head_word)):
+		for syn in j.lemma_names():
+			synonyms.append(syn)
+	synonyms = set(synonyms + [head_word])
+	# if we've ever seen this word before, it has a basic
+	# lemma to map to
+	for syn in synonyms:
+		for synset in synsets:
+			if syn in synset:
+				cached_computer_goggles[head_word] = synkeys[synsets.index(synset)]
+				return synkeys[synsets.index(synset)]
+
+	# if we've never seen it before, log a new synset with key
+	synsets.append(synonyms)
+	synkeys.append(head_word)
+	cached_computer_goggles[head_word] = head_word
+	return head_word
 
 cloze_docs = {
 	'documents/dinnersfromhell-document-008.txt.json': 2,
@@ -109,7 +140,10 @@ for filename in parsed_documents:
 						entity_role = entity_dependency['dep']
 						governor_index = entity_dependency['governor']-1
 						governor_lemma = sentence['tokens'][governor_index]['lemma']
-						chain_link = governor_lemma + '->' + entity_role
+						if OPTION_SYNSETS:
+							chain_link = computer_goggles(governor_lemma) + '->' + entity_role
+						else:
+							chain_link = governor_lemma + '->' + entity_role
 						chain.append(chain_link)
 
 						event_phrase_leaves = tree[tree.leaf_treeposition(governor_index)[:-2]].leaves()
@@ -129,8 +163,6 @@ for filename in parsed_documents:
 						chain_event_starts[sentence_index].append(lower)
 						chain_event_ends[sentence_index].append(upper)
 
-			chains.append(chain)
-
 			# if (file_number == '009') and (chain_index==0):
 			# 	print chain_entity_starts
 			# 	print chain_entity_ends
@@ -142,6 +174,8 @@ for filename in parsed_documents:
 			# don't report chains with length 1, cause you can't use them for finding sequences
 			# (these might exist if some of the dependencies were ones that i'm not using)
 			if len(chain) > 1:
+				chains.append(chain)
+
 				### write chain reference document with colors for entity references and events
 				chain_reference_doc = [ '<!DOCTYPE html><html><head><meta charset="utf-8">\n' +
 					'<title>Chain Reference Document' + file_number + ' Chain' + str(chain_index) + '</title></head>\n' +
@@ -195,7 +229,7 @@ for filename in parsed_documents:
 				[
 					'<DOCNAME>' + filename,
 					'<UUID>' + str(uuid.uuid4())
-				] + [' '.join(chains[int(cloze_docs[filename])])])
+				] + [' '.join(chains[cloze_docs[filename]])])
 
 		docstring = '\n'.join(
 			[

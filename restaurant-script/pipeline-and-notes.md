@@ -12,7 +12,8 @@
 	* writes `restaurants_train`
 	* writes `restaurants_cloze`
 	* writes `master_cloze.html`, which is the html file for `experiment 1`
-5. run model on `restaurants_train`, evaluating on `restaurants_cloze`, writes `restaurants.dill`, which stores aysmmetric bigram probabilities for all event pairs
+5. process cloze tests: reads `restaurants_cloze`, writes `restaurants_cloze_tests.txt`
+6. run model on `restaurants_train`, evaluating on `restaurants_cloze_tests.txt`, writes `restaurants.dill`, which stores aysmmetric bigram probabilities for all event pairs
 
 <!--
 5. extract one document from `restaurants_train` to generate cloze tests using nachos scripts

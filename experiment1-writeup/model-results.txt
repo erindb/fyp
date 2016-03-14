@@ -1,0 +1,44 @@
+MODEL RESULTS
+training documents were all blogs from dinners from hell blog
+that didn't have obvious swear words in them
+(i didn't want to accidentally give those to humans in mturk)
+cloze tasks were a random chain from each of the first 10 of those
+(conditioned on that chain having <= 5 events)
+percent.in.top.X refers to what proportion of synonyms (that the model ever heard) were in the
+top X
+
+document clozeIndex rank.orig percent.in.top.50 percent.in.top.100 percent.in.top.200
+002 0 127 0.0 0.0 1.0
+002 1 99 0.2 0.6 0.8
+002 2 1 0.6 0.8 0.9
+002 3 4 0.4 0.6 0.8
+002 4 92 0.222222222222 0.666666666667 0.888888888889
+004 0 6 0.625 0.625 0.875
+004 1 11 0.8 0.8 1.0
+004 2 173.0 0.0 0.333333333333 1.0
+008 0 93 0.0 1.0 1.0
+008 1 1031.5 NA NA NA
+008 2 144.5 0.0 0.0 1.0
+010 0 1031.5 NA NA NA
+010 1 40 0.230769230769 0.307692307692 0.615384615385
+010 2 38.0 1.0 1.0 1.0
+012 0 90 0.25 1.0 1.0
+012 1 45 0.4 0.6 1.0
+012 2 1 0.6 0.7 1.0
+013 0 1031.5 NA NA NA
+013 1 1031.5 0.142857142857 0.428571428571 0.714285714286
+013 2 1031.5 NA NA NA
+015 0 1031.5 0.5 0.5 0.5
+015 1 1031.5 0.0 0.0 0.666666666667
+020 0 21 0.6875 0.875 0.9375
+020 1 64 0.375 0.75 1.0
+020 2 147 0.4 0.6 1.0
+020 3 51 0.4 1.0 1.0
+020 4 11 0.75 0.75 1.0
+020 5 20 0.583333333333 0.583333333333 0.833333333333
+021 0 1031.5 NA NA NA
+021 1 1031.5 NA NA NA
+022 0 1031.5 NA NA NA
+022 1 22.5 1.0 1.0 1.0
+022 2 1031.5 0.0 0.0 0.5
+022 3 1031.5 NA NA NA
