@@ -7,7 +7,22 @@ import codecs
 import re
 from nltk.tree import *
 
-parsed_documents = ['documents/dinnersfromhell-document-' + "%03d" % (i,) + '.txt.json' for i in range(100)]
+cloze_docs = {
+	'documents/dinnersfromhell-document-008.txt.json': 2,
+	'documents/dinnersfromhell-document-020.txt.json': 13,
+	'documents/dinnersfromhell-document-010.txt.json': 0,
+	'documents/dinnersfromhell-document-015.txt.json': 1,
+	'documents/dinnersfromhell-document-012.txt.json': 4,
+	'documents/dinnersfromhell-document-002.txt.json': 3,
+	'documents/dinnersfromhell-document-004.txt.json': 13,
+	'documents/dinnersfromhell-document-021.txt.json': 3,
+	'documents/dinnersfromhell-document-013.txt.json': 15,
+	'documents/dinnersfromhell-document-022.txt.json': 2
+}
+
+cloze_tasks = []
+
+parsed_documents = ['documents/dinnersfromhell-document-' + "%03d" % (i,) + '.txt.json' for i in range(274)]
 
 documents = []
 
@@ -175,26 +190,40 @@ for filename in parsed_documents:
 				chain_divs.append(cleanup_parsed_and_processed_text(' '.join(cloze_div)))
 				chain_index +=1
 
+		if filename in cloze_docs.keys():
+			cloze_string = '\n'.join(
+				[
+					'<DOCNAME>' + filename,
+					'<UUID>' + str(uuid.uuid4())
+				] + [' '.join(chains[int(cloze_docs[filename])])])
+
 		docstring = '\n'.join(
 			[
 				'<DOCNAME>' + filename,
 				'<UUID>' + str(uuid.uuid4())
 			] + map(lambda chain: ' '.join(chain), chains))
 
-		documents.append(docstring)
+		if filename in cloze_docs.keys():
+			cloze_tasks.append(cloze_string)
+		else:
+			documents.append(docstring)
 
-w = codecs.open('restaurants_train_100docs', 'w', encoding='utf-8')
+w = codecs.open('restaurants_train', 'w', encoding='utf-8')
 w.write('\n\n'.join(documents))
 w.close()
 
-f = open('master_cloze_html_head.html', 'r')
+w = codecs.open('restaurants_cloze', 'w', encoding='utf-8')
+w.write('\n\n'.join(cloze_tasks))
+w.close()
+
+f = open('human_cloze_task_output/master_cloze_html_head.html', 'r')
 html_head = f.read()
 f.close()
 
-f = open('master_cloze_html_tail.html', 'r')
+f = open('human_cloze_task_output/master_cloze_html_tail.html', 'r')
 html_tail = f.read()
 f.close()
 
-w = codecs.open('master_cloze.html', 'w', encoding='utf-8')
+w = codecs.open('human_cloze_task_output/master_cloze.html', 'w', encoding='utf-8')
 w.write(html_head + '\n\n' + '\n\n'.join(chain_divs) + '\n\n' + html_tail)
 w.close()

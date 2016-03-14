@@ -15,7 +15,7 @@ with open(links_file, 'r') as csvfile:
 
 i = 0
 for link in links:
-	if i<20:
+	if True: #i<20:
 		link = links[i]
 		f = urllib.urlopen(link)
 		filestring = f.read()
