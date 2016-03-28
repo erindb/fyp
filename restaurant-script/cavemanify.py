@@ -79,7 +79,8 @@ for filename in parsed_documents:
 	f.close()
 
 	m = re.search('"(' + '|'.join(censor_list) + ')"', filestring)
-	if not m:
+	# if not m:
+	if True:
 
 		# document tags
 		file_start = filename.split('.')[0]
@@ -224,7 +225,8 @@ for filename in parsed_documents:
 				chain_divs.append(cleanup_parsed_and_processed_text(' '.join(cloze_div)))
 				chain_index +=1
 
-		if filename in cloze_docs.keys():
+		# if filename in cloze_docs.keys():
+		if False:
 			cloze_string = '\n'.join(
 				[
 					'<DOCNAME>' + filename,
@@ -237,7 +239,8 @@ for filename in parsed_documents:
 				'<UUID>' + str(uuid.uuid4())
 			] + map(lambda chain: ' '.join(chain), chains))
 
-		if filename in cloze_docs.keys():
+		# if filename in cloze_docs.keys():
+		if False:
 			cloze_tasks.append(cloze_string)
 		else:
 			documents.append(docstring)
