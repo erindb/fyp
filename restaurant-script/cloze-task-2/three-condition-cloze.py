@@ -1,6 +1,10 @@
 import json
 import re
 import copy
+import codecs
+import random
+
+writeInnerHtml = codecs.open('innerHTML.html', 'w', 'utf-8')
 
 for docIndex in [
 	'022', '023', '025', '033', '037',
@@ -18,6 +22,9 @@ for docIndex in [
 
 	def cleanStr(string):
 		string = re.sub(' ([.,!?\'])', '\g<1>', string)
+		string = re.sub('(`) ', '\g<1>', string)
+		string = re.sub('``', '"', string)
+		string = re.sub('-(LRB|RRB)-', '--', string)
 		return re.sub(' n\'t', 'n\'t', string)
 	def fixIndex(i):
 		return i-1
@@ -171,7 +178,7 @@ for docIndex in [
 		for prep in preps:
 			m = re.match('nmod:?(.*)', prep)
 			prepositionText = m.groups(1)[0]
-			if prepositionText not in ['tmod']:
+			if prepositionText not in ['tmod', 'npmod']:
 				if prepositionText == 'agent':
 					prepositionText = 'by'
 				cavemanSentence.append(prepositionText)
@@ -249,36 +256,67 @@ for docIndex in [
 					chain['simpleEvents'].append('...')
 				## get full sentences in chain
 				fullSentence = cleanStr(' '.join(map(lambda x: x['word'], sentence['tokens'])))
-				if fullSentence not in chain['fullSentences']:
+				previousSpanifiedSentence = spanify(fullSentence, clozeSentenceIndex-1, docIndex, chainIndex)
+				if fullSentence == "We crossed that pub off our list.":
+					print previousSpanifiedSentence
+				if previousSpanifiedSentence not in chain['fullSentences']:
+					spanifiedSentence = spanify(fullSentence, clozeSentenceIndex, docIndex, chainIndex)
 					clozeSentenceIndex += 1
-					chain['fullSentences'].append(spanify(fullSentence, clozeSentenceIndex, docIndex, chainIndex))
+					chain['fullSentences'].append(spanifiedSentence)
 					chain['cavemanSentences'].append(spanify(cavemanify(sentence), clozeSentenceIndex, docIndex, chainIndex))
 					# print key
 					chain['simpleEvents'].append(spanify(
 						cavemanify(sentence, VSify=True, mentionKey=key), clozeSentenceIndex, docIndex, chainIndex))
 					## get caveman in chain
 					## get VS in chain
+				else:
+					print 'repeat'
 
+	if len(chains) == 1:
+		## sample 3 cloze tasks from same chain
+		chainsToTest = [0]
+		nEvents = len(chains[0])
+		if nEvents < 3:
+			clozeTests = range(nEvents)
+		else:
+			clozeTests = random.sample(range(len(chains[0])), nEvents)
+		clozeTests = map(lambda x: (chainsToTest[0], x), clozeTests)
+	else:
+		## sample 2 cloze tasks from same chain
+		## first sample the longest chain
+		lens = map(lambda x: len(x), chains)
+		maxChainIndex = lens.index(max(lens))
+		remainingIndices = range(len(chains))
+		remainingIndices.remove(maxChainIndex)
+		otherChainIndex = random.sample(remainingIndices, 1)[0]
+		# print maxChainIndex,
+		# print otherChainIndex
+		chainsToTest = [maxChainIndex, otherChainIndex]
+		chainIndex = chainsToTest[0]
+		nEvents = len(chains[chainIndex])
+		clozeTests = map(lambda x: (chainIndex, x), range(nEvents, 2))
+		chainIndex = chainsToTest[1]
+		nEvents = len(chains[chainIndex])
+		clozeTests += map(lambda x: (chainIndex, x), range(nEvents))
+	print chainsToTest
+	print clozeTests
 	chainIndex = -1
 	for chain in chains:
 		chainIndex += 1
-		print "<div class='story full doc_" + docIndex + "_chain" + str(chainIndex) + "'>"
-		for s in chain['fullSentences']:
-			print s,
-		print "</div>"
-		print
-		print "<div class='story caveman doc_" + docIndex + "_chain" + str(chainIndex) + "'>"
-		for s in chain['cavemanSentences']:
-			print s + '.',
-		print "</div>"
-		print
-		print
-		print "<div class='story event doc_" + docIndex + "_chain" + str(chainIndex) + "'>"
-		for s in chain['simpleEvents']:
-			print s + '.',
-		print "</div>"
-		print
-		print
+		if chainIndex in chainsToTest:
+			threeVersionsOfStory = '\n'.join([
+				"<div class='story full doc_" + docIndex + "_chain" + str(chainIndex) + "'>",
+				' '.join(chain['fullSentences']),
+				"</div>",
+				"<div class='story caveman doc_" + docIndex + "_chain" + str(chainIndex) + "'>",
+				'. '.join(chain['cavemanSentences']),
+				"</div>",
+				"<div class='story event doc_" + docIndex + "_chain" + str(chainIndex) + "'>",
+				'. '.join(chain['simpleEvents']),
+				"</div>"])
+			writeInnerHtml.write(threeVersionsOfStory)
+
+writeInnerHtml.close()
 
 		# else:
 		# 	print docIndex
