@@ -262,12 +262,12 @@ for docIndex in [
 					chain['simpleEvents'].append('...')
 				## get full sentences in chain
 				fullSentence = cleanStr(' '.join(map(lambda x: x['word'], sentence['tokens'])))
-				previousSpanifiedSentence = spanify(fullSentence, clozeSentenceIndex-1, docIndex, chainIndex)
+				previousSpanifiedSentence = spanify(fullSentence, clozeSentenceIndex, docIndex, chainIndex)
 				# if fullSentence == "We crossed that pub off our list.":
 				# 	print previousSpanifiedSentence
 				if previousSpanifiedSentence not in chain['fullSentences']:
-					spanifiedSentence = spanify(fullSentence, clozeSentenceIndex, docIndex, chainIndex)
 					clozeSentenceIndex += 1
+					spanifiedSentence = spanify(fullSentence, clozeSentenceIndex, docIndex, chainIndex)
 					chain['fullSentences'].append(spanifiedSentence)
 					chain['cavemanSentences'].append(spanify(cavemanify(sentence), clozeSentenceIndex, docIndex, chainIndex))
 					# print key
