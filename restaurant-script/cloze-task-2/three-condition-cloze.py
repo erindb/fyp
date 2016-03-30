@@ -64,8 +64,8 @@ for docIndex in [
 				return startIndex <= argIndex and argIndex <= endIndex
 		return False
 
-	def spanify(sent, clozeIndex, docIndex, chainIndex):
-		return "<span class='cloze doc_" + docIndex + " cloze" + str(clozeIndex) + " chain" + str(chainIndex) + "'>" +  sent + "</span>"
+	def spanify(sent, clozeIndex, docIndex, chainIndex, sentType):
+		return "<span class='" + sentType + " cloze document" + docIndex + " cloze" + str(clozeIndex) + " chain" + str(chainIndex) + "'>" +  sent + "</span>"
 
 	def mentionInDep(mention, dep, sentence):
 		## first, check if sentence has ccomp
@@ -252,7 +252,7 @@ for docIndex in [
 			lastSentence = -1
 			## chain has at least 2 links
 			# print len(mentionIndices)
-			clozeSentenceIndex = -1
+			clozeTestIndex = -1
 			for mention in cavemanMentions:
 				sentIndex = fixIndex(mention['sentNum'])
 				sentence = sentences[sentIndex]
@@ -262,17 +262,17 @@ for docIndex in [
 					chain['simpleEvents'].append('...')
 				## get full sentences in chain
 				fullSentence = cleanStr(' '.join(map(lambda x: x['word'], sentence['tokens'])))
-				previousSpanifiedSentence = spanify(fullSentence, clozeSentenceIndex, docIndex, chainIndex)
+				previousSpanifiedSentence = spanify(fullSentence, clozeTestIndex, docIndex, chainIndex, 'full')
 				# if fullSentence == "We crossed that pub off our list.":
 				# 	print previousSpanifiedSentence
 				if previousSpanifiedSentence not in chain['fullSentences']:
-					clozeSentenceIndex += 1
-					spanifiedSentence = spanify(fullSentence, clozeSentenceIndex, docIndex, chainIndex)
+					clozeTestIndex += 1
+					spanifiedSentence = spanify(fullSentence, clozeTestIndex, docIndex, chainIndex, 'full')
 					chain['fullSentences'].append(spanifiedSentence)
-					chain['cavemanSentences'].append(spanify(cavemanify(sentence), clozeSentenceIndex, docIndex, chainIndex))
+					chain['cavemanSentences'].append(spanify(cavemanify(sentence), clozeTestIndex, docIndex, chainIndex, 'caveman'))
 					# print key
 					chain['simpleEvents'].append(spanify(
-						cavemanify(sentence, VSify=True, mentionKey=key), clozeSentenceIndex, docIndex, chainIndex))
+						cavemanify(sentence, VSify=True, mentionKey=key), clozeTestIndex, docIndex, chainIndex, 'event'))
 					## get caveman in chain
 					## get VS in chain
 				# else:
@@ -314,13 +314,13 @@ for docIndex in [
 		chainIndex += 1
 		if chainIndex in chainsToTest:
 			threeVersionsOfStory = '\n'.join([
-				"<div class='story full doc_" + docIndex + "_chain" + str(chainIndex) + "'>",
+				"<div class='chain full document" + docIndex + " chain" + str(chainIndex) + "'>",
 				' '.join(chain['fullSentences']),
 				"</div>",
-				"<div class='story caveman doc_" + docIndex + "_chain" + str(chainIndex) + "'>",
+				"<div class='chain caveman document" + docIndex + " chain" + str(chainIndex) + "'>",
 				'. '.join(chain['cavemanSentences']),
 				"</div>",
-				"<div class='story event doc_" + docIndex + "_chain" + str(chainIndex) + "'>",
+				"<div class='chain event document" + docIndex + " chain" + str(chainIndex) + "'>",
 				'. '.join(chain['simpleEvents']),
 				"</div>"])
 			writeInnerHtml.write(threeVersionsOfStory)
