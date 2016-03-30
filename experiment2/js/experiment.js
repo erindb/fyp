@@ -128,10 +128,13 @@ var experiment = {
           chain: chain.chain,
           condition: condition,
           response: response,
-          original: $('.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).html(),
+          full: $('.full.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+          caveman: $('.caveman.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+          event: $('.event.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+          original: $('.' + condition + '.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
           clozeIndex: clozeIndex,
-          clozeHTML: $('.chain.document' + chain.document + '.chain' + chain.chain).html(),
-          clozeText: $('.chain.document' + chain.document + '.chain' + chain.chain).text(),
+          clozeHTML: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).html(),
+          clozeText: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).text(),
           trialnum: experiment.state.trialnum,
           rt: trialResponseTime - trialStartTime
         })
