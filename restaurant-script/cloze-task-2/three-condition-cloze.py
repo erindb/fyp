@@ -6,14 +6,20 @@ import random
 
 writeInnerHtml = codecs.open('innerHTML.html', 'w', 'utf-8')
 
+clozeData = []
+
 for docIndex in [
 	'022', '023', '025', '033', '037',
 	'050', '063', '086', '120', '141',
 	'151', '153', '162', '171', '177',
 	'191', '196', '243', '248', '271'
 ]:
-	print 'document',
-	print docIndex
+	clozeData.append({
+		"document": docIndex
+		})
+	clozeDataElem = clozeData[-1]
+	# print "document",
+	# print docIndex
 
 	with open('../documents/dinnersfromhell-document-' + docIndex +'.txt.json', 'r') as f:
 		jsonFile = f.read()
@@ -257,8 +263,8 @@ for docIndex in [
 				## get full sentences in chain
 				fullSentence = cleanStr(' '.join(map(lambda x: x['word'], sentence['tokens'])))
 				previousSpanifiedSentence = spanify(fullSentence, clozeSentenceIndex-1, docIndex, chainIndex)
-				if fullSentence == "We crossed that pub off our list.":
-					print previousSpanifiedSentence
+				# if fullSentence == "We crossed that pub off our list.":
+				# 	print previousSpanifiedSentence
 				if previousSpanifiedSentence not in chain['fullSentences']:
 					spanifiedSentence = spanify(fullSentence, clozeSentenceIndex, docIndex, chainIndex)
 					clozeSentenceIndex += 1
@@ -269,8 +275,8 @@ for docIndex in [
 						cavemanify(sentence, VSify=True, mentionKey=key), clozeSentenceIndex, docIndex, chainIndex))
 					## get caveman in chain
 					## get VS in chain
-				else:
-					print 'repeat'
+				# else:
+				# 	print 'repeat'
 
 	if len(chains) == 1:
 		## sample 3 cloze tasks from same chain
@@ -284,7 +290,8 @@ for docIndex in [
 	else:
 		## sample 2 cloze tasks from same chain
 		## first sample the longest chain
-		lens = map(lambda x: len(x), chains)
+		lens = map(lambda x: len(x['simpleEvents']), chains)
+		# print lens
 		maxChainIndex = lens.index(max(lens))
 		remainingIndices = range(len(chains))
 		remainingIndices.remove(maxChainIndex)
@@ -294,14 +301,16 @@ for docIndex in [
 		chainsToTest = [maxChainIndex, otherChainIndex]
 		chainIndex = chainsToTest[0]
 		nEvents = len(chains[chainIndex])
-		clozeTests = map(lambda x: (chainIndex, x), range(nEvents, 2))
+		clozeTests = map(lambda x: (maxChainIndex, x), random.sample(range(nEvents), 2))
 		chainIndex = chainsToTest[1]
 		nEvents = len(chains[chainIndex])
-		clozeTests += map(lambda x: (chainIndex, x), range(nEvents))
-	print chainsToTest
-	print clozeTests
+		clozeTests += map(lambda x: (otherChainIndex, x), random.sample(range(nEvents), 1))
+	# print chainsToTest
+	clozeDataElem["clozeTests"] = clozeTests
 	chainIndex = -1
 	for chain in chains:
+		# print chainIndex
+		# print chain
 		chainIndex += 1
 		if chainIndex in chainsToTest:
 			threeVersionsOfStory = '\n'.join([
@@ -317,6 +326,7 @@ for docIndex in [
 			writeInnerHtml.write(threeVersionsOfStory)
 
 writeInnerHtml.close()
+print json.dumps(clozeData)
 
 		# else:
 		# 	print docIndex
