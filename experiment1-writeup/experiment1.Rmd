@@ -24,71 +24,33 @@ library(rjson)
 library(ggplot2)
 library(ggthemes)
 library(entropy)
-theme_new <- theme_set(theme_few())
+library(grid)
+theme_new <- theme_set(theme_stata(scheme='s1rcolor', base_size=24))
 
 # for bootstrapping 95% confidence intervals
 theta <- function(x,xdata) {mean(xdata[x])}
+theta.n <- function(x,xdata) {length(xdata[x])}
+ci.low.n <- function(x) {
+  quantile(bootstrap::bootstrap(1:length(x),1000,theta.n,x)$thetastar,.025)}
+ci.high.n <- function(x) {
+  quantile(bootstrap::bootstrap(1:length(x),1000,theta.n,x)$thetastar,.975)}
 ci.low <- function(x) {
   quantile(bootstrap::bootstrap(1:length(x),1000,theta,x)$thetastar,.025)}
 ci.high <- function(x) {
   quantile(bootstrap::bootstrap(1:length(x),1000,theta,x)$thetastar,.975)}
+theta.s <- function(x,xdata) {sum(xdata[x])}
+ci.low.s <- function(x) {
+  quantile(bootstrap::bootstrap(1:length(x),1000,theta.s,x)$thetastar,.025)}
+ci.high.s <- function(x) {
+  quantile(bootstrap::bootstrap(1:length(x),1000,theta.s,x)$thetastar,.975)}
+theta.neg <- function(x,xdata) {sum(!xdata[x])}
+ci.low.neg <- function(x) {
+  quantile(bootstrap::bootstrap(1:length(x),1000,theta.neg,x)$thetastar,.025)}
+ci.high.neg <- function(x) {
+  quantile(bootstrap::bootstrap(1:length(x),1000,theta.neg,x)$thetastar,.975)}
 
 options(digits=3)
 ```
-
-<!--
-# Model
-
-@chambers_unsupervised_2008
-
-A distributional score based
-on how often two events share grammatical arguments
-(using pointwise mutual information) is used
-to create this pairwise relation.
-
-Finally, a global narrative
-score is built such that all events in the chain
-provide feedback on the event in question (whether
-for inclusion or for decisions of inference).
-
-We do not
-claim this cloze task to be solvable even by humans,
-but rather assert it as a comparative measure to evaluate
-narrative knowledge.
-
-it is worthwhile to construct discrete
-narrative chains, if only to see whether the combination
-of event learning and ordering produce scriptlike
-structures. This is easily achievable by using
-the PMI scores from section 4 in an agglomerative
-clustering algorithm, and then applying the ordering
-relations from section 5 to produce a directed graph.
-Figures 6 and 7 show two learned chains after
-clustering and ordering. Each arrow indicates a before
-relation. Duplicate arrows implied by rules of
-transitivity are removed. Figure 6 is remarkably accurate,
-and figure 7 addresses one of the chains from
-our introduction, the employment narrative. 
-
-. bigram disc; R@50 2
-
-bigram eq 5
-discounting
-threshold D
-
-skip all
-T 1
-D 5
-coref all
-pmi disc n/a
-abs disc yes
-
-After generating our ranked guesses,
-the position of the correct event is averaged over all
-740 tests for the final score. We penalize unseen
-events by setting their ranked position to the length
-of the guess list (ranging from 2k to 15k).
--->
 
 # Experiment
 
@@ -150,173 +112,110 @@ Average completion time was `r round(mean(completion.time$minutes))` minutes.
 
 `r length(unique(all.data$workerid)) - length(good.Ss)` participants were excluded for failing an attention check.
 
-## Exploratory results
+## Results
 
 ```{r}
-d = all.data %>% filter(workerid %in% good.Ss & chain!='attention') %>%
-  select(workerid, document, chain, clozeIndex, original, response,
-         original.computer.goggles, response.computer.goggles, trialnum) %>%
-  mutate(identical = original==response,
-         match = original.computer.goggles==response.computer.goggles,
-         document = factor(document),
-         chain = factor(chain),
-         clozeIndex = as.numeric(clozeIndex),
-         tag = paste(document, chain, clozeIndex))
-scores = d %>% group_by(document, original.computer.goggles, clozeIndex, tag) %>%
-  summarise(human.cloze.score = mean(match),
-            n.correct = sum(match),
-            n = length(workerid),
-            entropy = entropy(table(response.computer.goggles)),
-            agreement = 1 - entropy / log(n)) %>% as.data.frame
-model.scores = read.table('model-results.txt', skip=9, header=T, sep=' ', colClasses=c('character', 'numeric', 'numeric', 'numeric', 'numeric', 'numeric'))
-compare.percent.rank = merge(
-  model.scores %>% select(document, clozeIndex, rank.orig) %>%
-    rename(model.rank.orig = rank.orig),
-  scores %>% select(document, clozeIndex, human.cloze.score, tag))
-compare.syns200 = merge(
-  model.scores %>% select(document, clozeIndex, percent.in.top.200) %>%
-    rename(model.syns.in.top200 = percent.in.top.200),
-  scores %>% select(document, clozeIndex, human.cloze.score, tag))
-compare.syns100 = merge(
-  model.scores %>% select(document, clozeIndex, percent.in.top.100) %>%
-    rename(model.syns.in.top100 = percent.in.top.100),
-  scores %>% select(document, clozeIndex, human.cloze.score, tag))
-compare.syns50 = merge(
-  model.scores %>% select(document, clozeIndex, percent.in.top.50) %>%
-    rename(model.syns.in.top50 = percent.in.top.50),
-  scores %>% select(document, clozeIndex, human.cloze.score, tag))
+# d = all.data %>% filter(workerid %in% good.Ss & chain!='attention') %>%
+#   select(workerid, document, chain, clozeIndex, original, response,
+#          original.head, response.head, trialnum) %>%
+#   mutate(identical = original==response,
+#          match = original.head==response.head,
+#          document = factor(document),
+#          chain = factor(chain),
+#          clozeIndex = as.numeric(clozeIndex),
+#          tag = paste(document, chain, clozeIndex))
+# write.csv(d, 'data-raw.csv')
+d = read.csv('data-annotated.csv') %>% mutate(manual.match = ifelse(manual.match=='yes', T, F))
 ```
 
-### How do people do on the narrative cloze task?
-
-The average percent correct responses on a narrative cloze task is `r round(mean(scores$human.cloze.score)*100)`% (when using synonyms and paring down to minimal caveman speak).
+How did people do, when we analyze their responses automatically?
 
 ```{r}
-scores %>% 
-  mutate(tag = factor(tag, levels=as.character(tag)[order(human.cloze.score)])) %>%
-  ggplot(., aes(x=tag, y=human.cloze.score)) +
+rbind(
+  d %>% summarise(high = ci.high.s(match),
+                  low = ci.low.s(match),
+                  N = sum(match),
+                  match=T),
+  d %>% summarise(high = ci.high.neg(match),
+                  low = ci.low.neg(match),
+                  N = sum(!match),
+                  match=F)) %>%
+  mutate(Response = factor(match, levels=c(F, T), labels=c('Different from original', 'Matches original'))) %>%
+  ggplot(aes(x=Response, y=N, fill=Response)) +
   geom_bar(stat='identity') +
-  xlab('task identifier') +
-  ylab('percent.correct.responses') +
-  theme(axis.text.x = element_text(angle = -45, hjust = 0))
-```
+  ylab('# of responses') +
+  geom_errorbar(aes(x=Response, ymin=low, ymax=high, colour=Response), width=0.1) +
+  scale_colour_brewer(type='qual', palette =4) +
+  scale_fill_brewer(type='qual', palette=6)
+ggsave('human-auto.png', width=10, height=6)
 
-Some words are easier for people to fill in than others (several cloze tasks had the head word 'get', which is why there are so many).
-
-```{r}
-d %>% ggplot(., aes(x=original.computer.goggles, fill=match)) +
-  geom_bar(stat='bin', position='stack') +
-  scale_fill_few() +
-  xlab('original text') +
-  theme(axis.text.x = element_text(angle = -45, hjust = 0))
-```
-
-```{r}
-scores %>% 
-  group_by(original.computer.goggles) %>%
-  summarise(human.cloze.score = mean(human.cloze.score)) %>%
-  mutate(original.computer.goggles = factor(
-    original.computer.goggles,
-    levels=as.character(original.computer.goggles)[order(human.cloze.score)])) %>%
-  ggplot(., aes(x=original.computer.goggles, y=human.cloze.score)) +
+rbind(
+  d %>% group_by(tag) %>%
+    summarise(match = sum(match)>0) %>%
+    summarise(high = ci.high.s(match),
+              low = ci.low.s(match),
+              N = sum(match),
+              match=T),
+  d %>% group_by(tag) %>%
+    summarise(match = sum(match)>0) %>% 
+    summarise(high = ci.high.neg(match),
+              low = ci.low.neg(match),
+              N = sum(!match),
+              match=F)) %>%
+  mutate(Response = factor(match, levels=c(F, T), labels=c('None match original', 'One matches original'))) %>%
+  ggplot(aes(x=Response, y=N, fill=Response)) +
   geom_bar(stat='identity') +
-  xlab('human mean scores on narrative cloze') +
-  theme(axis.text.x = element_text(angle = -45, hjust = 0))
-```
+  ylab('# of items with at least one correct') +
+  geom_errorbar(aes(x=Response, ymin=low, ymax=high, colour=Response), width=0.1) +
+  scale_colour_brewer(type='qual', palette =4) +
+  scale_fill_brewer(type='qual', palette=6)
+ggsave('human-auto-by-item.png', width=10, height=6)
 
-### How much do people tend to agree with one another?
+rbind(
+  d %>% summarise(high = ci.high.s(manual.match),
+                  low = ci.low.s(manual.match),
+                  N = sum(manual.match),
+                  match=T),
+  d %>% summarise(high = ci.high.neg(manual.match),
+                  low = ci.low.neg(manual.match),
+                  N = sum(!manual.match),
+                  match=F)) %>%
+  mutate(Response = factor(match, levels=c(F, T), labels=c('Different from original', 'Matches original'))) %>%
+  ggplot(aes(x=Response, y=N, fill=Response)) +
+  geom_bar(stat='identity') +
+  ylab('# of responses') +
+  geom_errorbar(aes(x=Response, ymin=low, ymax=high, colour=Response), width=0.1) +
+  scale_colour_brewer(type='qual', palette =4) +
+  scale_fill_brewer(type='qual', palette=6)
+ggsave('human-manual.png', width=10, height=6)
 
-I'm taking the "entropy" of the distribution that people give back and dividing by `n` as a measure of disagreement. So a completely uniform distribution where every participant gives a different response from every other participant will have disagreement value of 1 and an agreement value of 0. A distribution where every participant gives the same response will have an agreement value of 1.
+# d %>% group_by(tag) %>%
+#     summarise(percent_correct = mean(manual.match)) %>%
+#     summarise(high = ci.high(percent_correct),
+#               low = ci.low(percent_correct),
+#               percent_correct = mean(percent_correct))
 
-Across all the cloze tasks, agreement is peaked at 0.
-
-```{r}
-scores %>%
-  ggplot(., aes(x=agreement)) +
-  geom_histogram()
-```
-
-```{r, fig.width=10, fig.height=8}
-d %>% ggplot(., aes(x=response.computer.goggles)) +
-  geom_bar(stat='bin') +
-  facet_wrap(~ tag, scale='free') +
-  xlab('participant responses') +
-  geom_text(data=scores, aes(label=round(agreement, digits=2)), 
-            x=1, y=0.1, size=4, colour='red', vjust=0, fontface = "bold") +
-  theme(axis.text.x = element_text(angle = -45, hjust = 0))
-```
-
-### How does agreement among people relate to narrative cloze performance?
-
-Obviously if people don't agree with one another, then the average score for that cloze task will not be very high.
-
-I grayed out the upper-left region of this graph to show it's basically impossible.
-
-<!-- But when people do agree with one another, are they filling in the original text, or something different? If people frequently agree with one another about an answer that is *not* in the original, then the narrative cloze task may not be a good evaluation of understanding. What can we learn from these examples? -->
-
-```{r}
-# midline = mean(range(scores$entropy))
-# scores %>% ggplot(., aes(x=entropy, y=human.cloze.score)) +
-#   geom_rect(xmin=midline, xmax=max(scores$entropy)*1.1,
-#             ymin=0.5, ymax=1.1, fill='lightgray', alpha=0.1) +
-#   geom_jitter(alpha=0.5, size=4) +
-#   geom_hline(y=0.5, colour='lightgray') +
-#   geom_vline(x=midline, colour='lightgray')
-
-midline = mean(range(scores$agreement))
-scores %>% ggplot(., aes(x=agreement, y=human.cloze.score)) +
-  geom_rect(xmax=midline, xmin=min(scores$agreement)*1.1,
-            ymin=0.5, ymax=1.1, fill='lightgray', alpha=0.1) +
-  geom_jitter(alpha=0.5, size=4) +
-  geom_text(aes(label=tag), hjust=0, size=3) + 
-  # geom_hline(y=0.5, colour='lightgray') +
-  # geom_vline(x=midline, colour='lightgray') +
-  xlab('agreement') +
-  ylab('percent correct resonses')
-
-# zoom.in.cloze.tasks = with(scores %>% filter(entropy < midline & human.cloze.score < 0.5),
-#      paste(document, chain, clozeIndex))
-# for (tag in zoom.in.cloze.tasks) {
-#   print(d %>% filter(paste(document, chain, clozeIndex) == tag) %>%
-#           select(original.computer.goggles, response, response.computer.goggles))
-# }
-```
-
-### How does the model perform relative to people?
-
-```{r}
-compare.percent.rank %>% filter(model.rank.orig!=1031.5) %>%
-  ggplot(., aes(x=model.rank.orig, y=human.cloze.score)) +
-  geom_jitter(alpha=0.5, size=4) +
-  geom_text(aes(label=tag), hjust=0, size=3) + 
-  geom_smooth(method='loess', se=F)
-```
-
-```{r}
-compare.syns50 %>% filter(model.syns.in.top50!=1031.5) %>%
-  ggplot(., aes(x=model.syns.in.top50, y=human.cloze.score)) +
-  geom_jitter(alpha=0.5, size=4) +
-  geom_smooth(method='loess', se=F) +
-  geom_text(aes(label=tag), hjust=0, size=3) + 
-  ggtitle('top50')
-```
-
-```{r}
-compare.syns100 %>% filter(model.syns.in.top100!=1031.5) %>%
-  ggplot(., aes(x=model.syns.in.top100, y=human.cloze.score)) +
-  geom_jitter(alpha=0.5, size=4) +
-  geom_smooth(method='loess', se=F) +
-  geom_text(aes(label=tag), hjust=0, size=3) + 
-  ggtitle('top100')
-```
-
-```{r}
-compare.syns200 %>% filter(model.syns.in.top200!=1031.5) %>%
-  ggplot(., aes(x=model.syns.in.top200, y=human.cloze.score)) +
-  geom_jitter(alpha=0.5, size=4) +
-  geom_smooth(method='loess', se=F) +
-  geom_text(aes(label=tag), hjust=0, size=3) + 
-  ggtitle('top200')
+rbind(
+  d %>% group_by(tag) %>%
+    summarise(match = sum(manual.match)>0) %>%
+    summarise(high = ci.high.s(match),
+              low = ci.low.s(match),
+              N = sum(match),
+              match=T),
+  d %>% group_by(tag) %>%
+    summarise(match = sum(manual.match)>0) %>% 
+    summarise(high = ci.high.neg(match),
+              low = ci.low.neg(match),
+              N = sum(!match),
+              match=F)) %>%
+  mutate(Response = factor(match, levels=c(F, T), labels=c('None match original', 'One matches original'))) %>%
+  ggplot(aes(x=Response, y=N, fill=Response)) +
+  geom_bar(stat='identity') +
+  ylab('# of items with at least one correct') +
+  geom_errorbar(aes(x=Response, ymin=low, ymax=high, colour=Response), width=0.1) +
+  scale_colour_brewer(type='qual', palette =4) +
+  scale_fill_brewer(type='qual', palette=6)
+ggsave('human-manual-by-item.png', width=10, height=6)
 ```
 
 # References

@@ -3,58 +3,95 @@
 import dill
 from model import *
 from igraph import *
+import numpy
+from scipy.spatial.distance import pdist
+from itertools import repeat
+from scipy.cluster.hierarchy import *
+
+
+import matplotlib.pylab as plt
+
 # import networkx as nx
 # import matplotlib.pyplot as plt
 # import pydot
 # import nx_pygraphviz
 
-model_in_fp = open('restaurant_model_20docs', 'r')
+model_in_fp = open('model.dill', 'r')
 M = dill.load(model_in_fp)
 
-connections = map(lambda k: [k[0], k[1], M.PMI[k]], filter(lambda key: M.PMI[key] != 0, M.PMI.keys()))
+vocab = filter(lambda x: M.Cx_baseline[x] > 1, list(M.Cx_baseline))
 
-nodes = []
-edges = []
-# edgenumbers = []
-weights = []
-for connection in connections:
-	nodeA = connection[0]
-	nodeB = connection[1]
-	edge_weight = connection[2]
-	indA = len(nodes)
-	nodes.append(nodeA)
-	indB = len(nodes)
-	nodes.append(nodeB)
-	edges.append((nodeA, nodeB))
-	# edgenumbers.append((indA, indB))
-	weights.append(edge_weight)
-nodes = list(set(nodes))
-edgenumbers = [(nodes.index(edge[0]), nodes.index(edge[1])) for edge in edges]
-weights = map(lambda w: w*2, weights)
+# vocab = list(M.VOCAB)
+# rows = [ [0 for i in range(len(vocab))] for j in range(len(vocab))]
 
-g = Graph(directed=True)
+# for key in M.DOCxy.keys():
+# 	a, b = key
+# 	val = M.DOCxy[key]
+# 	print a + "," + b + "," + str(val)
+# 	rows[vocab.index(a)][vocab.index(b)] = val
 
-g.add_vertices(len(nodes))
-g.add_edges(edgenumbers)
+for a in vocab:
+	for b in vocab:
+		print a + "," + b + "," + str(M.DOCxy[(a, b)])
 
-g.vs['name'] = nodes
-# g.vs["label"] = g.vs["name"]
 
-layout = g.layout('fr')
-visual_style = {}
-visual_style["vertex_size"] = 10
-visual_style['vertex_label_dist'] = 3
-# visual_style["vertex_shape"] = 'hidden'
-visual_style["bbox"] = (1000, 1000)
-visual_style["vertex_color"] = 'white'
-visual_style["layout"] = layout
-visual_style["margin"] = 100
-visual_style["vertex_label"] = g.vs["name"]
-# visual_style["edge_width"] = weights
 
-plot(g, **visual_style)
+# Z = linkage(pdist(rows))
 
-print(g)
+# P = dendrogram(Z)
+
+# plt.savefig('plot_dendrogram.png')
+
+# dims = M.DOCxy.keys()
+# print M.DOCxy[dims[0]]
+
+# print (numpy.matrix(M.DOCxy))[0][0][0]
+
+
+# connections = map(lambda k: [k[0], k[1], M.PMI[k]], filter(lambda key: M.PMI[key] != 0, M.PMI.keys()))
+
+# nodes = []
+# edges = []
+# # edgenumbers = []
+# weights = []
+# for connection in connections:
+# 	nodeA = connection[0]
+# 	nodeB = connection[1]
+# 	edge_weight = connection[2]
+# 	indA = len(nodes)
+# 	nodes.append(nodeA)
+# 	indB = len(nodes)
+# 	nodes.append(nodeB)
+# 	edges.append((nodeA, nodeB))
+# 	# edgenumbers.append((indA, indB))
+# 	weights.append(edge_weight)
+# nodes = list(set(nodes))
+# edgenumbers = [(nodes.index(edge[0]), nodes.index(edge[1])) for edge in edges]
+# weights = map(lambda w: w*2, weights)
+
+# g = Graph(directed=True)
+
+# g.add_vertices(len(nodes))
+# g.add_edges(edgenumbers)
+
+# g.vs['name'] = nodes
+# # g.vs["label"] = g.vs["name"]
+
+# layout = g.layout('fr')
+# visual_style = {}
+# visual_style["vertex_size"] = 10
+# visual_style['vertex_label_dist'] = 3
+# # visual_style["vertex_shape"] = 'hidden'
+# visual_style["bbox"] = (1000, 1000)
+# visual_style["vertex_color"] = 'white'
+# visual_style["layout"] = layout
+# visual_style["margin"] = 100
+# visual_style["vertex_label"] = g.vs["name"]
+# # visual_style["edge_width"] = weights
+
+# plot(g, **visual_style)
+
+# print(g)
 
 # nodelist = list(set(nodes))
 
