@@ -132,90 +132,27 @@ How did people do, when we analyze their responses automatically?
 
 ```{r}
 rbind(
-  d %>% summarise(high = ci.high.s(match),
-                  low = ci.low.s(match),
-                  N = sum(match),
-                  match=T),
-  d %>% summarise(high = ci.high.neg(match),
-                  low = ci.low.neg(match),
-                  N = sum(!match),
-                  match=F)) %>%
-  mutate(Response = factor(match, levels=c(F, T), labels=c('Different from original', 'Matches original'))) %>%
-  ggplot(aes(x=Response, y=N, fill=Response)) +
-  geom_bar(stat='identity') +
-  ylab('# of responses') +
-  geom_errorbar(aes(x=Response, ymin=low, ymax=high, colour=Response), width=0.1) +
-  scale_colour_brewer(type='qual', palette =4) +
-  scale_fill_brewer(type='qual', palette=6)
-ggsave('human-auto.png', width=10, height=6)
-
-rbind(
   d %>% group_by(tag) %>%
-    summarise(match = sum(match)>0) %>%
-    summarise(high = ci.high.s(match),
-              low = ci.low.s(match),
-              N = sum(match),
-              match=T),
+    summarise(percent_correct = mean(match)) %>%
+    summarise(high = ci.high(percent_correct),
+              low = ci.low(percent_correct),
+              mean_percent_correct = mean(percent_correct),
+              version = 'auto'),
   d %>% group_by(tag) %>%
-    summarise(match = sum(match)>0) %>% 
-    summarise(high = ci.high.neg(match),
-              low = ci.low.neg(match),
-              N = sum(!match),
-              match=F)) %>%
-  mutate(Response = factor(match, levels=c(F, T), labels=c('None match original', 'One matches original'))) %>%
-  ggplot(aes(x=Response, y=N, fill=Response)) +
+    summarise(percent_correct = mean(manual.match)) %>%
+    summarise(high = ci.high(percent_correct),
+              low = ci.low(percent_correct),
+              mean_percent_correct = mean(percent_correct),
+              version = 'hand')) %>%
+  mutate(version = factor(version, levels=c('auto', 'hand'),
+                          labels=c('Automatically Merged', 'Hand Annotated'))) %>%
+  ggplot(aes(x=version, y=mean_percent_correct, fill=version, colour=version)) +
   geom_bar(stat='identity') +
-  ylab('# of items with at least one correct') +
-  geom_errorbar(aes(x=Response, ymin=low, ymax=high, colour=Response), width=0.1) +
-  scale_colour_brewer(type='qual', palette =4) +
-  scale_fill_brewer(type='qual', palette=6)
-ggsave('human-auto-by-item.png', width=10, height=6)
-
-rbind(
-  d %>% summarise(high = ci.high.s(manual.match),
-                  low = ci.low.s(manual.match),
-                  N = sum(manual.match),
-                  match=T),
-  d %>% summarise(high = ci.high.neg(manual.match),
-                  low = ci.low.neg(manual.match),
-                  N = sum(!manual.match),
-                  match=F)) %>%
-  mutate(Response = factor(match, levels=c(F, T), labels=c('Different from original', 'Matches original'))) %>%
-  ggplot(aes(x=Response, y=N, fill=Response)) +
-  geom_bar(stat='identity') +
-  ylab('# of responses') +
-  geom_errorbar(aes(x=Response, ymin=low, ymax=high, colour=Response), width=0.1) +
-  scale_colour_brewer(type='qual', palette =4) +
-  scale_fill_brewer(type='qual', palette=6)
-ggsave('human-manual.png', width=10, height=6)
-
-# d %>% group_by(tag) %>%
-#     summarise(percent_correct = mean(manual.match)) %>%
-#     summarise(high = ci.high(percent_correct),
-#               low = ci.low(percent_correct),
-#               percent_correct = mean(percent_correct))
-
-rbind(
-  d %>% group_by(tag) %>%
-    summarise(match = sum(manual.match)>0) %>%
-    summarise(high = ci.high.s(match),
-              low = ci.low.s(match),
-              N = sum(match),
-              match=T),
-  d %>% group_by(tag) %>%
-    summarise(match = sum(manual.match)>0) %>% 
-    summarise(high = ci.high.neg(match),
-              low = ci.low.neg(match),
-              N = sum(!match),
-              match=F)) %>%
-  mutate(Response = factor(match, levels=c(F, T), labels=c('None match original', 'One matches original'))) %>%
-  ggplot(aes(x=Response, y=N, fill=Response)) +
-  geom_bar(stat='identity') +
-  ylab('# of items with at least one correct') +
-  geom_errorbar(aes(x=Response, ymin=low, ymax=high, colour=Response), width=0.1) +
-  scale_colour_brewer(type='qual', palette =4) +
-  scale_fill_brewer(type='qual', palette=6)
-ggsave('human-manual-by-item.png', width=10, height=6)
+  ylim(0, 1) +
+  geom_errorbar(aes(x=version, ymin=low, ymax=high), width=0.05) +
+  scale_fill_brewer(type='qual', palette = 6) +
+  scale_colour_brewer(type='qual', palette = 4)
+ggsave('human-compare-annotation.png', width=10, height=6)
 ```
 
 # References
