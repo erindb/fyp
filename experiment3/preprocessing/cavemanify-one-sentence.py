@@ -1,6 +1,64 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+def findDep(dependencies, depType=None, depTypes=None, governorIndex=None, depIndex=None):
+  dependencies = findDeps(dependencies, depType=depType, depTypes=depTypes, governorIndex=governorIndex, depIndex=depIndex)
+  if len(dependencies)==1:
+    return dependencies[0]
+  else:
+    return None
+
+def findDepIndex(dependencies, depType=None, depTypes=None, governorIndex=None, depIndex=None):
+  dep = findDep(dependencies, depType=depType, depTypes=depTypes, governorIndex=governorIndex, depIndex=depIndex)
+  if dep:
+    return dep['dependent']
+  else:
+    return None
+
+def findDeps(dependencies, depType=None, depTypes=None, governorIndex=None, depIndex=None):
+  if depIndex:
+    return filter(lambda dep: dep['dependent']==depIndex, dependencies)[0]
+
+  if depTypes:
+    all_matching_dependencies = []
+    for depType in depTypes:
+      all_matching_dependencies += findDeps(dependencies, depType=depType, governorIndex=governorIndex)
+    return all_matching_dependencies
+
+  if governorIndex:
+    dependencies = filter(lambda dep: dep['governor']==governorIndex, dependencies)
+
+  dependencies = filter(lambda dep: dep['dep']==depType, dependencies)
+  return dependencies
+
+def findToken(tokens, index):
+  return filter(lambda x: x['index']==index, tokens)[0]
+
+class LexicalItem:
+  def __init__(self, text='', tokenData={}, dependencyData={}, corefs=[]):
+    if text:
+      self.text = text
+    else:
+      self.update(tokenData=tokenData,
+        dependencyData=dependencyData,
+        corefs=corefs)
+
+  def update(self, tokenData={}, dependencyData={}, corefs=[]):
+    if dependencyData:
+      self.dep = dependencyData['dep']
+      self.dependent = dependencyData['dependent']
+      self.governorGloss = dependencyData['governorGloss']
+      self.governor = dependencyData['governor']
+      self.dependentGloss = dependencyData['dependentGloss']
+      self.index = self.dependent
+      self.text = self.dependentGloss
+    if tokenData:
+      self.word = tokenData['word']
+      self.lemma = tokenData['lemma']
+      self.ner = tokenData['ner']
+      self.POS = tokenData['pos']
+      self.text = self.lemma
+
 class Sentence:
   def __init__(self, sentenceData):
     self.index = sentenceData['index']
@@ -8,20 +66,37 @@ class Sentence:
     self.tokens = sentenceData['tokens']
     self.dependencies = sentenceData['basic-dependencies']
 
+    # # lemma for active sentences,
+    # # word for passive sentences
+    self.head_verb_index = findDepIndex(self.dependencies, 'ROOT')
+    self.head_verb = LexicalItem(
+      dependencyData=findDep(self.dependencies, depIndex=self.head_verb_index),
+      tokenData = findToken(self.tokens, index=self.head_verb_index)
+    )
+
+    ## if root is a VBN (past participle), check if it has an nsubjpass
     self.voice = 'active'
+    if self.head_verb.POS == 'VBN':
+      passive_subjects = findDeps(self.dependencies, governorIndex=self.head_verb_index, depType='nsubjpass')
+      if len(passive_subjects) > 0:
+        voice = 'passive'
 
     # # nsubj or nsubjpass
     # # also, what about conjunctions?
-    self.subject = 'dog'
+    # self.subject_index = 
+    self.subject_index = findDepIndex(
+      self.dependencies,
+      governorIndex=self.head_verb_index,
+      depTypes=['nsubj', 'nsubjpass'])
+    self.subject = LexicalItem(
+      dependencyData=findDep(self.dependencies, depIndex=self.subject_index),
+      tokenData = findToken(self.tokens, index=self.subject_index)
+    )
 
-    # # lemma for active sentences,
-    # # word for passive sentences
-    self.head_verb = 'eat'
-
-    self.direct_object = 'bone'
+    self.direct_object = LexicalItem('bone')
 
     # keep the whole phrase for now
-    self.prepositional_phrase = 'in house'
+    self.prepositional_phrase = LexicalItem('in house')
 
     # true or false?
     self.negation = False
@@ -29,11 +104,17 @@ class Sentence:
   def untokenize(self):
     words = map(lambda x: x['word'], self.tokens)
     result = ' '.join(words).replace(' ,',',').replace(' .','.').replace(' !','!')
-    result = result.replace(' ?','?').replace(' : ',': ').replace(' \'', '\'')
+    result = result.replace(' ?','?').replace(' :',': ').replace(' \'', '\'')
     return result
 
   def caveman(self):
-    words = [self.subject, 'not', self.head_verb, self.direct_object, self.prepositional_phrase]
+    words = [
+      self.subject.text,
+      'not',
+      self.head_verb.text,
+      self.direct_object.text,
+      self.prepositional_phrase.text
+    ]
     if not self.negation:
       words.remove('not')
     return ' '.join(words).capitalize() + '.'
