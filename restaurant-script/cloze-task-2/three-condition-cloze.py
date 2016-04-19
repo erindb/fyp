@@ -4,7 +4,7 @@ import copy
 import codecs
 import random
 
-writeInnerHtml = codecs.open('innerHTML.html', 'w', 'utf-8')
+writeInnerHtml = codecs.open('../../experiment3/innerHTML.html', 'w', 'utf-8')
 
 clozeData = []
 
@@ -14,6 +14,7 @@ for docIndex in [
 	'151', '153', '162', '171', '177',
 	'191', '196', '243', '248', '271'
 ]:
+# for docIndex in ['022']:
 	clozeData.append({
 		"document": docIndex
 		})
@@ -64,8 +65,13 @@ for docIndex in [
 				return startIndex <= argIndex and argIndex <= endIndex
 		return False
 
-	def spanify(sent, clozeIndex, docIndex, chainIndex, sentType):
-		return "<span class='" + sentType + " cloze document" + docIndex + " cloze" + str(clozeIndex) + " chain" + str(chainIndex) + "'>" +  sent + "</span>"
+	def spanify(sent, clozeIndex, docIndex, chainIndex, sentType, sentence):
+		return "<p class='blurry " + sentType + " cloze document" + \
+			docIndex + " cloze" + str(clozeIndex) + " chain" + \
+			str(chainIndex) + "'>" +  full_sentence_from_sentence_object(sentence) + "</p>" +  \
+			"<p class='gloss " + sentType + " cloze document" + \
+			docIndex + " cloze" + str(clozeIndex) + " chain" + \
+			str(chainIndex) + "'>" +  sent + "</p>"
 
 	def mentionInDep(mention, dep, sentence):
 		## first, check if sentence has ccomp
@@ -110,6 +116,10 @@ for docIndex in [
 		if m:
 			return True
 		return False
+
+	def full_sentence_from_sentence_object(sentence):
+		tokens = map(lambda x: x['word'], sentence['tokens'])
+		return cleanStr(' '.join(tokens));
 
 	def cavemanify(sentence, lookForAnd=True, lookForComp=True, VSify=False, mentionKey=None):
 		dependencies = sentence['collapsed-dependencies']
@@ -197,9 +207,9 @@ for docIndex in [
 		if isCompositeVerb:
 			cavemanSentencesToReturn.append(additionalCCompCavemanSentence)
 		if VSify:
-			return ' '.join(VSSentence)
+			return ' '.join(VSSentence).capitalize() + '.'
 		else:
-			return '. '.join(cavemanSentencesToReturn)
+			return ' '.join(cavemanSentencesToReturn).capitalize() + '.'
 
 	nlpJSON = json.loads(jsonFile)
 	sentences = nlpJSON['sentences']
@@ -256,27 +266,32 @@ for docIndex in [
 			for mention in cavemanMentions:
 				sentIndex = fixIndex(mention['sentNum'])
 				sentence = sentences[sentIndex]
-				if (sentIndex - 1) != lastSentence:
-					chain['fullSentences'].append('...')
-					chain['cavemanSentences'].append('...')
-					chain['simpleEvents'].append('...')
+
+				chain['fullSentences'].append("<div class='story_segment sentence'>")
+				chain['cavemanSentences'].append("<div class='story_segment sentence'>")
+				chain['simpleEvents'].append("<div class='story_segment sentence'>")
+
 				## get full sentences in chain
 				fullSentence = cleanStr(' '.join(map(lambda x: x['word'], sentence['tokens'])))
-				previousSpanifiedSentence = spanify(fullSentence, clozeTestIndex, docIndex, chainIndex, 'full')
+				previousSpanifiedSentence = spanify(fullSentence, clozeTestIndex, docIndex, chainIndex, 'full', sentence)
 				# if fullSentence == "We crossed that pub off our list.":
 				# 	print previousSpanifiedSentence
 				if previousSpanifiedSentence not in chain['fullSentences']:
 					clozeTestIndex += 1
-					spanifiedSentence = spanify(fullSentence, clozeTestIndex, docIndex, chainIndex, 'full')
+					spanifiedSentence = spanify(fullSentence, clozeTestIndex, docIndex, chainIndex, 'full', sentence)
 					chain['fullSentences'].append(spanifiedSentence)
-					chain['cavemanSentences'].append(spanify(cavemanify(sentence), clozeTestIndex, docIndex, chainIndex, 'caveman'))
+					chain['cavemanSentences'].append(spanify(cavemanify(sentence), clozeTestIndex, docIndex, chainIndex, 'caveman', sentence))
 					# print key
 					chain['simpleEvents'].append(spanify(
-						cavemanify(sentence, VSify=True, mentionKey=key), clozeTestIndex, docIndex, chainIndex, 'event'))
+						cavemanify(sentence, VSify=True, mentionKey=key), clozeTestIndex, docIndex, chainIndex, 'event', sentence))
 					## get caveman in chain
 					## get VS in chain
 				# else:
 				# 	print 'repeat'
+
+				chain['fullSentences'].append("</div>")
+				chain['cavemanSentences'].append("</div>")
+				chain['simpleEvents'].append("</div>")
 
 	if len(chains) == 1:
 		## sample 3 cloze tasks from same chain
@@ -314,14 +329,14 @@ for docIndex in [
 		chainIndex += 1
 		if chainIndex in chainsToTest:
 			threeVersionsOfStory = '\n'.join([
-				"<div class='chain full document" + docIndex + " chain" + str(chainIndex) + "'>",
+				"<div class='story chain full document" + docIndex + " chain" + str(chainIndex) + "'>",
 				' '.join(chain['fullSentences']),
 				"</div>",
-				"<div class='chain caveman document" + docIndex + " chain" + str(chainIndex) + "'>",
-				'. '.join(chain['cavemanSentences']),
+				"<div class='story chain caveman document" + docIndex + " chain" + str(chainIndex) + "'>",
+				' '.join(chain['cavemanSentences']),
 				"</div>",
-				"<div class='chain event document" + docIndex + " chain" + str(chainIndex) + "'>",
-				'. '.join(chain['simpleEvents']),
+				"<div class='story chain event document" + docIndex + " chain" + str(chainIndex) + "'>",
+				' '.join(chain['simpleEvents']),
 				"</div>"])
 			writeInnerHtml.write(threeVersionsOfStory)
 

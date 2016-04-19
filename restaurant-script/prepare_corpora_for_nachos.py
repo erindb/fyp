@@ -5,9 +5,9 @@ cloze_document = sys.argv[1]
 k=-1
 
 ## print cloze tests
-fp = open('full_training_set', "r")
+# fp = open('full_training_set', "r")
 w_cloze = open('restaurants_cloze_tests.txt', 'w')
-w_train = open('restaurants_train', 'w')
+# w_train = open('restaurants_train', 'w')
 docname = None
 wf = w_cloze
 #for x in sys.stdin:
@@ -55,17 +55,17 @@ for line in fp:
   else:
     w_train.write(line)
 
-fp.close()
+# fp.close()
 w_cloze.close()
-w_train.close()
+# w_train.close()
 
-## gzip the training set
-import gzip
-import shutil
-with open('restaurants_train', 'rb') as f_in, gzip.open('restaurants_train.gz', 'wb') as f_out:
-  shutil.copyfileobj(f_in, f_out)
+# ## gzip the training set
+# import gzip
+# import shutil
+# with open('restaurants_train', 'rb') as f_in, gzip.open('restaurants_train.gz', 'wb') as f_out:
+#   shutil.copyfileobj(f_in, f_out)
 
-## make filelist pointing there
-with open('filelist.txt', 'wb') as w:
-  w.write('../../restaurant-script/restaurants_train.gz\n')
-  w.close()
+# ## make filelist pointing there
+# with open('filelist.txt', 'wb') as w:
+#   w.write('../../restaurant-script/restaurants_train.gz\n')
+#   w.close()

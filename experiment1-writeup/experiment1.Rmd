@@ -155,4 +155,39 @@ rbind(
 ggsave('human-compare-annotation.png', width=10, height=6)
 ```
 
+For each word people said, how often did they say it?
+
+```{r}
+# N_per_tag = d %>% group_by(tag) %>% summarise(N = length(response))
+# compare = d %>% group_by(tag, gloss) %>%
+#   summarise(percent_people = length(gloss)/N_per_tag$N[N_per_tag$tag==tag[1]]) %>%
+#   as.data.frame
+# write.csv(compare, 'compare-before-ranks.csv')
+model.ranks = read.csv('compare.csv')
+model.ranks %>% group_by(tag) %>% summarise(rank = rank.orig[1]) %>%
+  summarise(high = ci.high(rank),
+            low = ci.low(rank),
+            mean_rank = mean(rank)) %>%
+  ggplot(aes(x=1, y=mean_rank)) +
+  ylab('mean rank of actual word') +
+  xlab('model') +
+  geom_bar(stat='identity', fill='chartreuse4') +
+  ylim(0, 1533) +
+  geom_errorbar(aes(x=1, ymin=low, ymax=high), colour='chartreuse3', width=0.05)
+ggsave('model.png', width=5, height=6)
+```
+
+```{r}
+model.ranks = read.csv('compare.csv')
+N_per_tag = model.ranks %>% group_by(tag) %>% summarise(N = length(gloss))
+
+model.ranks %>% group_by(tag, gloss) %>%
+  filter(rank.orig < 1000) %>%
+  summarise(percent_people = length(gloss)/N_per_tag$N[N_per_tag$tag==tag][1],
+            rank.orig = rank.orig) %>%
+  ggplot(aes(x=percent_people, y=rank.orig)) +
+  geom_point(colour='white')
+ggsave('compare.png', width=10, height=6)
+```
+
 # References
