@@ -22,7 +22,7 @@ def findDepIndices(dependencies, depType=None, depTypes=None, governorIndex=None
   if deps:
     return map(lambda dep: dep['dependent'], deps)
   else:
-    return None
+    return []
 
 def findDeps(dependencies, depType=None, depTypes=None, governorIndex=None, depIndex=None):
   if depIndex:
@@ -162,7 +162,13 @@ class Sentence:
       ))
 
     # true or false?
+    negation_indices = findDepIndex(
+      self.dependencies,
+      governorIndex=head_verb_index,
+      depType='neg')
     self.negation = False
+    if negation_indices:
+      self.negation = True
 
   def untokenize(self):
     words = map(lambda x: x['word'], self.tokens)
@@ -208,10 +214,8 @@ with open('../../restaurant-script/documents/dinnersfromhell-document-' + docInd
 nlpJSON = json.loads(jsonFile)
 sentences = nlpJSON['sentences']
 corefs = nlpJSON['corefs']
-# for sentence in sentences:
-sentence = sentences[0]
-one_sentence = Sentence(sentence, corefs)
-
-print one_sentence.untokenize()
-print one_sentence.caveman()
-print one_sentence.event_only()
+for sentence in sentences:
+  one_sentence = Sentence(sentence, corefs)
+  print one_sentence.untokenize()
+  print one_sentence.caveman()
+  print one_sentence.event_only()
