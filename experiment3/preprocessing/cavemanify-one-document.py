@@ -208,12 +208,20 @@ class Sentence:
   ## how should I deal with coreferences across sentences?
   ## references are now passed down to the lexical items themselves...
 
+## for each document,
 docIndex = '022'
 with open('../../restaurant-script/documents/dinnersfromhell-document-' + docIndex +'.txt.json', 'r') as f:
   jsonFile = f.read()
 nlpJSON = json.loads(jsonFile)
 sentences = nlpJSON['sentences']
 corefs = nlpJSON['corefs']
+## for each entity chain,
+for entity in corefs:
+  references = corefs[entity]
+  print entity
+## for each sentence (that mentions the entity)
+## log docindex, chainindex, #sentences, orig, caveman, parts, entity role, event only
+
 for sentence in sentences:
   one_sentence = Sentence(sentence, corefs)
   print one_sentence.untokenize()
