@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import csv
 import json
 
 def findDep(dependencies, depType=None, depTypes=None, governorIndex=None, depIndex=None):
@@ -176,7 +177,25 @@ class Sentence:
     result = result.replace(' ?','?').replace(' :',': ').replace(' \'', '\'')
     return result
 
-  def caveman(self):
+  def cavemanLexicalItems(self):
+    ## todo: integrate this with cavemanText
+    lexical_items = []
+    lexical_items.append(self.subject)
+    lexical_items.append(self.head_verb)
+    if self.direct_object:
+      lexical_items.append(self.direct_object)
+    for pp in self.prepositional_phrases:
+      lexical_items.append(pp)
+    return lexical_items
+
+  def get_caveman_references(self):
+    caveman_references = []
+    for li in self.cavemanLexicalItems():
+      for ref in li.references:
+        caveman_references.append(ref['id'])
+    return set(caveman_references)
+
+  def cavemanText(self):
     words = []
     words.append(self.subject.text)
 
@@ -194,7 +213,7 @@ class Sentence:
 
     return ' '.join(words).capitalize() + '.'
 
-  def event_only(self):
+  def event_onlyText(self):
     words = []
 
     ## actually only do this when subject is the coreferring entity
@@ -210,6 +229,9 @@ class Sentence:
 
 ## for each document,
 docIndex = '022'
+
+document_data = []
+
 with open('../../restaurant-script/documents/dinnersfromhell-document-' + docIndex +'.txt.json', 'r') as f:
   jsonFile = f.read()
 nlpJSON = json.loads(jsonFile)
@@ -218,12 +240,30 @@ corefs = nlpJSON['corefs']
 ## for each entity chain,
 for entity in corefs:
   references = corefs[entity]
-  print entity
-## for each sentence (that mentions the entity)
-## log docindex, chainindex, #sentences, orig, caveman, parts, entity role, event only
+  ## for each sentence
+  sentences_with_mentions = []
+  for sentence in sentences:
+    one_sentence = Sentence(sentence, corefs)
+    ## (that mentions the entity in caveman)
+    mentioned = one_sentence.get_caveman_references()
+    if int(entity) in mentioned:
+      sentences_with_mentions.append(one_sentence)
+  ## log docindex, chainindex, #sentences, orig, caveman, parts, entity role, event only
+  for one_sentence in sentences_with_mentions:
+    document_data.append({
+      'docIndex': docIndex,
+      'chainID': entity,
+      'ncloze': len(sentences_with_mentions),
+      'original': one_sentence.untokenize(),
+      'caveman': one_sentence.cavemanText(),
+      # entityRole, ## to do
+      'event_only': one_sentence.event_onlyText()
+    })
 
-for sentence in sentences:
-  one_sentence = Sentence(sentence, corefs)
-  print one_sentence.untokenize()
-  print one_sentence.caveman()
-  print one_sentence.event_only()
+with open('document_data.csv', 'w') as csvfile:
+    fieldnames = document_data[0].keys()
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+    writer.writeheader()
+    for row in document_data:
+      writer.writerow(row)
