@@ -60,19 +60,48 @@ class LexicalItem:
       self.POS = tokenData['pos']
       self.text = self.lemma
 
+    self.references = []
+    if corefs:
+      for coref_id in corefs:
+        references = corefs[coref_id]
+        for reference in references:
+          startIndex = reference['startIndex']
+          endIndex = reference['endIndex']
+          if (self.index >= startIndex and self.index <= endIndex):
+            self.references.append(reference)
+
+
 class Sentence:
-  def __init__(self, sentenceData):
+  def __init__(self, sentenceData, corefsData):
     self.index = sentenceData['index']
     self.parse = sentenceData['parse']
     self.tokens = sentenceData['tokens']
     self.dependencies = sentenceData['collapsed-dependencies']
+
+    ## for each referent, pick the shortest representative mention
+    self.coreferences = {}
+    for coref_id in corefsData:
+        references = corefsData[coref_id]
+        # print references
+        localReferences = filter(lambda ref: (int(ref['sentNum'])-1)==self.index, references)
+        if len(localReferences)>0:
+          representativeMention = 'placeholder'
+          representativeMentionStrings = map(lambda ref: ref['text'],
+            filter(lambda ref: ref['isRepresentativeMention'],
+              references))
+          minlen = min(map(lambda s: len(s), representativeMentionStrings))
+          representativeMention = filter(lambda s: len(s)==minlen, representativeMentionStrings)[0]
+          for reference in references:
+            reference['representativeMention'] = representativeMention
+          self.coreferences[coref_id] = references
 
     # # lemma for active sentences,
     # # word for passive sentences
     head_verb_index = findDepIndex(self.dependencies, 'ROOT')
     self.head_verb = LexicalItem(
       dependencyData=findDep(self.dependencies, depIndex=head_verb_index),
-      tokenData = findToken(self.tokens, index=head_verb_index)
+      tokenData = findToken(self.tokens, index=head_verb_index),
+      corefs = self.coreferences
     )
 
     ## if root is a VBN (past participle), check if it has an nsubjpass
@@ -91,7 +120,8 @@ class Sentence:
       depTypes=['nsubj', 'nsubjpass'])
     self.subject = LexicalItem(
       dependencyData=findDep(self.dependencies, depIndex=subject_index),
-      tokenData = findToken(self.tokens, index=subject_index)
+      tokenData = findToken(self.tokens, index=subject_index),
+      corefs = self.coreferences
     )
 
     direct_object_index = findDepIndex(
@@ -101,7 +131,8 @@ class Sentence:
     if direct_object_index:
       self.direct_object = LexicalItem(
         dependencyData=findDep(self.dependencies, depIndex=direct_object_index),
-        tokenData = findToken(self.tokens, index=direct_object_index)
+        tokenData = findToken(self.tokens, index=direct_object_index),
+        corefs = self.coreferences
       )
     else:
       self.direct_object = None
@@ -122,10 +153,10 @@ class Sentence:
         'nmod:in'])
     self.prepositional_phrases = []
     for prepositional_phrase_index in prepositional_phrase_indices:
-      print findDep(self.dependencies, depIndex=prepositional_phrase_index)
       self.prepositional_phrases.append(LexicalItem(
         dependencyData=findDep(self.dependencies, depIndex=prepositional_phrase_index),
-        tokenData = findToken(self.tokens, index=prepositional_phrase_index)
+        tokenData = findToken(self.tokens, index=prepositional_phrase_index),
+        corefs = self.coreferences
       ))
 
     # true or false?
@@ -167,6 +198,7 @@ class Sentence:
     return ' '.join(words).capitalize() + '.'
 
   ## how should I deal with coreferences across sentences?
+  ## references are now passed down to the lexical items themselves...
 
 one_sentence = Sentence(
   {
@@ -1036,8 +1068,1451 @@ one_sentence = Sentence(
         "after": " "
       }
     ]
+  },
+  {
+    "1": [
+      {
+        "id": 1,
+        "text": "A federal judge",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 1,
+        "endIndex": 4,
+        "sentNum": 1,
+        "position": [
+          1,
+          1
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "65": [
+      {
+        "id": 65,
+        "text": "Most restaurants",
+        "type": "NOMINAL",
+        "number": "PLURAL",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 1,
+        "endIndex": 3,
+        "sentNum": 11,
+        "position": [
+          11,
+          1
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "2": [
+      {
+        "id": 2,
+        "text": "a restaurant with a martini",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 6,
+        "endIndex": 11,
+        "sentNum": 1,
+        "position": [
+          1,
+          2
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 8,
+        "text": "it ",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 4,
+        "endIndex": 5,
+        "sentNum": 2,
+        "position": [
+          2,
+          1
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 12,
+        "text": "it",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 12,
+        "endIndex": 13,
+        "sentNum": 2,
+        "position": [
+          2,
+          5
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 50,
+        "text": "the restaurant",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 6,
+        "endIndex": 8,
+        "sentNum": 7,
+        "position": [
+          7,
+          3
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "3": [
+      {
+        "id": 3,
+        "text": "a martini",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 9,
+        "endIndex": 11,
+        "sentNum": 1,
+        "position": [
+          1,
+          3
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 4,
+        "text": "that",
+        "type": "PRONOMINAL",
+        "number": "UNKNOWN",
+        "gender": "NEUTRAL",
+        "animacy": "UNKNOWN",
+        "startIndex": 14,
+        "endIndex": 15,
+        "sentNum": 1,
+        "position": [
+          1,
+          4
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 5,
+        "text": "a joke, that happened the other night",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 17,
+        "endIndex": 25,
+        "sentNum": 1,
+        "position": [
+          1,
+          5
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 6,
+        "text": "a joke",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 17,
+        "endIndex": 19,
+        "sentNum": 1,
+        "position": [
+          1,
+          6
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "67": [
+      {
+        "id": 67,
+        "text": "this",
+        "type": "NOMINAL",
+        "number": "UNKNOWN",
+        "gender": "NEUTRAL",
+        "animacy": "UNKNOWN",
+        "startIndex": 3,
+        "endIndex": 4,
+        "sentNum": 12,
+        "position": [
+          12,
+          2
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 71,
+        "text": "it",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 9,
+        "endIndex": 10,
+        "sentNum": 13,
+        "position": [
+          13,
+          3
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "68": [
+      {
+        "id": 68,
+        "text": "a more gracious fashion",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 9,
+        "endIndex": 13,
+        "sentNum": 12,
+        "position": [
+          12,
+          3
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "7": [
+      {
+        "id": 7,
+        "text": "the other night",
+        "type": "PROPER",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 22,
+        "endIndex": 25,
+        "sentNum": 1,
+        "position": [
+          1,
+          7
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 34,
+        "text": "night",
+        "type": "PROPER",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 16,
+        "endIndex": 17,
+        "sentNum": 4,
+        "position": [
+          4,
+          7
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "72": [
+      {
+        "id": 72,
+        "text": "our evening",
+        "type": "PROPER",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 12,
+        "endIndex": 14,
+        "sentNum": 13,
+        "position": [
+          13,
+          4
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "9": [
+      {
+        "id": 9,
+        "text": " a violation of my liquor license",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 5,
+        "endIndex": 11,
+        "sentNum": 2,
+        "position": [
+          2,
+          2
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 17,
+        "text": "it",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 23,
+        "endIndex": 24,
+        "sentNum": 3,
+        "position": [
+          3,
+          5
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 18,
+        "text": "a violation of our liquor license",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 25,
+        "endIndex": 31,
+        "sentNum": 3,
+        "position": [
+          3,
+          6
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "10": [
+      {
+        "id": 10,
+        "text": "my liquor license",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 8,
+        "endIndex": 11,
+        "sentNum": 2,
+        "position": [
+          2,
+          3
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 19,
+        "text": "our liquor license",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 28,
+        "endIndex": 31,
+        "sentNum": 3,
+        "position": [
+          3,
+          7
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "74": [
+      {
+        "id": 74,
+        "text": "Thought you",
+        "type": "PROPER",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 1,
+        "endIndex": 3,
+        "sentNum": 14,
+        "position": [
+          14,
+          1
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "11": [
+      {
+        "id": 11,
+        "text": "my",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 8,
+        "endIndex": 9,
+        "sentNum": 2,
+        "position": [
+          2,
+          4
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 13,
+        "text": "I",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 1,
+        "endIndex": 2,
+        "sentNum": 3,
+        "position": [
+          3,
+          1
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 21,
+        "text": "I",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 32,
+        "endIndex": 33,
+        "sentNum": 3,
+        "position": [
+          3,
+          9
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 37,
+        "text": "I",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 2,
+        "endIndex": 3,
+        "sentNum": 5,
+        "position": [
+          5,
+          1
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 66,
+        "text": "I",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 1,
+        "endIndex": 2,
+        "sentNum": 12,
+        "position": [
+          12,
+          1
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 69,
+        "text": "I",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 2,
+        "endIndex": 3,
+        "sentNum": 13,
+        "position": [
+          13,
+          1
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "14": [
+      {
+        "id": 14,
+        "text": "a manager",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 3,
+        "endIndex": 5,
+        "sentNum": 3,
+        "position": [
+          3,
+          2
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 24,
+        "text": "he",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 42,
+        "endIndex": 43,
+        "sentNum": 3,
+        "position": [
+          3,
+          12
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 26,
+        "text": "his",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 46,
+        "endIndex": 47,
+        "sentNum": 3,
+        "position": [
+          3,
+          14
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 39,
+        "text": "the manager",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 10,
+        "endIndex": 12,
+        "sentNum": 5,
+        "position": [
+          5,
+          3
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 53,
+        "text": "the manager",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 10,
+        "endIndex": 12,
+        "sentNum": 8,
+        "position": [
+          8,
+          3
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 54,
+        "text": "He",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 1,
+        "endIndex": 2,
+        "sentNum": 9,
+        "position": [
+          9,
+          1
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "15": [
+      {
+        "id": 15,
+        "text": "the drink",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 12,
+        "endIndex": 14,
+        "sentNum": 3,
+        "position": [
+          3,
+          3
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "79": [
+      {
+        "id": 79,
+        "text": "the floor",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 14,
+        "endIndex": 16,
+        "sentNum": 15,
+        "position": [
+          15,
+          4
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "16": [
+      {
+        "id": 16,
+        "text": "a scene",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 16,
+        "endIndex": 18,
+        "sentNum": 3,
+        "position": [
+          3,
+          4
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "80": [
+      {
+        "id": 80,
+        "text": "better",
+        "type": "NOMINAL",
+        "number": "UNKNOWN",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 5,
+        "endIndex": 6,
+        "sentNum": 16,
+        "position": [
+          16,
+          1
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 82,
+        "text": "it",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 10,
+        "endIndex": 11,
+        "sentNum": 16,
+        "position": [
+          16,
+          3
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "81": [
+      {
+        "id": 81,
+        "text": "you",
+        "type": "PRONOMINAL",
+        "number": "UNKNOWN",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 7,
+        "endIndex": 8,
+        "sentNum": 16,
+        "position": [
+          16,
+          2
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "20": [
+      {
+        "id": 20,
+        "text": "our",
+        "type": "PRONOMINAL",
+        "number": "PLURAL",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 28,
+        "endIndex": 29,
+        "sentNum": 3,
+        "position": [
+          3,
+          8
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 30,
+        "text": "we",
+        "type": "PRONOMINAL",
+        "number": "PLURAL",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 5,
+        "endIndex": 6,
+        "sentNum": 4,
+        "position": [
+          4,
+          3
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 31,
+        "text": "We",
+        "type": "PRONOMINAL",
+        "number": "PLURAL",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 9,
+        "endIndex": 10,
+        "sentNum": 4,
+        "position": [
+          4,
+          4
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 36,
+        "text": "our",
+        "type": "PRONOMINAL",
+        "number": "PLURAL",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 18,
+        "endIndex": 19,
+        "sentNum": 4,
+        "position": [
+          4,
+          9
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 40,
+        "text": "us",
+        "type": "PRONOMINAL",
+        "number": "PLURAL",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 16,
+        "endIndex": 17,
+        "sentNum": 5,
+        "position": [
+          5,
+          4
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 41,
+        "text": "We",
+        "type": "PRONOMINAL",
+        "number": "PLURAL",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 1,
+        "endIndex": 2,
+        "sentNum": 6,
+        "position": [
+          6,
+          1
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 45,
+        "text": "our",
+        "type": "PRONOMINAL",
+        "number": "PLURAL",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 6,
+        "endIndex": 7,
+        "sentNum": 6,
+        "position": [
+          6,
+          5
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "84": [
+      {
+        "id": 84,
+        "text": "his sense of entitlement",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 16,
+        "endIndex": 20,
+        "sentNum": 16,
+        "position": [
+          16,
+          5
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "22": [
+      {
+        "id": 22,
+        "text": "this guest to keep the martini he had dumped into his wine glass",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 36,
+        "endIndex": 49,
+        "sentNum": 3,
+        "position": [
+          3,
+          10
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "23": [
+      {
+        "id": 23,
+        "text": "the martini he had dumped into his wine glass",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 40,
+        "endIndex": 49,
+        "sentNum": 3,
+        "position": [
+          3,
+          11
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 46,
+        "text": "his martini",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 12,
+        "endIndex": 14,
+        "sentNum": 6,
+        "position": [
+          6,
+          6
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 77,
+        "text": "his martini",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 11,
+        "endIndex": 13,
+        "sentNum": 15,
+        "position": [
+          15,
+          2
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "25": [
+      {
+        "id": 25,
+        "text": "his wine glass",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 46,
+        "endIndex": 49,
+        "sentNum": 3,
+        "position": [
+          3,
+          13
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "27": [
+      {
+        "id": 27,
+        "text": "36th",
+        "type": "PROPER",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "UNKNOWN",
+        "startIndex": 19,
+        "endIndex": 20,
+        "sentNum": 4,
+        "position": [
+          4,
+          10
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "28": [
+      {
+        "id": 28,
+        "text": "This",
+        "type": "NOMINAL",
+        "number": "UNKNOWN",
+        "gender": "NEUTRAL",
+        "animacy": "UNKNOWN",
+        "startIndex": 1,
+        "endIndex": 2,
+        "sentNum": 4,
+        "position": [
+          4,
+          1
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 29,
+        "text": "the email we got:\n“We had a very nice dinner Wednesday night celebrating our 36th anniversary",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 3,
+        "endIndex": 21,
+        "sentNum": 4,
+        "position": [
+          4,
+          2
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "32": [
+      {
+        "id": 32,
+        "text": "a very nice dinner",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 11,
+        "endIndex": 15,
+        "sentNum": 4,
+        "position": [
+          4,
+          5
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "33": [
+      {
+        "id": 33,
+        "text": "Wednesday",
+        "type": "PROPER",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 15,
+        "endIndex": 16,
+        "sentNum": 4,
+        "position": [
+          4,
+          6
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "35": [
+      {
+        "id": 35,
+        "text": "our 36th anniversary",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 18,
+        "endIndex": 21,
+        "sentNum": 4,
+        "position": [
+          4,
+          8
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "38": [
+      {
+        "id": 38,
+        "text": "you",
+        "type": "PRONOMINAL",
+        "number": "UNKNOWN",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 4,
+        "endIndex": 5,
+        "sentNum": 5,
+        "position": [
+          5,
+          2
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 75,
+        "text": "you",
+        "type": "PRONOMINAL",
+        "number": "UNKNOWN",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 2,
+        "endIndex": 3,
+        "sentNum": 14,
+        "position": [
+          14,
+          2
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "42": [
+      {
+        "id": 42,
+        "text": "the limo and our best man",
+        "type": "LIST",
+        "number": "PLURAL",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 3,
+        "endIndex": 9,
+        "sentNum": 6,
+        "position": [
+          6,
+          2
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "43": [
+      {
+        "id": 43,
+        "text": "the limo",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 3,
+        "endIndex": 5,
+        "sentNum": 6,
+        "position": [
+          6,
+          3
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 49,
+        "text": "it",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 4,
+        "endIndex": 5,
+        "sentNum": 7,
+        "position": [
+          7,
+          2
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "44": [
+      {
+        "id": 44,
+        "text": "our best man",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 6,
+        "endIndex": 9,
+        "sentNum": 6,
+        "position": [
+          6,
+          4
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 47,
+        "text": "his",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 12,
+        "endIndex": 13,
+        "sentNum": 6,
+        "position": [
+          6,
+          7
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 48,
+        "text": "he",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 2,
+        "endIndex": 3,
+        "sentNum": 7,
+        "position": [
+          7,
+          1
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "51": [
+      {
+        "id": 51,
+        "text": "The hostess",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "FEMALE",
+        "animacy": "ANIMATE",
+        "startIndex": 1,
+        "endIndex": 3,
+        "sentNum": 8,
+        "position": [
+          8,
+          1
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 52,
+        "text": "she",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "FEMALE",
+        "animacy": "ANIMATE",
+        "startIndex": 4,
+        "endIndex": 5,
+        "sentNum": 8,
+        "position": [
+          8,
+          2
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "55": [
+      {
+        "id": 55,
+        "text": "the table",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 5,
+        "endIndex": 7,
+        "sentNum": 9,
+        "position": [
+          9,
+          2
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "56": [
+      {
+        "id": 56,
+        "text": "the drink with nary a word",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "NEUTRAL",
+        "animacy": "INANIMATE",
+        "startIndex": 10,
+        "endIndex": 16,
+        "sentNum": 9,
+        "position": [
+          9,
+          3
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "57": [
+      {
+        "id": 57,
+        "text": "nary a word",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "INANIMATE",
+        "startIndex": 13,
+        "endIndex": 16,
+        "sentNum": 9,
+        "position": [
+          9,
+          4
+        ],
+        "isRepresentativeMention": True
+      }
+    ],
+    "58": [
+      {
+        "id": 58,
+        "text": "Our friend",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 1,
+        "endIndex": 3,
+        "sentNum": 10,
+        "position": [
+          10,
+          1
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 60,
+        "text": "no ordinary scofflaw but a federal judge who has just lost his wife",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 4,
+        "endIndex": 17,
+        "sentNum": 10,
+        "position": [
+          10,
+          3
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 61,
+        "text": "no ordinary scofflaw",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 4,
+        "endIndex": 7,
+        "sentNum": 10,
+        "position": [
+          10,
+          4
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 64,
+        "text": "his",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 15,
+        "endIndex": 16,
+        "sentNum": 10,
+        "position": [
+          10,
+          7
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "59": [
+      {
+        "id": 59,
+        "text": "Our",
+        "type": "PRONOMINAL",
+        "number": "PLURAL",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 1,
+        "endIndex": 2,
+        "sentNum": 10,
+        "position": [
+          10,
+          2
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 70,
+        "text": "we",
+        "type": "PRONOMINAL",
+        "number": "PLURAL",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 5,
+        "endIndex": 6,
+        "sentNum": 13,
+        "position": [
+          13,
+          2
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 73,
+        "text": "our",
+        "type": "PRONOMINAL",
+        "number": "PLURAL",
+        "gender": "UNKNOWN",
+        "animacy": "ANIMATE",
+        "startIndex": 12,
+        "endIndex": 13,
+        "sentNum": 13,
+        "position": [
+          13,
+          5
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "62": [
+      {
+        "id": 62,
+        "text": "a federal judge who has just lost his wife",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 8,
+        "endIndex": 17,
+        "sentNum": 10,
+        "position": [
+          10,
+          5
+        ],
+        "isRepresentativeMention": True
+      },
+      {
+        "id": 76,
+        "text": "this “judge”",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 3,
+        "endIndex": 7,
+        "sentNum": 15,
+        "position": [
+          15,
+          1
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 78,
+        "text": "his",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 11,
+        "endIndex": 12,
+        "sentNum": 15,
+        "position": [
+          15,
+          3
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 83,
+        "text": "him",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 12,
+        "endIndex": 13,
+        "sentNum": 16,
+        "position": [
+          16,
+          4
+        ],
+        "isRepresentativeMention": False
+      },
+      {
+        "id": 85,
+        "text": "his",
+        "type": "PRONOMINAL",
+        "number": "SINGULAR",
+        "gender": "MALE",
+        "animacy": "ANIMATE",
+        "startIndex": 16,
+        "endIndex": 17,
+        "sentNum": 16,
+        "position": [
+          16,
+          6
+        ],
+        "isRepresentativeMention": False
+      }
+    ],
+    "63": [
+      {
+        "id": 63,
+        "text": "his wife",
+        "type": "NOMINAL",
+        "number": "SINGULAR",
+        "gender": "FEMALE",
+        "animacy": "ANIMATE",
+        "startIndex": 15,
+        "endIndex": 17,
+        "sentNum": 10,
+        "position": [
+          10,
+          6
+        ],
+        "isRepresentativeMention": True
+      }
+    ]
   }
 )
+
 
 print one_sentence.untokenize()
 print one_sentence.caveman()
