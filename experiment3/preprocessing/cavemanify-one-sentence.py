@@ -15,9 +15,16 @@ def findDepIndex(dependencies, depType=None, depTypes=None, governorIndex=None, 
   else:
     return None
 
+def findDepIndices(dependencies, depType=None, depTypes=None, governorIndex=None, depIndex=None):
+  deps = findDeps(dependencies, depType=depType, depTypes=depTypes, governorIndex=governorIndex, depIndex=depIndex)
+  if deps:
+    return map(lambda dep: dep['dependent'], deps)
+  else:
+    return None
+
 def findDeps(dependencies, depType=None, depTypes=None, governorIndex=None, depIndex=None):
   if depIndex:
-    return filter(lambda dep: dep['dependent']==depIndex, dependencies)[0]
+    return filter(lambda dep: dep['dependent']==depIndex, dependencies)
 
   if depTypes:
     all_matching_dependencies = []
@@ -38,12 +45,6 @@ class LexicalItem:
   def __init__(self, text='', tokenData={}, dependencyData={}, corefs=[]):
     if text:
       self.text = text
-    else:
-      self.update(tokenData=tokenData,
-        dependencyData=dependencyData,
-        corefs=corefs)
-
-  def update(self, tokenData={}, dependencyData={}, corefs=[]):
     if dependencyData:
       self.dep = dependencyData['dep']
       self.dependent = dependencyData['dependent']
@@ -64,39 +65,68 @@ class Sentence:
     self.index = sentenceData['index']
     self.parse = sentenceData['parse']
     self.tokens = sentenceData['tokens']
-    self.dependencies = sentenceData['basic-dependencies']
+    self.dependencies = sentenceData['collapsed-dependencies']
 
     # # lemma for active sentences,
     # # word for passive sentences
-    self.head_verb_index = findDepIndex(self.dependencies, 'ROOT')
+    head_verb_index = findDepIndex(self.dependencies, 'ROOT')
     self.head_verb = LexicalItem(
-      dependencyData=findDep(self.dependencies, depIndex=self.head_verb_index),
-      tokenData = findToken(self.tokens, index=self.head_verb_index)
+      dependencyData=findDep(self.dependencies, depIndex=head_verb_index),
+      tokenData = findToken(self.tokens, index=head_verb_index)
     )
 
     ## if root is a VBN (past participle), check if it has an nsubjpass
     self.voice = 'active'
     if self.head_verb.POS == 'VBN':
-      passive_subjects = findDeps(self.dependencies, governorIndex=self.head_verb_index, depType='nsubjpass')
+      passive_subjects = findDeps(self.dependencies, governorIndex=head_verb_index, depType='nsubjpass')
       if len(passive_subjects) > 0:
         voice = 'passive'
 
     # # nsubj or nsubjpass
     # # also, what about conjunctions?
-    # self.subject_index = 
-    self.subject_index = findDepIndex(
+    # subject_index = 
+    subject_index = findDepIndex(
       self.dependencies,
-      governorIndex=self.head_verb_index,
+      governorIndex=head_verb_index,
       depTypes=['nsubj', 'nsubjpass'])
     self.subject = LexicalItem(
-      dependencyData=findDep(self.dependencies, depIndex=self.subject_index),
-      tokenData = findToken(self.tokens, index=self.subject_index)
+      dependencyData=findDep(self.dependencies, depIndex=subject_index),
+      tokenData = findToken(self.tokens, index=subject_index)
     )
 
-    self.direct_object = LexicalItem('bone')
+    direct_object_index = findDepIndex(
+      self.dependencies,
+      governorIndex=head_verb_index,
+      depType=['dobj'])
+    if direct_object_index:
+      self.direct_object = LexicalItem(
+        dependencyData=findDep(self.dependencies, depIndex=direct_object_index),
+        tokenData = findToken(self.tokens, index=direct_object_index)
+      )
+    else:
+      self.direct_object = None
 
     # keep the whole phrase for now
-    self.prepositional_phrase = LexicalItem('in house')
+    prepositional_phrase_indices = findDepIndices(
+      self.dependencies,
+      governorIndex=head_verb_index,
+      depTypes=[
+        'nmod:into',
+        'nmod:with',
+        'nmod:for',
+        'nmod:to',
+        'nmod:after',
+        'nmod:before',
+        'nmod:towards',
+        'nmod:on',
+        'nmod:in'])
+    self.prepositional_phrases = []
+    for prepositional_phrase_index in prepositional_phrase_indices:
+      print findDep(self.dependencies, depIndex=prepositional_phrase_index)
+      self.prepositional_phrases.append(LexicalItem(
+        dependencyData=findDep(self.dependencies, depIndex=prepositional_phrase_index),
+        tokenData = findToken(self.tokens, index=prepositional_phrase_index)
+      ))
 
     # true or false?
     self.negation = False
@@ -108,15 +138,32 @@ class Sentence:
     return result
 
   def caveman(self):
-    words = [
-      self.subject.text,
-      'not',
-      self.head_verb.text,
-      self.direct_object.text,
-      self.prepositional_phrase.text
-    ]
-    if not self.negation:
-      words.remove('not')
+    words = []
+    words.append(self.subject.text)
+
+    if self.negation:
+      words.append('not')
+
+    words.append(self.head_verb.text)
+
+    if self.direct_object:
+      words.append(self.direct_object.text)
+
+    for pp in self.prepositional_phrases:
+      words.append(pp.dep[5:])
+      words.append(pp.text)
+
+    return ' '.join(words).capitalize() + '.'
+
+  def event_only(self):
+    words = []
+
+    ## actually only do this when subject is the coreferring entity
+    words.append(self.subject.text)
+
+    words.append(self.head_verb.text)
+
+    ## if the coreferring entity is not the subject, then mention it
     return ' '.join(words).capitalize() + '.'
 
   ## how should I deal with coreferences across sentences?
@@ -994,3 +1041,4 @@ one_sentence = Sentence(
 
 print one_sentence.untokenize()
 print one_sentence.caveman()
+print one_sentence.event_only()
