@@ -147,25 +147,45 @@ var experiment = {
     experiment.state.log = function() {
       var trialResponseTime = time();
       var response = $('.response').val();
-      if (response.length > 0) {
-        experiment.data.trials.push({
-          document: chain.document,
-          chain: chain.chain,
-          condition: condition,
-          response: response,
-          full: $('.full.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-          caveman: $('.caveman.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-          event: $('.event.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-          original: $('.' + condition + '.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-          clozeIndex: clozeIndex,
-          clozeHTML: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).html(),
-          clozeText: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).text(),
-          trialnum: experiment.state.trialnum,
-          rt: trialResponseTime - trialStartTime
-        })
-        return true;
-      } else {
+      if (response.length == 0) {
         return false;
+      } else {
+        $.post( '//erindb.me/cgi-bin/nlp.py', {'text': response, 'annotators': 'parse'})
+          .done(function(data) {
+            console.log('i posted and stuff happened.');
+            console.log('the response: ' + data);
+            console.log(data)
+            data = JSON.parse(data);
+            if (data.sentences.length == 0) {
+              return false
+            } else {
+              exactlyOneSentence = data.sentences.length == 1;
+              firstIsSentence = data.sentences[0].parse[9]=='S';
+              if (firstIsSentence & exactlyOneSentence) {
+
+                experiment.data.trials.push({
+                  document: chain.document,
+                  chain: chain.chain,
+                  condition: condition,
+                  response: response,
+                  full: $('.full.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+                  caveman: $('.caveman.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+                  event: $('.event.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+                  original: $('.' + condition + '.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+                  clozeIndex: clozeIndex,
+                  clozeHTML: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).html(),
+                  clozeText: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).text(),
+                  trialnum: experiment.state.trialnum,
+                  rt: trialResponseTime - trialStartTime
+                })
+                return true;
+
+              } else {
+                return false
+              }
+            }
+          });
+        console.log('i tried to post. and the code is still running.');
       }
     }
   },
