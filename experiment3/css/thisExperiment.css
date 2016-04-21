@@ -1,0 +1,78 @@
+
+.chain {
+	display: none;
+	margin: 10px;
+}
+
+body {
+	font-family: sans-serif;
+}
+.instructions {
+	margin: 30px auto;
+	width: 600px;
+}
+.story {
+	margin: auto auto;
+	width: 500px;
+}
+.story_segment {
+	width: 500px;
+	font-size: 1.2em;
+}
+.prompt {
+	font-size: 0.8em;
+	color: gray;
+	text-align: left;
+	margin: 0px;
+}
+.sentence {
+	position: relative;
+	text-align: center;
+}
+.blurry {
+	color: transparent;
+	font-weight: bold;
+	text-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px;
+}
+.subject {
+	position: absolute;
+	top: 0px;
+	left: 43%;
+	font-weight: bold;
+	font-style: italic;
+	margin: 0px;
+}
+.gloss {
+	position: absolute;;
+	top: 0px;
+	left: 0px;
+	font-weight: bold;
+	font-style: italic;
+	margin: 0px;
+	width: 500px;
+}
+.predicate {
+	position: absolute;
+	top: 0;
+	left: 53%;
+	font-weight: bold;
+	font-style: italic;
+	margin: 0px;
+}
+.response {
+	/*height: 2em;*/
+	border: 2px #ccc solid;
+	border-radius: 6px;
+	font-weight: bold;
+	padding: 10px;
+}
+.err {
+	color: darkred;
+	font-style: italic;
+	width: 600px;
+	margin: 30px auto;
+}
+.submit {
+	display: block;
+	margin: 30px auto;
+}

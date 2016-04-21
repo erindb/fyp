@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+Blurry Text
+</title>
+<script src='js/jquery-2.2.0.min.js'></script>
+<style>
+body {
+	font-family: sans-serif;
+}
+.instructions {
+	margin: 30px auto;
+	width: 600px;
+}
+.story {
+	margin: auto auto;
+	width: 500px;
+}
+.story_segment {
+	width: 500px;
+	font-size: 1.2em;
+}
+.prompt {
+	font-size: 0.8em;
+	color: gray;
+	text-align: left;
+	margin: 0px;
+}
+.sentence {
+	position: relative;
+	text-align: center;
+}
+.blurry {
+	color: transparent;
+	font-weight: bold;
+	text-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px;
+}
+.subject {
+	position: absolute;
+	top: 0px;
+	left: 43%;
+	font-weight: bold;
+	font-style: italic;
+	margin: 0px;
+}
+.gloss {
+	position: absolute;;
+	top: 0px;
+	left: 0px;
+	font-weight: bold;
+	font-style: italic;
+	margin: 0px;
+	width: 500px;
+}
+.predicate {
+	position: absolute;
+	top: 0;
+	left: 53%;
+	font-weight: bold;
+	font-style: italic;
+	margin: 0px;
+}
+.response {
+	/*height: 2em;*/
+	border: 2px #ccc solid;
+	border-radius: 6px;
+	font-weight: bold;
+	padding: 10px;
+}
+.err {
+	color: darkred;
+	font-style: italic;
+	width: 600px;
+	margin: 30px auto;
+}
+.submit {
+	display: block;
+	margin: 30px auto;
+}
+</style>
+</head>
+<body>
+<select name='slide_type'>
+<option value='select'>[select slide type]</option>
+<option value='full'>Full text</option>
+<option value='caveman'>Cavemant-speak</option>
+<option value='events'>Event only</option>
+</select>
+
+<div class='slide' id='full'>
+	<p class='instructions'>
+	The text below was taken from a blog post. The original sentences are presented in order, although there are some gaps. One of the gaps is left for you to fill in. Please try to guess what might have happened <b>in the sentence we left out</b> in the story. In your response, please write a <b>single complete sentence</b>, but try to use clear, simple language.</p>
+	<div class='story'>
+		<div class='story_segment sentence'>
+			<p class='blurry'>About 10 minutes later the waitress comes over and says "Good, someone brung yall, yall's drinks''.</p>
+			<p class='gloss'>About 10 minutes later the waitress comes over and says "Good, someone brung yall, yall's drinks''.</p>
+		</div>
+		<!-- <div class='story_segment sentence'>
+			<p class='blurry'>At this point, we ask if we could have some refills and if she knew when our food would be ready.</p>
+			<p class='gloss'>At this point, we ask if we could have some refills and if she knew when our food would be ready.</p>
+		</div> -->
+		<p class='story_segment prompt'>Please guess the sentence that was here:</p>
+		<input class='story_segment response'></input>
+		<div class='story_segment sentence'>
+			<p class='blurry'>She responds by saying that she has yet to turn in our order to the cook but she was on her way to do it.</p>
+			<p class='gloss'>She responds by saying that she has yet to turn in our order to the cook but she was on her way to do it.</p>
+		</div>
+	</div>
+	<button class='submit'>Submit response</button>
+	<p class='err'>Sorry, what you wrote might have been reasonable, but our parser can't handle it. Please try using <b>simple language</b> and make sure that you are giving us a <b>full, grammatical sentence</b>.</p>
+</div>
+<div class='slide' id='caveman'>
+	<p class='instructions'>
+	The text below was taken from a blog post. The original sentences are presented in order, although there are some gaps. One of the gaps is left for you to fill in. Please try to guess what might have happened <b>in the sentence we left out</b> in the story. In your response, please write a <b>single complete sentence</b>, but try to use clear, simple language.</p>
+	<div class='story'>
+		<div class='story_segment sentence'>
+		<p class='blurry'>About 10 minutes later the waitress comes over and says "Good, someone brung yall, yall's drinks''.</p>
+		<p class='gloss'>Waitress come over.</p>
+	</div>
+	<!-- <div class='story_segment sentence'>
+		<p class='blurry'>At this point, we ask if we could have some refills and if she knew when our food would be ready.</p>
+		<p class='gloss'>At this point, we ask if we could have some refills and if she knew when our food would be ready.</p>
+	</div> -->
+	<p class='story_segment prompt'>Please guess the sentence that was here:</p>
+	<input class='story_segment response'></input>
+	<div class='story_segment sentence'>
+		<p class='blurry'>She responds by saying that she has yet to turn in our order to the cook but she was on her way to do it.</p>
+		<p class='gloss'>Waitress respond.</p>
+	</div>
+	</div>
+	<button class='submit'>Submit response</button>
+	<p class='err'>Sorry, what you wrote might have been reasonable, but our parser can't handle it. Please try using <b>simple language</b> and make sure that you are giving us a <b>full, grammatical sentence</b> even though the "sentences" in the context are not complete sentences.</p>
+</div>
+<div class='slide' id='events'>
+	<p class='instructions'>
+	The text below was taken from a blog post. The original sentences are presented in order, although there are some gaps. One of the gaps is left for you to fill in. Please try to guess what might have happened <b>in the sentence we left out</b> in the story. In your response, please write a <b>single complete sentence</b>, but try to use clear, simple language.</p>
+	<div class='story'>
+	<div class='story_segment sentence'>
+		<p class='blurry'>About 10 minutes later the waitress comes over and says "Good, someone brung yall, yall's drinks''</p>
+		<p class='gloss'>Waitress come.</p>
+	</div>
+	<!-- <div class='story_segment sentence'>
+		<p class='blurry'>At this point, we ask if we could have some refills and if she knew when our food would be ready.</p>
+		<p class='gloss'><it>[Someone]</it> ask waitress.</p>
+	</div> -->
+	<p class='story_segment prompt'>Please guess the sentence that was here:</p>
+	<input class='story_segment response'></input>
+	<div class='story_segment sentence'>
+		<p class='blurry'>She responds by saying that she has yet to turn in our order to the cook but she was on her way to do it.</p>
+		<p class='gloss'>Waitress respond.</p>
+	</div>
+	</div>
+	<button class='submit'>Submit response</button>
+	<p class='err'>Sorry, what you wrote might have been reasonable, but our parser can't handle it. Please try using <b>simple language</b> and make sure that you are giving us a <b>full, grammatical sentence</b> even though the "sentences" in the context are not complete sentences.</p>
+</div>
+<script>
+$('.slide').hide();
+$('.err').hide();
+$('[name=slide_type]').change(function() {
+	$('.slide').hide();
+	var slide_type = $('[name=slide_type]').val();
+	$('#' + slide_type).show();
+})
+
+// if top node in tree from root is not S,
+// scrap it!
+$('.submit').click(function() {
+  var slide_type = $('[name=slide_type]').val();
+  var text = $('#' + slide_type + ' .response').val();
+  console.log('your text: ' + text);
+  if (text.length == 0) {
+  	$('.err').show();
+  } else {
+	  $.post( '//erindb.me/cgi-bin/nlp.py', {'text': text, 'annotators': 'parse'})
+	    .done(function(data) {
+	      console.log('i posted and stuff happened.');
+	      console.log('the response: ' + data);
+	      console.log(data)
+	      data = JSON.parse(data);
+	      if (data.sentences.length == 0) {
+	      	$('.err').show()
+	      } else {
+		      exactlyOneSentence = data.sentences.length == 1;
+		      firstIsSentence = data.sentences[0].parse[9]=='S';
+		      if (firstIsSentence & exactlyOneSentence) {
+		      	$('.err').hide();
+		      	alert('that is a good response');
+		      } else {
+		      	$('.err').show();
+		      }
+	      }
+	    });
+	  console.log('i tried to post. and the code is still running.');
+  }
+});
+</script>
+</body>
+</html>
