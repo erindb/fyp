@@ -177,7 +177,7 @@ class Sentence:
   def untokenize(self):
     words = map(lambda x: x['word'], self.tokens)
     result = ' '.join(words).replace(' ,',',').replace(' .','.').replace(' !','!')
-    result = result.replace(' ?','?').replace(' :',': ').replace(' \'', '\'')
+    result = result.replace(' n\'t','n\'t').replace(' ?','?').replace(' :',': ').replace(' \'', '\'')
     return result
 
   def cavemanLexicalItems(self):

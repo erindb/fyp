@@ -1,0 +1,106 @@
+
+
+
+
+
+<button type='button' onclick='experiment.state.next()'>Continue</button>
+
+<p class='err'>Sorry, what you wrote might have been reasonable, but our parser can't handle it. Please try using <b>simple language</b> and make sure that you are giving us a <b>full, grammatical sentence</b>.</p>
+
+</div>
+
+<div class='slide' id='attention'>
+<p class='attention'>
+<button type='button' onclick='experiment.state.next()'>Continue</button>
+<p class='err'>Please fill in the blank with your response.</p>
+</div>
+
+<div class="slide" id="demographic">
+<p>Thank you for participating! We would like to ask you some final questions.
+Please click the 'Continue' button when you are finished.</p>
+
+<div class='demographicQuestions'>
+  <p>*What is/are your native language(s)? (The languages spoken in your household when you were a child.)
+    <select id='language'>
+    <option value=''></option>
+    <option value='eng'>English only</option>
+    <option value='eng+other'>English and other language(s)</option>
+    <option value='other'>other language(s)</option>
+    <option value='NA'>decline to state</option></select>
+    
+  <p>*What is your gender? <select id='gender'>
+    <option value=''></option>
+    <option value='female'>female</option>
+    <option value='male'>male</option>
+    <option value='NA'>decline to state</option></select></p>
+
+  <p>How old are you? <input type='text' id='age'></input></p>
+
+  <p>What is your ethnicity? <input type='text' id='ethnicity'></input></p>
+
+  <p>*What is your level of education? <select id='education'>
+    <option value=''></option>
+    <option value='0'>Did not graduate high school</option>
+    <option value='1'>High school diploma</option>
+    <option value='2'>Some college, no degree</option>
+    <option value='3'>Associates Degree</option>
+    <option value='4'>Bachelors Degree</option>
+    <option value='5'>Some graduate school, no degree</option>
+    <option value='6'>Masters Degree</option>
+    <option value='7'>Doctorate, M.D., etc.</option>
+    <option value='NA'>decline to state</option></select></p>
+
+  <p>What do you think this HIT was about?<br/><textarea rows='3' cols='30' id='studyQuestionGuess'></textarea></p>
+
+  <p>Do you have any comments on this HIT?<br/><textarea rows='3' cols='30' id='comments'></textarea></p>
+</div>
+
+<button type='button' onclick='experiment.state.next()'>Continue</button>
+
+<p class='footnote'>* indicates a required field, but you can choose 'decline to state'</p>
+
+</div>
+
+
+
+<div class="slide" id="debriefing">
+<p>If you'd like to know more about this experiment, <a target="_blank" href="debriefing/">here's a link to more information</a>.</p>
+<h3>Click the Submit button to finish the experiment.</h3>
+
+<button type='button' onclick='experiment.state.next()'>Submit</button>
+
+</div>
+
+<div class="slide" id="finished">
+<p>You're finished - thanks for participating! Submitting to Mechanical Turk
+</div>
+
+<!-- set random seed for playback later -->
+<script>Math.seedrandom(aRandomSeed);</script>
+<script src="js/experiment.js"></script>
+</body>
+</html>
+
+<!-- <script>
+function pad(num, size) {
+    var s = "000000000" + num;
+    return s.substr(s.length-size);
+}
+function cloze(doc, chn, clz) {
+	$(".document" + doc + ".chain" + chn).show();
+	$(".document" + doc + ".chain" + chn + ".cloze" + clz).hide();
+	$(".document" + doc + ".chain" + chn + ".cloze" + clz).before(
+		"<input type=\'text\'></input>"
+	);
+}
+for (var d=0; d<50; d++) {
+	var doc = pad(d, 3);
+	var chains = $(".document" + doc + ".chain");
+	var nChains = chains.length;
+	var chn = _.sample(_.range(nChains));
+	var clozes = $(".document" + doc + ".chain" + chn + ".cloze");
+	var nClozes = clozes.length;
+	var clz = _.sample(_.range(nClozes));
+	cloze(doc, chn, clz)
+}
+</script> -->
