@@ -46,10 +46,11 @@ for doc in documents:
 				})
 			firstChain = False
 
-	experiment3_data.append({
-		'docIndex': doc,
-		'clozeTests': clozeTests
-	})
+	if len(clozeTests) > 0:
+		experiment3_data.append({
+			'docIndex': doc,
+			'clozeTests': clozeTests
+		})
 
 with open('experiment3_data.json', 'w') as w:
 	w.write(json.dumps(experiment3_data))
