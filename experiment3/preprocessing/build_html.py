@@ -28,12 +28,19 @@ for document in experiment3_data:
 		## and a response input
 		for version in ['caveman', 'event_only', 'original']:
 			inner_html +=  combine_html([
-				['<div class="story ', version, '">']
+				['<div class="story ', ' '.join([
+					version,
+					'document' + docIndex,
+					'chain' + chainID
+				]), '">']
 			])
-			for sentence in [d for d in all_chains_data if d['chainID']==chainID]:
+			sentences_in_chain = [d for d in all_chains_data if d['chainID']==chainID]
+			for clozeIndex in range(len(sentences_in_chain)):
+				sentence = sentences_in_chain[clozeIndex]
 				original_text = sentence['original']
 				inner_html += combine_html([
-					['<div class="story_segment sentence">'],
+					['<div class="story_segment sentence clozeIndex',
+						str(clozeIndex), '">'],
 					['<p class="blurry">', original_text, '</p>'],
 					['<p class="gloss">', sentence[version], '</p>'],
 					['</div>']

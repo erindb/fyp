@@ -21,7 +21,8 @@ body {
 .slide {
   padding-top: 20px;
   width: 800px;
-  height: 600px;
+  /*height: 600px;*/
+  padding-bottom: 50px;
   display: none;
   position: relative;
   margin: 0 auto;

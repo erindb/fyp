@@ -3,7 +3,7 @@
 
 
 
-<button type='button' onclick='experiment.state.next()'>Continue</button>
+<button type='button' class='submit' onclick='experiment.state.next()'>Continue</button>
 
 <p class='err'>Sorry, what you wrote might have been reasonable, but our parser can't handle it. Please try using <b>simple language</b> and make sure that you are giving us a <b>full, grammatical sentence</b>.</p>
 
@@ -55,7 +55,7 @@ Please click the 'Continue' button when you are finished.</p>
   <p>Do you have any comments on this HIT?<br/><textarea rows='3' cols='30' id='comments'></textarea></p>
 </div>
 
-<button type='button' onclick='experiment.state.next()'>Continue</button>
+<button type='button' class='submit' onclick='experiment.state.next()'>Continue</button>
 
 <p class='footnote'>* indicates a required field, but you can choose 'decline to state'</p>
 
@@ -65,9 +65,9 @@ Please click the 'Continue' button when you are finished.</p>
 
 <div class="slide" id="debriefing">
 <p>If you'd like to know more about this experiment, <a target="_blank" href="debriefing/">here's a link to more information</a>.</p>
-<h3>Click the Submit button to finish the experiment.</h3>
+<h3 class="clicktofinish">Click the Submit button to finish the experiment.</h3>
 
-<button type='button' onclick='experiment.state.next()'>Submit</button>
+<button type='button' class='submit' onclick='experiment.state.next()'>Submit</button>
 
 </div>
 

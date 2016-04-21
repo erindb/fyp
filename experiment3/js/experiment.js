@@ -37,12 +37,12 @@ var clozeData = [
 var myTrials = [];
 for (var i=0; i<clozeData.length; i++) {
   var clozeDatum = clozeData[i];
-  var doc = clozeDatum["document"];
+  var doc = clozeDatum["docIndex"];
   var clozeTests = clozeDatum.clozeTests;
   for (var j=0; j<clozeTests.length; j++) {
     var clozeTest = clozeTests[j]
-    var chain = clozeTest[0];
-    var cloze = clozeTest[1];
+    var chain = clozeTest.chainID;
+    var cloze = clozeTest.clozeIndex;
     myTrials.push({
       'document': doc,
       'chain': chain,
@@ -66,7 +66,8 @@ $(".slide").append('<div class="progress"><span>Progress: </span>' +
 
 // -------- experiment structure ----------
 var experiment = {
-  totalNQns: 10 + 4 + 1, /*intro, instructions, demographic, debriefing, attention*/
+  totalNQns: clozeData.length + 3,
+  /*intro, demographic, debriefing*/
   // log data to send to mturk here
   data: {
     trials: [],
@@ -118,27 +119,31 @@ var experiment = {
   trial: function() {
     var trialStartTime = time();
     $('.response').remove();
-    $('#continue').remove();
+    $('.prompt').remove();
     showSlide("trial");
     var chain = myTrials.shift();
     console.log(chain);
-    // var nCloze = $('.document' + trialData.document + '.chain' + trialData.chain + '.cloze').length;
     var clozeIndex = chain.cloze;
     var condition = experiment.data.condition;
-    var clozeSpans = $('.' + condition + '.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex);
-    if (clozeSpans.length == 0) {
-      clozeIndex = clozeIndex - 1;
-    }
-    $('.chain').hide();
+    $(".story").hide();
+    $(".story." + condition +
+      ".document" + chain.document +
+      ".chain" + chain.chain).show();
+    $(".story." + condition +
+      ".document" + chain.document +
+      ".chain" + chain.chain + ">.story_segment").show();
+    var clozeTestOriginalID = ".story." + condition +
+      ".document" + chain.document +
+      ".chain" + chain.chain +
+      ">.story_segment.clozeIndex" + clozeIndex;
+    $(clozeTestOriginalID).hide();
 
+    var responseInput = "<p class='story_segment prompt'>" +
+      "Please guess the sentence that was here:</p>\n" +
+      "<input class='story_segment response'></input>"
+    $(clozeTestOriginalID).before(responseInput);
 
-    $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).show();
-    $('.' + condition + '.cloze.document' + chain.document + '.chain' + chain.chain).show();
-    $('.' + condition + '.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).hide();
     // var responseInput = $('<input/>', {type: 'text', class: 'response', size: '40'});
-    var responseInput = "<p class='story_segment prompt'>Please guess the sentence that was here:</p>\n<input class='story_segment response'></input>"
-    $('.' + condition + '.cloze.blurry.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).hide();
-    $('.' + condition + '.cloze.gloss.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).before(responseInput);
     experiment.state.log = function() {
       var trialResponseTime = time();
       var response = $('.response').val();
@@ -155,29 +160,6 @@ var experiment = {
           clozeIndex: clozeIndex,
           clozeHTML: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).html(),
           clozeText: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).text(),
-          trialnum: experiment.state.trialnum,
-          rt: trialResponseTime - trialStartTime
-        })
-        return true;
-      } else {
-        return false;
-      }
-    }
-  },
-  attention: function() {
-    var trialStartTime = time();
-    showSlide("attention");
-    experiment.state.log = function() {
-      var trialResponseTime = time();
-      var response = $('.attentionResponse').val();
-      if (response.length > 0) {
-        experiment.data.trials.push({
-          document: 'attention',
-          chain: 'attention',
-          response: response,
-          original: 'apples',
-          clozeIndex: 'attention',
-          clozeHTML: $('.attention').html(),
           trialnum: experiment.state.trialnum,
           rt: trialResponseTime - trialStartTime
         })
@@ -255,7 +237,7 @@ var experiment = {
 
 // -------- run experiment ----------
 var experimentStates = ["intro"].concat(
-      _.shuffle(rep("trial", 10).concat(['attention']))
+      _.shuffle(rep("trial", clozeData.length))
     ).concat(["demographic", "debriefing", "finished"]);
 
 $(document).ready(function() {
@@ -270,7 +252,7 @@ $(document).ready(function() {
     experiment.state.next();
   }
   
-  experiment.data.condition = _.sample(['caveman', 'full', 'event']);
+  experiment.data.condition = _.sample(['caveman', 'original', 'event_only']);
 
   var repeatWorker = false;
   if (repeatWorker) {
