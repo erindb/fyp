@@ -89,7 +89,25 @@ var experiment = {
     var logSuccess = experiment.state.log();
     setTimeout(function() {
       if (logSuccess == 'CHECK_RESPONSE') {
-        logSuccess = experiment.state.parser_response == 'GOOD_RESPONSE';
+        logSuccess = (experiment.state.parser_response == 'GOOD_RESPONSE' |
+          experiment.state.parser_response == 'NO_RESPONSE_FROM_PARSER')
+        if (experiment.state.parser_response == 'NO_RESPONSE_FROM_PARSER') {
+          experiment.data.trials.push({
+            document: chain.document,
+            chain: chain.chain,
+            condition: condition,
+            response: response,
+            // full: $('.full.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+            // caveman: $('.caveman.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+            // event: $('.event.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+            // original: $('.' + condition + '.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+            clozeIndex: clozeIndex,
+            // clozeHTML: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).html(),
+            // clozeText: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).text(),
+            trialnum: experiment.state.trialnum,
+            rt: trialResponseTime - trialStartTime
+          })
+        }
       }
       if (logSuccess) {
         experiment.state.trialnum++;
@@ -127,7 +145,6 @@ var experiment = {
     $('.prompt').remove();
     showSlide("trial");
     var chain = myTrials.shift();
-    console.log(chain);
     var clozeIndex = chain.cloze;
     var condition = experiment.data.condition;
     $(".story").hide();
@@ -159,8 +176,8 @@ var experiment = {
         $.post( '//erindb.me/cgi-bin/nlp.py', {'text': response, 'annotators': 'parse'})
           .done(function(data) {
             console.log('i posted and stuff happened.');
-            console.log('the response: ' + data);
-            console.log(data)
+            // console.log('the response: ' + data);
+            // console.log(data)
             data = JSON.parse(data);
             if (data.sentences.length == 0) {
               experiment.state.parser_response = 'NO_TEXT'
@@ -168,19 +185,18 @@ var experiment = {
               exactlyOneSentence = data.sentences.length == 1;
               firstIsSentence = data.sentences[0].parse[9]=='S';
               if (firstIsSentence & exactlyOneSentence) {
-
                 experiment.data.trials.push({
                   document: chain.document,
                   chain: chain.chain,
                   condition: condition,
                   response: response,
-                  full: $('.full.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-                  caveman: $('.caveman.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-                  event: $('.event.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-                  original: $('.' + condition + '.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+                  // full: $('.full.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+                  // caveman: $('.caveman.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+                  // event: $('.event.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+                  // original: $('.' + condition + '.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
                   clozeIndex: clozeIndex,
-                  clozeHTML: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).html(),
-                  clozeText: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).text(),
+                  // clozeHTML: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).html(),
+                  // clozeText: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).text(),
                   trialnum: experiment.state.trialnum,
                   rt: trialResponseTime - trialStartTime
                 })
