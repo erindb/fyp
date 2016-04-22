@@ -89,9 +89,11 @@ var experiment = {
     var logSuccess = experiment.state.log();
     if (logSuccess == 'CHECK_RESPONSE') {
       $(".submit").hide();
+      $(".parsing").show();
       // give Ss some indication that something will happen.
       setTimeout(function() {
         $(".submit").show();
+        $(".parsing").hide();
         logSuccess = (experiment.state.parser_response == 'GOOD_RESPONSE' |
           experiment.state.parser_response == 'NO_RESPONSE_FROM_PARSER')
         if (experiment.state.parser_response == 'NO_RESPONSE_FROM_PARSER') {
@@ -163,6 +165,7 @@ var experiment = {
   // run at start of block
   trial: function() {
     $(".submit").show();
+    $(".parsing").hide();
     var trialStartTime = time();
     $('.response').remove();
     $('.prompt').remove();
