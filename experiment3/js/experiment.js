@@ -95,20 +95,30 @@ var experiment = {
         logSuccess = (experiment.state.parser_response == 'GOOD_RESPONSE' |
           experiment.state.parser_response == 'NO_RESPONSE_FROM_PARSER')
         if (experiment.state.parser_response == 'NO_RESPONSE_FROM_PARSER') {
+          var chain = experiment.state.chain;
+          var clozeIndex = chain.cloze;
+          var condition = experiment.data.condition;
           experiment.data.trials.push({
-            document: chain.document,
-            chain: chain.chain,
-            condition: condition,
-            response: response,
-            // full: $('.full.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-            // caveman: $('.caveman.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-            // event: $('.event.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-            // original: $('.' + condition + '.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-            clozeIndex: clozeIndex,
-            // clozeHTML: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).html(),
-            // clozeText: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).text(),
-            trialnum: experiment.state.trialnum,
-            rt: trialResponseTime - trialStartTime
+                  document: chain.document,
+                  chain: chain.chain,
+                  condition: condition,
+                  response: response,
+                  original: $(".story." + condition +
+                    ".document" + chain.document +
+                    ".chain" + chain.chain +
+                    ">.story_segment.clozeIndex" + clozeIndex +
+                    ".blurry").text(),
+                  gloss: $(".story." + condition +
+                    ".document" + chain.document +
+                    ".chain" + chain.chain +
+                    ">.story_segment.clozeIndex" + clozeIndex +
+                    ".gloss").text(),
+                  clozeIndex: clozeIndex,
+                  storyHTML: $(".story." + condition +
+                    ".document" + chain.document +
+                    ".chain" + chain.chain).html(),
+                  trialnum: experiment.state.trialnum,
+                  rt: trialResponseTime - trialStartTime
           })
         }
         if (logSuccess) {
@@ -158,6 +168,7 @@ var experiment = {
     $('.prompt').remove();
     showSlide("trial");
     var chain = myTrials.shift();
+    experiment.state.chain = chain;
     var clozeIndex = chain.cloze;
     var condition = experiment.data.condition;
     $(".story").hide();
@@ -203,13 +214,20 @@ var experiment = {
                   chain: chain.chain,
                   condition: condition,
                   response: response,
-                  // full: $('.full.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-                  // caveman: $('.caveman.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-                  // event: $('.event.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
-                  // original: $('.' + condition + '.cloze.document' + chain.document + '.chain' + chain.chain + '.cloze' + clozeIndex).text(),
+                  original: $(".story." + condition +
+                    ".document" + chain.document +
+                    ".chain" + chain.chain +
+                    ">.story_segment.clozeIndex" + clozeIndex +
+                    ".blurry").text(),
+                  gloss: $(".story." + condition +
+                    ".document" + chain.document +
+                    ".chain" + chain.chain +
+                    ">.story_segment.clozeIndex" + clozeIndex +
+                    ".gloss").text(),
                   clozeIndex: clozeIndex,
-                  // clozeHTML: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).html(),
-                  // clozeText: $('.' + condition + '.chain.document' + chain.document + '.chain' + chain.chain).text(),
+                  storyHTML: $(".story." + condition +
+                    ".document" + chain.document +
+                    ".chain" + chain.chain).html(),
                   trialnum: experiment.state.trialnum,
                   rt: trialResponseTime - trialStartTime
                 })
