@@ -87,8 +87,8 @@ var experiment = {
   },
   defaultNext: function() {
     var logSuccess = experiment.state.log();
-    setTimeout(function() {
-      if (logSuccess == 'CHECK_RESPONSE') {
+    if (logSuccess == 'CHECK_RESPONSE') {
+      setTimeout(function() {
         logSuccess = (experiment.state.parser_response == 'GOOD_RESPONSE' |
           experiment.state.parser_response == 'NO_RESPONSE_FROM_PARSER')
         if (experiment.state.parser_response == 'NO_RESPONSE_FROM_PARSER') {
@@ -108,7 +108,16 @@ var experiment = {
             rt: trialResponseTime - trialStartTime
           })
         }
-      }
+        if (logSuccess) {
+          experiment.state.trialnum++;
+          experiment.progress();
+          var state = experimentStates.shift();
+          experiment[state]();
+        } else {
+          experiment.state.responseError();
+        }
+      }, 2000);
+    } else {
       if (logSuccess) {
         experiment.state.trialnum++;
         experiment.progress();
@@ -117,7 +126,7 @@ var experiment = {
       } else {
         experiment.state.responseError();
       }
-    }, 2000)
+    }
   },
   defaultResponseError: function() {
     $('.err').show();
