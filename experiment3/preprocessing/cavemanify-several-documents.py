@@ -3,6 +3,7 @@
 
 import csv
 import json
+import codecs
 
 def findDep(dependencies, depType=None, depTypes=None, governorIndex=None, depIndex=None):
   dependencies = findDeps(dependencies, depType=depType, depTypes=depTypes, governorIndex=governorIndex, depIndex=depIndex)
@@ -175,9 +176,12 @@ class Sentence:
       self.negation = True
 
   def untokenize(self):
+    ## could actually use the "before" and "after" tags in tokens for this
     words = map(lambda x: x['word'], self.tokens)
     result = ' '.join(words).replace(' ,',',').replace(' .','.').replace(' !','!')
     result = result.replace(' n\'t','n\'t').replace(' ?','?').replace(' :',': ').replace(' \'', '\'')
+    result = result.replace('-LRB-', '--').replace('-RRB-', '--').replace(' ;', ';')
+    result = result.replace('`` ', '"').replace(' %', '%')
     return result
 
   def cavemanLexicalItems(self):
@@ -233,7 +237,7 @@ class Sentence:
 
 def get_data_from_document(docIndex):
   document_data = []
-  with open('../../restaurant-script/documents/dinnersfromhell-document-' + docIndex +'.txt.json', 'r') as f:
+  with codecs.open('../../restaurant-script/documents/dinnersfromhell-document-' + docIndex +'.txt.json', 'rb', 'utf-8') as f:
     jsonFile = f.read()
   nlpJSON = json.loads(jsonFile)
   sentences = nlpJSON['sentences']
@@ -272,7 +276,7 @@ def main():
   ]:
     all_chains_data += get_data_from_document(docIndex)
 
-  with open('all_chains_data.csv', 'w') as csvfile:
+  with codecs.open('all_chains_data.csv', 'wb', 'utf-8') as csvfile:
       fieldnames = all_chains_data[0].keys()
       writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -280,7 +284,7 @@ def main():
       for row in all_chains_data:
         writer.writerow(row)
 
-  with open('all_chains_data.json', 'w') as w:
+  with codecs.open('all_chains_data.json', 'wb', 'utf-8') as w:
     w.write(json.dumps(all_chains_data))
 
 main()

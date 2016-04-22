@@ -52,5 +52,5 @@ for doc in documents:
 			'clozeTests': clozeTests
 		})
 
-with open('experiment3_data.json', 'w') as w:
+with codecs.open('experiment3_data.json', 'wb', 'utf-8') as w:
 	w.write(json.dumps(experiment3_data))

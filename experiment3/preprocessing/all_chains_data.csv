@@ -1,11 +1,11 @@
 chainID,event_only,caveman,docIndex,ncloze,original
 48,I manager.,I manager.,022,2,"I'm a manager and tried to unobtrusively and politely pull the drink without causing a scene, all while explaining that it was a violation of our liquor license and I couldn't allow this guest to keep the martini he had dumped into his wine glass."
-48,Judge try.,Judge try in reality.,022,2,In reality this `` judge'' was trying to hide his martini on the floor.
+48,Judge try.,Judge try in reality.,022,2,"In reality this ""judge'' was trying to hide his martini on the floor."
 72,I think.,I think.,022,1,But I thought you would like to know that the manager was extremely rude to us.
 78,We allow.,We not allow.,022,2,"As I said, we did not allow it to tarnish our evening."
 78,You think.,You think.,022,2,"If anyone should know better, you'd think it was him, except for his sense of entitlement."
 88,I misunderstand.,I misunderstand.,023,7,I misunderstood my manager and thought that we didn't accept them at all on that night.
-88,I interrupt.,I interrupt.,023,7,"I interrupted her stating, `` I will go get my manager,'' and walked away."
+88,I interrupt.,I interrupt.,023,7,"I interrupted her stating, ""I will go get my manager,'' and walked away."
 88,I go.,I go.,023,7,I went and got my manager and explained to him what happened.
 88,He take.,He take.,023,7,He took everything off their bills except drinks and appetizer.
 88,He tell.,He tell.,023,7,"He told her and her husband that he didn't appreciate their rude treatment of his staff, which happened every time they came in."
@@ -23,30 +23,30 @@ chainID,event_only,caveman,docIndex,ncloze,original
 47,Waiter come.,Waiter come.,025,2,The waiter finally came and took my order and still no one sat in the booth.
 47,He mention.,He mention.,025,2,At that point he also mentioned that the boss likes to sit at the booth I asked to sit in and that's why I couldn't sit there.
 76,She break.,She break.,033,2,"Of course, she breaks the teabag inside."
-76,She decide.,She decide.,033,2,"At this point, she finally decides to get off the phone and gets huffy with the waitress about the `` defective teabag'' and how she needs to place her order `` right now because she's in a hurry.''"
+76,She decide.,She decide.,033,2,"At this point, she finally decides to get off the phone and gets huffy with the waitress about the ""defective teabag'' and how she needs to place her order ""right now because she's in a hurry.''"
 62,I stick.,I stick.,033,1,At this point I'm just sticking around to watch the show.
 93,Restaurant attach.,Restaurant attach to b&b.,033,1,"I had a day off and went to breakfast at one of my favorite local places, a restaurant attached to a B&B that only served breakfast and dinner."
 116,We go.,We go to restaurant on night.,050,1,However... Recently we went to a familiar restaurant on a slow night.
 110,Wife retire.,Wife retire.,050,4,My wife and I are retired.
-110,Dish hot.,Dish not hot.,050,4,The dish was not hot and barely palatable ; I believe he deliberately left it sitting before he brought it out as there were not enough other customers for the kitchen to be backed up.
+110,Dish hot.,Dish not hot.,050,4,The dish was not hot and barely palatable; I believe he deliberately left it sitting before he brought it out as there were not enough other customers for the kitchen to be backed up.
 110,I refuse.,I refuse.,050,4,I refused but also declined to tip the culprit.
 110,I wonder.,I wonder.,050,4,"I wonder, however, what we could have done differently to avoid his attitude."
 11,I ask.,I ask.,063,1,"When dining out, if I want a burger I will always ask the server if the place does rare and if not I will order something else."
 23,They do.,They do.,063,1,thing and was assured they do.
 88,I want.,I want.,063,1,"It was a long day and I was tired, so I mentioned to my wife that I really didn't care if the burger was overcooked, I just wanted to eat and hit the road."
 84,Seconds come.,Seconds come.,063,2,A few seconds later the server came to check on us and asked how our food was.
-84,Server start.,Server start.,063,2,"The server started arguing with my wife, `` I made sure the cook knew it had to be rare... the cook was going to leave it on longer but I made him take it off... etc.'' After a minute or so of listening to them argue about whether the burger was well done or rare, I just picked the burger patty up with both hands, they both stopped and looked at me, and I broke the burger patty in half with an audible snap."
+84,Server start.,Server start.,063,2,"The server started arguing with my wife, ""I made sure the cook knew it had to be rare... the cook was going to leave it on longer but I made him take it off... etc.'' After a minute or so of listening to them argue about whether the burger was well done or rare, I just picked the burger patty up with both hands, they both stopped and looked at me, and I broke the burger patty in half with an audible snap."
 26,I dine.,I dine with mother.,086,1,About two years ago I was dining at an Asian restaurant in San Antonio with my mother and younger brother.
 27,I dine.,I dine with mother.,086,1,About two years ago I was dining at an Asian restaurant in San Antonio with my mother and younger brother.
 40,Waitress offer.,Waitress offer.,086,2,"The waitress offered to refill my mother and brother's glasses, but she never asked if I needed one."
 40,I have.,I have.,086,2,I always had to speak up and try to get her attention for a refill.
-140,Mum converse.,Mum converse with waiter.,120,2,My mum was jovially conversing with the waiter when he brought the check ; he seemed to be enjoying himself.
+140,Mum converse.,Mum converse with waiter.,120,2,My mum was jovially conversing with the waiter when he brought the check; he seemed to be enjoying himself.
 140,I remain.,I remain in seat.,120,2,"Still trying to keep my cool, I remained in my seat and leaned over."
 39,I odd.,I odd.,120,1,"Perhaps I'm a little odd, but I have a rather large territorial bubble that I DO NOT like people violating."
 41,Food good.,Food good.,120,3,"The food was good, the service was good, we had a fun time."
 41,We people.,We people.,120,3,"We're amicable people, and enjoy small-talk with waiters... well, my mum and sister do, I'm hard of hearing so I'm generally quiet."
-41,We seat.,We seat.,120,3,"We'd been seated at a booth, but I sat on a regular chair on the outside of the table -LRB- yes, my crazy bubble rules apply to even family members -RRB-."
-125,Mum converse.,Mum converse with waiter.,120,4,My mum was jovially conversing with the waiter when he brought the check ; he seemed to be enjoying himself.
+41,We seat.,We seat.,120,3,"We'd been seated at a booth, but I sat on a regular chair on the outside of the table -- yes, my crazy bubble rules apply to even family members --."
+125,Mum converse.,Mum converse with waiter.,120,4,My mum was jovially conversing with the waiter when he brought the check; he seemed to be enjoying himself.
 125,He stand.,He stand to i.,120,4,"He was standing next to me, but I did my best to concentrate on my soda and be polite."
 125,Keep.,Keep.,120,4,"Dear God, he kept moving closer!"
 125,He bid.,He bid on accord.,120,4,On his own accord he bid us a good day and left before I toppled out of my chair or had a psychotic episode.
@@ -73,7 +73,7 @@ chainID,event_only,caveman,docIndex,ncloze,original
 102,Experience one.,Experience one.,151,10,Our experience at that restaurant was a disgusting and unhealthy one.
 103,We start.,We start on way.,151,1,We started on our way out of the restaurant.
 85,I mad.,I mad.,151,1,At that time I was so mad I yelled at the waiter.
-33,He scowl.,He scowl.,153,1,"But he scowls and practically yells, `` YOU'VE GOT NO MONEY?!'''"
+33,He scowl.,He scowl.,153,1,"But he scowls and practically yells, ""YOU'VE GOT NO MONEY?!'''"
 22,I order.,I order.,153,2,"I ordered a fairly simple meal, and it was only when I opened my wallet that I suddenly realised I had forgotten to go to the bank."
 22,It thing.,It thing.,153,2,It was a good thing that they didn't prepare my meal before giving me the price!
 34,I tell.,I tell.,153,1,"Trying not to let anyone hear, I quietly told the lad to cancel my order."
@@ -81,9 +81,9 @@ chainID,event_only,caveman,docIndex,ncloze,original
 58,He point.,He point to space.,171,2,He points to the space that the staff need to use to move from the restaurant to the kitchen doors.
 29,It happen.,It happen on holiday.,171,2,It happened on a bank holiday and I was not at work that day.
 29,It pour.,It pour with rain.,171,2,It was also pouring with rain outside and the restaurant was very busy with only about two tables free.
-153,Waitress stare.,Waitress stare.,177,2,"The waitress just stares back at him, snatches the bill from his hand and storms off and starts shouting across the entire restaurant `` THEN I'M CHARGING YOU FULL PRICE FOR HER DESSERT!!!''"
+153,Waitress stare.,Waitress stare.,177,2,"The waitress just stares back at him, snatches the bill from his hand and storms off and starts shouting across the entire restaurant ""THEN I'M CHARGING YOU FULL PRICE FOR HER DESSERT!!!''"
 153,Everyone stare.,Everyone stare.,177,2,Everyone in the restaurant stares at her then at us.
-20,Couple run.,Couple run.,177,3,A couple of months ago my husband and I were out running errands and decide to meet up with some friends at a local `` Mom & Pop'' restaurant.
+20,Couple run.,Couple run.,177,3,"A couple of months ago my husband and I were out running errands and decide to meet up with some friends at a local ""Mom & Pop'' restaurant."
 20,Friend order.,Friend order with daughter.,177,3,These friends of ours had just ordered their lunches with their 9 month old daughter when we arrived.
 20,Husband decide.,Husband decide.,177,3,My husband and I decided to just order a couple of sodas and desserts as we had a big breakfast earlier in the day and we explained to the waitress that our two orders would be on a separate ticket which seemed to confuse her.
 44,They have.,They have.,177,1,I changed my order to some specialty chocolate cake they had without much ado.
@@ -97,25 +97,25 @@ chainID,event_only,caveman,docIndex,ncloze,original
 86,I order.,I order.,177,2,"When it came time to pay she brings our ticket and explains that she rang us up for the pecan pie I had ordered as it was less expensive and what I wanted in the first place, but we noticed that she charged us for our friend's Taco Salad."
 11,He kid.,He kid.,191,5,"He was a generally quiet, well-behaved kid, even at that age, and we made sure we brought lots of quiet activities and even some Cheerios and other toddler snacks for the wait."
 11,Son get.,Son get.,191,5,Our son got a little cranky so we gave him some Cheerios.
-11,We be.,We be.,191,5,"We were out of things for him to do other than sing `` Old MacDonald'' to him, which probably wouldn't have gone over too well with the other patrons."
+11,We be.,We be.,191,5,"We were out of things for him to do other than sing ""Old MacDonald'' to him, which probably wouldn't have gone over too well with the other patrons."
 11,Son behave.,Son behave.,191,5,Our son was now behaving the way you would expect an 18-month-old to behave after sitting in a high chair for nearly an hour watching other people eat.
 11,We blame.,We not blame.,191,5,"We don't blame him, but we also knew that others didn't come to this restaurant to sit beside a cranky toddler."
 133,We wait.,We wait.,191,3,"We waited some more, but only until we could snag our waiter, who was now quite a bit busier, since nearly an hour had passed and many more people had come in."
 133,We get.,We get.,191,3,"We got our waiter's attention and explained that we had not received our food, even though we ordered before the other party had even arrived."
 133,We explain.,We explain.,191,3,We explained the situation and she called our waiter over.
-143,I know.,I not know.,191,1,"I don't know which of the two was right, but we were starving so we asked for the pizza to go, drove the half-hour drive home and `` enjoyed'' it at room temperature."
+143,I know.,I not know.,191,1,"I don't know which of the two was right, but we were starving so we asked for the pizza to go, drove the half-hour drive home and ""enjoyed'' it at room temperature."
 3,Wife think.,Wife think.,191,2,"When our son was about 18 months old, my wife and I thought we might try taking him out to a restaurant."
 3,Son more.,Son more after little.,191,2,"After a little while longer, our son was being more than a little disruptive."
-137,She exclaim.,She exclaim.,191,1,"When he gave her the explanation about the `` slow'' oven, she exclaimed loudly, `` What slow oven?"
+137,She exclaim.,She exclaim.,191,1,"When he gave her the explanation about the ""slow'' oven, she exclaimed loudly, ""What slow oven?"
 24,Waiter go.,Waiter go after round.,196,1,"After a few rounds of this argument, the waiter went to get the manager."
 51,He put.,He put on table.,196,1,"He put the box and the scale down on their table, and proceeded to pull raw steaks out of the box."
-73,Time point.,Time point.,196,1,"Each time, he took a steak out of the box, he threw it on the scale, pointed, and yelled:  `` 10 ounces!''"
+73,Time point.,Time point.,196,1,"Each time, he took a steak out of the box, he threw it on the scale, pointed, and yelled:  ""10 ounces!''"
 68,Couple be.,Couple be.,196,7,"There was a couple at the next table, and when their dinner was brought to the table, the man complained to the waiter that his steak was too small."
 68,Waiter assure.,Waiter assure.,196,7,"The waiter assured the man that the steak was indeed a 10 oz steak, and the man insisted that it wasn't."
 68,Manager explain.,Manager explain to man.,196,7,The manager explained to the man that 10 oz was the uncooked weight of the steak.
 68,He put.,He put on table.,196,7,"He put the box and the scale down on their table, and proceeded to pull raw steaks out of the box."
-68,Time point.,Time point.,196,7,"Each time, he took a steak out of the box, he threw it on the scale, pointed, and yelled:  `` 10 ounces!''"
-68,He throw.,He throw.,196,7,"He then would throw that steak on the table, get another one out of the box, throw it on the scale, and again, exclaim:  `` 10 ounces!''"
+68,Time point.,Time point.,196,7,"Each time, he took a steak out of the box, he threw it on the scale, pointed, and yelled:  ""10 ounces!''"
+68,He throw.,He throw.,196,7,"He then would throw that steak on the table, get another one out of the box, throw it on the scale, and again, exclaim:  ""10 ounces!''"
 68,Manager shout.,Manager shout after they.,196,7,"The manager shouted after them that they had not paid their bill, and the man shouted back something that I can't repeat on a family site."
 21,Waitress come.,Waitress come.,243,3,"After perusing our menus, the waitress came over to take our order."
 21,She ask.,She ask.,243,3,"After giving her my order, she then asked Clark for his."
@@ -128,4 +128,4 @@ chainID,event_only,caveman,docIndex,ncloze,original
 20,Waiter come.,Waiter come to table.,271,1,"As we reviewed the menus, a tuxedo-clad waiter came to our table and asked if we were ready to order."
 18,Waiter say.,Waiter say.,271,3,"The waiter said nothing the rest of the evening about us having to leave early, but he was clearly peeved."
 18,We remain.,We remain for hour to spite.,271,3,"Just to spite him, we remained at our table for nearly 3 hours."
-18,I tip.,I tip.,271,3,"I usually tip well, but I gave the waiter 12 %, which actually was too much."
+18,I tip.,I tip.,271,3,"I usually tip well, but I gave the waiter 12%, which actually was too much."
