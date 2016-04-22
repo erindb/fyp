@@ -91,6 +91,7 @@ var experiment = {
       $(".submit").hide();
       // give Ss some indication that something will happen.
       setTimeout(function() {
+        $(".submit").show();
         logSuccess = (experiment.state.parser_response == 'GOOD_RESPONSE' |
           experiment.state.parser_response == 'NO_RESPONSE_FROM_PARSER')
         if (experiment.state.parser_response == 'NO_RESPONSE_FROM_PARSER') {
