@@ -87,14 +87,19 @@ var experiment = {
   },
   defaultNext: function() {
     var logSuccess = experiment.state.log();
-    if (logSuccess) {
-      experiment.state.trialnum++;
-      experiment.progress();
-      var state = experimentStates.shift();
-      experiment[state]();
-    } else {
-      experiment.state.responseError();
-    }
+    setTimeout(function() {
+      if (logSuccess == 'CHECK_RESPONSE') {
+        logSuccess = experiment.state.parser_response == 'GOOD_RESPONSE';
+      }
+      if (logSuccess) {
+        experiment.state.trialnum++;
+        experiment.progress();
+        var state = experimentStates.shift();
+        experiment[state]();
+      } else {
+        experiment.state.responseError();
+      }
+    }, 2000)
   },
   defaultResponseError: function() {
     $('.err').show();
@@ -147,8 +152,9 @@ var experiment = {
     experiment.state.log = function() {
       var trialResponseTime = time();
       var response = $('.response').val();
+      experiment.state.parser_response = 'NO_RESPONSE_FROM_PARSER'
       if (response.length == 0) {
-        return false;
+        experiment.state.parser_response = 'NO_TEXT'
       } else {
         $.post( '//erindb.me/cgi-bin/nlp.py', {'text': response, 'annotators': 'parse'})
           .done(function(data) {
@@ -157,7 +163,7 @@ var experiment = {
             console.log(data)
             data = JSON.parse(data);
             if (data.sentences.length == 0) {
-              return false
+              experiment.state.parser_response = 'NO_TEXT'
             } else {
               exactlyOneSentence = data.sentences.length == 1;
               firstIsSentence = data.sentences[0].parse[9]=='S';
@@ -178,16 +184,16 @@ var experiment = {
                   trialnum: experiment.state.trialnum,
                   rt: trialResponseTime - trialStartTime
                 })
-                return true;
-
+                experiment.state.parser_response = 'GOOD_RESPONSE'
               } else {
-                return false
+                experiment.state.parser_response = 'MULTIPLE_SENTENCES'
               }
             }
           });
         console.log('i tried to post. and the code is still running.');
       }
     }
+    return 'CHECK_RESPONSE'
   },
   demographic: function() {
     $(".languageFree").hide();
