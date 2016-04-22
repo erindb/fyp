@@ -217,8 +217,8 @@ var experiment = {
           });
         console.log('i tried to post. and the code is still running.');
       }
+      return 'CHECK_RESPONSE'
     }
-    return 'CHECK_RESPONSE'
   },
   demographic: function() {
     $(".languageFree").hide();
