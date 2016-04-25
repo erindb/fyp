@@ -189,7 +189,7 @@ var experiment = {
       } else {
         $.post( '//erindb.me/cgi-bin/nlp.py', {'text': response, 'annotators': 'parse'})
           .done(function(data) {
-            console.log('i posted and stuff happened.');
+            // console.log('i posted and stuff happened.');
             // console.log('the response: ' + data);
             // console.log(data)
             data = JSON.parse(data);
@@ -205,15 +205,18 @@ var experiment = {
                   condition: condition,
                   response: response,
                   original: $(".document" + chain.document +
+                    "." + experiment.data.condition +
                     ".chain" + chain.chain +
                     ">.story_segment.sentence.clozeIndex" + clozeIndex +
                     ">.blurry").text(),
                   gloss: $(".document" + chain.document +
+                    "." + experiment.data.condition +
                     ".chain" + chain.chain +
                     ">.story_segment.sentence.clozeIndex" + clozeIndex +
                     ">.gloss").text(),
                   clozeIndex: clozeIndex,
                   storyHTML: $(".story." + condition +
+                    "." + experiment.data.condition +
                     ".document" + chain.document +
                     ".chain" + chain.chain).html(),
                   trialnum: experiment.state.trialnum,
@@ -225,7 +228,7 @@ var experiment = {
               }
             }
           });
-        console.log('i tried to post. and the code is still running.');
+        // console.log('i tried to post. and the code is still running.');
       }
       return 'CHECK_RESPONSE'
     }
@@ -289,7 +292,7 @@ var experiment = {
     showSlide("finished");
     // Wait 1.5 seconds and then submit the whole experiment object to Mechanical Turk (mmturkey filters out the functions so we know we're just submitting properties [i.e. data])
     setTimeout(function() { turk.submit(experiment.data) }, 1500);
-    console.log(JSON.stringify(experiment.data));
+    // console.log(JSON.stringify(experiment.data));
   },
   debriefing: function() {
     showSlide("debriefing");
