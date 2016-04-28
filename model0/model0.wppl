@@ -1,0 +1,36 @@
+/*
+
+## Question
+
+How do people generate stories from events?
+
+## Generative Model
+
+* Have a stochastic transition network where
+some events are more probable than others
+
+* Sample event chains from this network:
+That's what happened.
+
+* Generate stories from these chains using a
+story generator
+
+## Story generator
+
+BasicModel:
+Just comment on a subset of what happened.
+
+DumbInformativityModel:
+P(mention | happen) depends on probability of event.
+
+InformativityModel:
+P(mention | happen) depends on predictability of event given context.
+
+## Another (future) question
+
+If we know how people's choices of what events to mention
+is biased, can we interpret their stories better?
+
+*/
+
+1
