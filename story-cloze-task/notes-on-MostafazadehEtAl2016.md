@@ -1,0 +1,97 @@
+# Literature Review for Story Cloze Task
+
+## Summary of Mostafazedeh et al. (2016)
+
+Mostafazedeh et al. (2016) developed a "Story Cloze Task", which is like the narrative cloze task but better at actually capturing commonsense world knowledge and principles of storytelling.
+
+Their goals are to be able to learn commonsense relations between entities and events, to learn how to tell interesting stories, and to learn what makes an efficient, cohesive, informative narrative (and what doesn't).
+
+Several works focus on doing well on the narrative cloze task, but in doing so they lose sight of the goals (Jans et al., 2012; Pichotta and Mooney, 2014a; Rudinger et al., 2015).
+
+A "story" for these authors is a logically linked set of events involving some shared characters.
+
+Some facts about the story corpus they collected:
+
+* They searched through all of the words used in the stories to collect the "events" (hyponyms of "event" or "process" in wordnet) and found that there was a wide variety of events.
+* Temporal and sentence order appear to match about 55% of the time.
+
+They created a story cloze test, not just a corpus of stories.
+
+The tests were collected by...
+
+### Baseline models they tested
+
+1. Frequency
+
+Extract main verb and its arguments using TRIPS semantic parser and check [number of hits in Google search](https://developers.google.com/)
+
+2. N-gram overlap
+
+Chooses the alternative that shared the most n-grams with the context (using Smoothed-BLEU score of Lin & Och, 2004)
+
+3. GenSim
+
+Chooses the hypothesis with the closer average word2vec embedding.
+
+4. Sentiment-Full / Sentiment-Last
+
+Choose the hypothesis that matches the sentiment of the (full|last sentence of the)context (Manning et al, 2014).
+
+6. Skip-thought Model
+
+Use Sentence2Vec embedding (Kiros et al. 2015) trained on the BookCorpus (Zhu et al., 2015). Choose the closest embedding to the context.
+
+7. Narrative Chains
+
+* Learn PMI for "events" (main verb + entity role) where co-ocurrance means that they occur in a coreference chain in...
+	- the ROCStories corpus
+	- the Associate Press portion of the English Gigaword corpus (keep events that occur @least 2 times)
+* Run coreference to see if any entities are shared with the context.
+* If yes, extract a chain for that entity and pick the hypothesis with a higher average PMI with the other events in the chain. (If not, randomly choose)
+
+9. Deep Structured Semantic Model
+
+
+
+## Mentioned (or relevant) References
+
+### Story Generation
+
+Shaharazad: https://research.cc.gatech.edu/inc/open-story-generation
+
+### Script/Schema Learning
+
+* Chambers & Jurafsky (2008)
+* Chambers & Jurafsky (2009)
+
+Balasubramanian et al., 2013; Cheung et al., 2013; Nguyen et al., 2015
+script sequences (Regneri
+et al., 2010), and relgrams (Balasubramanian et al.,
+2013). Formal probabilistic models have also been
+proposed to learn event schemas and frames (Cheung
+et al., 2013; Bamman et al., 2013; Chambers,
+2013; Nguyen et al., 2015)
+
+A "story" for these authors is a logically linked set of events involving some shared characters.
+
+
+## My thoughts
+
+### About this corpus
+
+This is a really hard task. It's like the text-adventure game, but huge.
+
+I think that discourse markers often indicate whether a sentence should match what's come before.
+
+Some of the wrong answers are direct contractictions of something that came before.
+
+I think a dumb model that could do well would choose the hypothesis that gives the whole story a higher magnitude sentiment rating.
+
+Lots of facts are skipped or implicit. It doesn't *seem* like you could learn any scripts or schemas from this corpus.
+
+### About stories in general
+
+* stories can be creative, but I don't care about that
+* stories can be told with clarity and ingenuitiy, but I don't care about that
+* stories can be told efficiently. I care about that.
+* stories can be told cohesively. I care about that.
