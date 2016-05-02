@@ -1,0 +1,258 @@
+---
+title: "Scripts"
+author: |
+  | Erin Bennett
+  | `erindb@stanford.edu`
+bibliography: bibliography.bib
+csl: 4or.csl
+output:
+  html_document:
+    toc: true
+    theme: spacelab
+    css: erinRmd.css
+    # number_sections: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    fig_width: 5
+    fig_height: 3
+    code_folding: hide
+---
+
+<p class='popquote'>Scripts as a kind of knowledge has been an idea in psychology for a long time.</p>
+
+## @schank_scripts_1977
+
+### Chapter Summaries
+
+#### Introduction
+
+Review of conceptual dependency theory in which every event is reducible to universal components. Sort of Language of Thought type stuff.
+
+#### Causal chains
+
+The basic idea here is that discourses make sense iff they form a causal chain, and that causes can be indirect, with a lot of implicit events. Understanding involves iferring these unstated causal connections and events, which can be difficult.
+
+Is there some empirical work showing that causally linked stories make more sense? I think I found some, but I should reference it.
+<!-- Ross et al. 1976 did a study where explaining something that didn't actually happen made people think it was more likely -->
+
+#### Scripts
+
+**Introduction:** Scripts are stereotypical sequences of events where the events are causally connected to one another and the actors are abstracted away as roles that a partcular agent can fill. Scripts are written from the point of view of a protagonist.
+
+> A script is a structure that describes appropriate sequences of events in a particular context. A script is made up of slots and requirements about what can fill those slots. The structure is an interconnected whole, and what is in one slot affects what can be in another. Scripts handle stylized everday situations. They are not subject to much change, nore do they provide the apparatus for handling totally novel situations. Thus, a script is a predetermined, stereotyped sequence of actions that defines a well-known situation. Scripts allow for new reference to objects within them just as if these objects had been previously mentioned; objects within a script may take "the" without explicit introduction because the script itself has already implicitly introduced them.
+
+**The restaurant script:** The restaurant script forms a giant causal chain. If one element in the script is violated, that will stop the rest of the script, or be handled before we can move one, and it might have downstream consequences. There are many different ways of phrasing the events that happen in the restaurant script and there are many levels of abstraction and specific details. One way to talk about levels of abstraction is with scenes: entering, ordering, eating, and exiting.
+
+**Script application:** It's not always appropriate to assume the events in the restaurant script happen. How do we know when the events happened and when they didn't? There seem to be certain cues (location, preconditions, etc.) that suggest a script will occur. It also seems that the presence of other scripts can interfere with the application of a new script, e.g.
+
+> The delivery man brought fifteen boxes of doughnuts to the restaurant. He went inside and spoke to the manager.
+
+In this story, we can make reference to the manager, but we can be pretty sure that the delivery man isn't going to sit down and order food.
+
+We fill in gaps in scripts, e.g.
+
+> John went to a restaurant. He ordered chicken. He left a large tip.
+
+This story seems to imply the following:
+
+> John went to a restaurant. He sat down. He read a menu. He ordered chicken. He ate chicken. He left a large tip. He paid the check. He left the restaurant.
+
+When is it OK to skip over parts of the script, and when not? Leaving things out seems to be OK as long as the causal connects are clear.
+
+**Interferences and distractions:** Sometimes scripts can be modified or derailed. Sometimes someone will make an (accidental or intentional) error in performing their role in the script, or another kind of outside interference will occur, preventing downstream events in the script from being possible. This error/interference can be corrected and the actors can return to the script, or it can cause everyone to go off script completely. In the face of an error or obstacle, actors can repeat their action in hopes of it going right this time, looping over parts of the script until they can continue, or they can do something that is off-script but that will help to get them back on script. When things don't go according to a script, people might react emotionally (laughing, being frustrated), they might get distracted by a new goal, or they might abandon the script entirely (e.g. leave the restaurant in disgust).
+
+**Script Interactions:** Sometimes multiple scripts will be needed to understand a single story. Sometimes the scripts can happen simultaneously, sometimes sequentially. The presence of one script might indicate that the previous script is over (after continuing to completion), or it might just mean that the script is on pause. Sometimes two actors can disagree about what script they are in.
+
+**Types of scripts:** @schank_scripts_1977 classify scripts into three categories:
+
+* situational scripts (usually, but not always, involving multiple actors)
+    - restaurant
+    - train
+    - going backpacking
+* personal scripts (where one actor's script assumes the other actors don't know they're in that script)
+    - pickpocketing
+    - spying
+    - hitting on someone
+    - manipulative flattery
+* instrumental scripts (a goal-directed script involving one actor and their manipulation of some objects)
+    - starting a car
+    - frying eggs
+
+**Script-based Understanding:** People have a lot of scripts that they know, and it's hard to make sense of a new situation without them.
+
+> I received a phone call from an old friend who lives about 100 miles north of me. He said 'Hi, I'm on I-91'. (The highway that connects our respective cities.) I asked him if he would like to drop by and he said he would. I then asked him where he was exactly so I'd know when to expect him. He answered 'Well let's see, oh there's a sign coming up, it says, wait a minute, Wallingfor next, uh, oh there it is, exit 14'. At this point I was totally baffled. I had visions of my friend having lost connection with reality. My 'telephoning before visiting' script did not have room in it for uncertainty about one's location that could be resolved by signs 'coming up'. It took me a while to realize that my friend, being a gadget-oriented person, had a phone installed in his car. What we had was the telephone script mixed with the driving script, a mix that I was quite unfamiliar with.
+
+#### 4.6 The relationship between plans and scripts
+
+Scripts involve actors with goals. Both the goals themselves and the means of achieving them become conventionalized and stereotyped in a script. Achieving the standard goal for a context in a different way than is customary is totally weird if there's no obstacle or error with the script as it is usually carried out.
+
+> John couldn't get a taxi, so he rode his horse downtown and into a restaurant. He beat up another customer and took a menu from him. He decided to have a steak. The waiter came along and John offered to give him a bottle of scotch if he listened to John tell him what he wanted to eat...
+
+#### 7.1 Representations of scripts
+
+Things that need to be represented in scripts:
+
+* the kinds of causal dependence between events
+* the fact that intermediate necessary steps (almost) certainly happened, even if they'r enot mentioned
+* the point of view (what is the protagonist's role?)
+* the other actors that must have been involved
+* what actors, props, sets, etc. were playing the different roles in this instance?
+
+#### 8.2 SAM
+
+> SAM [(Script Applier Mechanism)] understands these stories and others like them. By 'understand' we mean SAM can create a linked causal chain of conceptualizations that represent what took place in each story. SAM parses the story into input conceptualizations using Riesbeck's analyzer (Riesbeck, 1975). These are then fed to a program that looks for script applicability (Cullingford, 1976). When a script seems to be applicable, it is used by the script applier to make inferences about events that must have occurred between events specifically mentioned.
+
+How SAM works:
+
+1. Translate sentences into meanings.
+2. Figure out which scripts to apply, if any, and fill in details about the actors, props, settings, etc. Also make note of any interferences to the typical script path.
+3. Some things are more unusual/unexpected than others with respect to the script.
+4. Scripts can be used to answer questions, including clarifications and responses why/why-not questions. 
+
+A clarification in response to a question:
+
+> A: Did the waitress give John a menu? <br/>
+B: No, the hostess gave John a menu. (as opposed to 'No, the waitress gave John a hamburger.')
+
+An answer to a why-not question:
+
+> A: Why didn't John eat a hamburger? <br/>
+B: Because the waitress told him they didn't have any. (a point of interference from the typical script)
+
+#### 9.1 Learning scripts
+
+The authors are I think saying that kids learn scripts by recording episodic memories and assuming that things will happen that way next time, then abstracting and generalizing to cover new examples of the same situation.
+
+### Overall summary
+
+Scripts are stylized typical sequences of events and the causal dependencies between them from the perspective of a "protagonist". Scripts invole roles for actors, props, and settings that can be filled in for a particular instantiation of the script.
+
+Scripts are meant to explain the following phenomena:
+
+#### We fill in gaps in stories.
+
+> John went to a restaurant. He ordered chicken. He left a large tip.
+
+implicates...
+
+> John went to a restaurant. He sat down. He read a menu. He ordered chicken. He ate chicken. He paid the check. He left a large tip. He left the restaurant.
+
+#### We reference typical roles in a script with definite articles
+
+> John went to a restaurant. He talked to the waiter. <br/>
+> John took a bus. He talked to the driver. <br>
+> * John went to a restaurant. He talked to the driver.
+
+#### Sometimes, the introduction of events from a new script can indicate the previous script continued to completion
+
+> John went to a restaurant. He talked to the waiter. Then he bought a watch.
+
+<!-- #### We talk about and remember deviations from a script more than script-consistent events. -->
+
+<!-- #### We answer why-not questions with the point of deviation from a script
+
+> John went to a restaurant. He ordered a hamburger. The waiter told him they were out of hamburgers. He ordered a hot dog, ate it quickly, paid, and left.
+
+> Why didn't John eat a hamburger? -->
+
+<!--
+charniak 1972
+@abelson_psychological_1981
+When might people talk about the content of scripts explicitly?
+- when communicating cultural differences (traveling/tour guide)
+- when talking to children (picture books/child-directed speech)
+-->
+
+## @sweller_cognitive_1994 (a more recent summary)
+
+> Scripts are
+>
+1. high-level, precompiled,
+conceptual knowledge structures, which are
+2. stored in long-term memory, which
+3. represent general
+(stereotyped) event sequences, in which
+4. the individual
+events are interconnected by temporal and often also causal or
+hierarchical relationships, that 
+5. can be activated as integral
+wholes in appropriate contexts, that
+6. contain variables and
+slots that can be filled with information present in the actual
+situation, retrieved from memory, or inferred from the context,
+and that
+7. develop as a consequence of routinely performed
+activities or viewing such activities being performed; in other
+words, through direct or vicarious experience
+>
+Some important functions are served by
+scripts:
+>
+1. they provide structured knowledge necessary for
+understanding behavioral sequences,
+2. they enable individuals
+to integrate new incoming information with existing
+knowledge,
+3. they guide memory retrieval,
+4. they enable
+predictions about what will happen in the near future,
+5. they
+guide actual behavior, and
+6. they usually contain knowledge
+that can be used to explain why a specific action or sequence
+of actions has occurred or might occur
+>
+In addition, in laboratory experiments, script theory
+specifically predicts differential memory performance for
+>
+a. different types of information (i.e., typical versus atypical),
+b. differential relevance of information (i.e., important versus
+unimportant),
+c. different retrieval tasks (i.e., recall versus
+recognition), and
+d. different delays of retrieval (i.e., immediate
+versus delayed memory test)
+>
+Recall studies have
+shown that at immediate testing, atypical script actions,
+objects, or events are recalled quite well, while at delayed
+testing, memory for atypical information appears to have
+faded, particularly if this information is less salient, relevant, or
+vivid (Bower et al. 1979; Graesser et al. 1980; Graesser 1981;
+Smith & Graesser 1981; Schmidt & Sherman 1984; Davidson
+1994).
+>
+Memory for script typical information, in contrast, is
+featured by recall intrusions, that is, this information is
+‘‘recalled’’ even if it was not present in the instantiated script
+(Brewer & Treyer 1981; Schmidt & Sherman 1984).
+>
+In
+recognition memory studies, the corresponding phenomenon
+of false alarms to (deliberately omitted) script typical information
+is an ubiquitous finding (Sulin & Dooling 1974; Bower
+et al. 1979; Graesser et al. 1979, 1980; Bellezza & Bower 1981;
+Brewer & Treyens 1981; Walker & Yekovich 1984; Nakamura
+& Graesser 1985; Nakamura et al. 1985; Yekovich & Walker
+1986; Maki 1990; Davidson 1994).
+>
+False alarm rates to atypical
+information, in contrast, are much lower, in particular, if this
+information is peripheral to the script (Nakamura & Graesser
+1985; Yekovich & Walker 1986).
+>
+Finally, illness script theory has also brought forth an
+assessment tool, the Script Concordance Test (Charlin et al.,
+2000). This test measures to what extent a student’s script
+matches that of a panel of experts by asking, in individual
+items, what the effect of a new piece of information (e.g.,
+a new finding) would be on the likelihood of a given script.
+Thus, this test forces the examinee to carefully assess new
+incoming information, rather than ‘‘guessing’’ a diagnosis. This
+test, which is increasingly used in diverse clinical domains,
+appears to be particularly useful in ill-defined situations and
+has shown validity (Lubarsky et al., 2011).
+
+## References
