@@ -1,0 +1,134 @@
+---
+title: "Narrative Cloze Task: Experiment 3"
+author: |
+  | Erin Bennett
+  | `erindb@stanford.edu`
+bibliography: ../bibliography.bib
+output:
+  pdf_document:
+    toc: false
+    highlight: zenburn
+    toc_depth: 3
+---
+
+```{r global_options, include=FALSE}
+rm(list=ls())
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, sanitiz =TRUE, fig.width=5, fig.height=3)
+```
+
+```{r}
+library(tidyr)
+library(dplyr)
+library(pwr)
+library(rjson)
+library(ggplot2)
+library(ggthemes)
+library(entropy)
+theme_new <- theme_set(theme_few())
+
+# for bootstrapping 95% confidence intervals
+theta <- function(x,xdata) {mean(xdata[x])}
+ci.low <- function(x) {
+  quantile(bootstrap::bootstrap(1:length(x),1000,theta,x)$thetastar,.025)}
+ci.high <- function(x) {
+  quantile(bootstrap::bootstrap(1:length(x),1000,theta,x)$thetastar,.975)}
+
+options(digits=3)
+```
+
+# Experiment
+
+The narrative cloze task is a common evaluation task for script induction. I would like to understand humans' performance on the narrative cloze task.
+
+In this task, participants read stories involving a particular entity. One of the events the entity is involved in is left blank. Participants are asked to fill in this blank with a plausible completion.
+
+```{r}
+# raw.data.path = "../data-collection/experiment3/production-results/"
+# all.data <- data.frame()
+# files <- dir(raw.data.path,pattern="*.json")
+# 
+# for (file.name in files) {
+#   json_file <- readLines(paste(raw.data.path,file.name,sep=""))
+#   json_file_str = paste(json_file, collapse = "")
+#   json_file_str = gsub(",}", "}", json_file_str)
+#   jso = jsonlite::fromJSON(json_file_str)
+#   
+#   # events = ((jso$answers)$data)$events
+#   # minutes = (max(events$time) - min(events$time)) / 60000
+#   
+#   trials = ((jso$answers)$data)$trials
+#   demographics = ((jso$answers)$data)$demographics
+#   for (i in 1:(nrow(demographics))) {
+#     trials[demographics[i,'qtype']] = demographics[i, 'response']
+#   }
+#   jso1 <- data.frame(trials)
+#   # jso1$total_minutes = minutes
+#   jso1$workerid = strsplit(file.name, '.json')[[1]]
+# 
+#   all.data <- rbind(all.data, jso1)
+# }
+# 
+# all.data = all.data %>% mutate(workerid = factor(as.numeric(factor(workerid))))
+#                                # minutes = as.numeric(minutes))
+# 
+# # all.data %>% group_by(workerid) %>%
+# #   summarise(condition = condition[1],
+# #             minutes=total_minutes[1]) %>%
+# #   as.data.frame %>%
+# #   filter(minutes > 10) %>%
+# #   mutate(bonus = round((minutes - 5)*0.05, 2))
+
+
+```
+
+<!--
+## Demographics and attention checks
+
+
+Comments:
+
+```{r}
+print(unique(all.data$comments))
+```
+
+Participants thought the study was about:
+
+
+```{r}
+print(unique(all.data$studyQuestionGuess))
+```
+
+
+Average completion time was `r round(mean(completion.time$minutes))` minutes.
+
+
+```{r}
+attention.checks = all.data %>% group_by(workerid) %>% summarise(attention.check = response[chain=='attention']=='apples') %>% as.data.frame
+good.Ss = attention.checks$workerid[attention.checks$attention.check]
+```
+
+`r length(unique(all.data$workerid)) - length(good.Ss)` participants were excluded for failing an attention check.
+
+-->
+
+```{r}
+# d = all.data %>% mutate(subid = workerid)
+# condition.design = d %>% group_by(condition) %>% summarise(n = length(unique(subid)))
+# print(condition.design)
+# # d = d %>% select(workerid, document, chain, clozeIndex, original, gloss, response,
+# #                  condition, trialnum)
+# # write.csv(d, 'experiment3.csv', row.names=F)
+```
+
+```{r}
+d = read.csv('experiment3.csv')
+```
+
+There were between `r min(condition.design$n)` and `r max(condition.design$n)` participants in each of 3 conditions: full text for all entity-relevant sentences, "caveman" speak for all entity-relevant sentences, and "event" only sentences with only entity-role and main verb.
+
+# Results
+
+```{r}
+```
+
+# References
