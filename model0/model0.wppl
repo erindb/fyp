@@ -31,6 +31,83 @@ P(mention | happen) depends on predictability of event given context.
 If we know how people's choices of what events to mention
 is biased, can we interpret their stories better?
 
+## Related ideas...
+
+A thought: I like to think of explanations as stories whose
+conclusion is the thing you want to explain.
+So understanding the kinds of informativity constraints
+on what should go into a story could help understand a bit
+more about how explanations work...? And vice versa?
+
 */
 
-1
+var easiness = { 1: 0.8, 2: 0.5, 3: 0.2 };
+var levels = easiness.keys;
+var highestLevel = 2;
+
+var increaseBoredom = function(boredom) {
+	return boredom + 0.2;
+}
+
+var videoGameTransition = function(sequence, state) {
+	if (state.type == 'stop') {
+		var description = 'Anna stops playing';
+		return sequence.concat([description]);
+	} else if (state.type == 'play') {
+		var description = 'Anna plays level ' + state.level + '.';
+		var outcome = flip(easiness[state.level]) ? 'win' : 'lose';
+		return videoGameTransition(
+			sequence.concat([description]),
+			{ type: outcome, level: state.level, boredom: increaseBoredom(state.boredom) }
+		)
+	} else if (state.type == 'win') {
+		if (state.level == highestLevel) {
+			var description = 'Anna wins the game.';
+			return videoGameTransition(
+				sequence.concat([description]),
+				{ type: 'stop', level: state.level, boredom: state.boredom }
+			)
+		} else {
+			var description = 'Anna wins level ' + state.level + '.';
+			var nextAction = flip(state.boredom) ? 'bored' : 'play';
+			// Anna progresses to next level if she wins
+			var nextLevel = state.level + 1;
+			return videoGameTransition(
+				sequence.concat([description]),
+				{ type: nextAction, level: nextLevel, boredom: state.boredom }
+			)
+		}
+	} else if (state.type == 'lose') {
+		var description = 'Anna loses level ' + state.level + '.';
+		var nextAction = flip(state.boredom) ? 'bored' : 'play';
+		// Anna starts again at level 1 whenever she loses
+		var nextLevel = 1;
+		return videoGameTransition(
+			sequence.concat([description]),
+			{ type: nextAction, level: nextLevel, boredom: state.boredom }
+		)
+	} else if (state.type == 'bored') {
+		var description = 'Anna gets bored.';
+		return videoGameTransition(
+			sequence.concat([description]),
+			{ type: 'stop', level: state.level, boredom: state.boredom }
+		)
+	}
+}
+
+display( videoGameTransition([], {type: 'play', level: 1, boredom: 0}) );
+display( videoGameTransition([], {type: 'play', level: 1, boredom: 0}) );
+display( videoGameTransition([], {type: 'play', level: 1, boredom: 0}) );
+
+/*
+My intuition:
+An informativity-based storytelling model (InformativityModel)
+	* will not talk about what level Anna plays,
+	* will talk about the *last* level Anna won (or lost?)
+	* will mention if Anna is bored, or if she wins the game
+A probability-based (DumbInformativityModel) model
+	* might not mention if Anna gets bored, since that's likely to happen?
+	* might be likely to mention that Anna played level 2?
+*/
+
+'finished'
