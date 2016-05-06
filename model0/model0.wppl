@@ -41,8 +41,11 @@ more about how explanations work...? And vice versa?
 
 */
 
+// levels get progressively less easy
 var easiness = { 1: 0.8, 2: 0.5, 3: 0.2 };
 var levels = easiness.keys;
+
+// can change the length of the game:
 var highestLevel = 2;
 
 var increaseBoredom = function(boredom) {
@@ -58,14 +61,14 @@ var videoGameTransition = function(sequence, state) {
 		var outcome = flip(easiness[state.level]) ? 'win' : 'lose';
 		return videoGameTransition(
 			sequence.concat([description]),
-			{ type: outcome, level: state.level, boredom: increaseBoredom(state.boredom) }
+			_.extend(state, {type: outcome, boredom: increaseBoredom(state.boredom)})
 		)
 	} else if (state.type == 'win') {
 		if (state.level == highestLevel) {
 			var description = 'Anna wins the game.';
 			return videoGameTransition(
 				sequence.concat([description]),
-				{ type: 'stop', level: state.level, boredom: state.boredom }
+				_.extend(state, {type: 'stop'})
 			)
 		} else {
 			var description = 'Anna wins level ' + state.level + '.';
@@ -74,31 +77,34 @@ var videoGameTransition = function(sequence, state) {
 			var nextLevel = state.level + 1;
 			return videoGameTransition(
 				sequence.concat([description]),
-				{ type: nextAction, level: nextLevel, boredom: state.boredom }
+				_.extend(state, {type: nextAction, level: nextLevel})
 			)
 		}
 	} else if (state.type == 'lose') {
 		var description = 'Anna loses level ' + state.level + '.';
 		var nextAction = flip(state.boredom) ? 'bored' : 'play';
-		// Anna starts again at level 1 whenever she loses
+		// Anna goes to level 1 when she loses any level
 		var nextLevel = 1;
 		return videoGameTransition(
 			sequence.concat([description]),
-			{ type: nextAction, level: nextLevel, boredom: state.boredom }
+			_.extend(state, {type: nextAction, level: nextLevel})
 		)
 	} else if (state.type == 'bored') {
 		var description = 'Anna gets bored.';
 		return videoGameTransition(
 			sequence.concat([description]),
-			{ type: 'stop', level: state.level, boredom: state.boredom }
+			_.extend(state, {type: 'stop'})
 		)
 	}
 }
 
-display( videoGameTransition([], {type: 'play', level: 1, boredom: 0}) );
-display( videoGameTransition([], {type: 'play', level: 1, boredom: 0}) );
-display( videoGameTransition([], {type: 'play', level: 1, boredom: 0}) );
+var videoGame = function() {
+	return videoGameTransition([], {type: 'play', level: 1, boredom: 0});
+}
 
+display(videoGame())
+display(videoGame())
+display(videoGame())
 /*
 My intuition:
 An informativity-based storytelling model (InformativityModel)
