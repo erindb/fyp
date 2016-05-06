@@ -54,7 +54,7 @@ var increaseBoredom = function(boredom) {
 
 var videoGameTransition = function(sequence, state) {
 	if (state.type == 'stop') {
-		var description = 'Anna stops playing';
+		var description = 'Anna stops playing.';
 		return sequence.concat([description]);
 	} else if (state.type == 'play') {
 		var description = 'Anna plays level ' + state.level + '.';
@@ -99,7 +99,7 @@ var videoGameTransition = function(sequence, state) {
 }
 
 var videoGame = function() {
-	return videoGameTransition([], {type: 'play', level: 1, boredom: 0});
+	return videoGameTransition([], {type: 'play', level: 1, boredom: 0.2});
 }
 
 var isSubsequence = function(sub, full) {
@@ -113,24 +113,24 @@ var literalSequenceFinder = function (subsequence) {
 		var fullSequence = videoGame();
 		condition( isSubsequence(subsequence, fullSequence) )
 		return fullSequence;
-	}, 100)
+	}, 10)
 }
 
-// display(videoGame())
-// display(videoGame())
-// display(videoGame())
+var storyteller = function(fullSequence) {
+	Rejection(function() {
+		var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
+		var interpretedSequence = sample(literalSequenceFinder(subsequence));
+		condition( fullSequence.join('') == interpretedSequence.join('') )
+		return subsequence;
+	}, 10)
+}
 
-// display(literalSequenceFinder(['Anna gets bored.']))
-
-display(
-	'true? ' + 
-	isSubsequence(['A', 'B', 'C'], ['D', 'A', 'E', 'F', 'B', 'G', 'C', 'H', 'I', 'J']));
-display(
-	'true? ' + 
-	isSubsequence(['A', 'B', 'C'], ['D', 'B', 'A', 'E', 'F', 'B', 'G', 'B', 'C', 'H', 'I', 'J']));
-display(
-	'false? ' + 
-	isSubsequence(['A', 'B', 'C'], ['D', 'A', 'E', 'F', 'C', 'H', 'I', 'J']));
+display(storyteller([
+	'Anna plays level 1.',
+	'Anna loses level 1.',
+	'Anna gets bored.',
+	'Anna stops playing.'
+]));
 
 /*
 My intuition:
