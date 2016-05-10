@@ -24,6 +24,7 @@ library(rjson)
 library(ggplot2)
 library(ggthemes)
 library(entropy)
+library(bootstrap)
 theme_new <- theme_set(theme_few())
 
 # for bootstrapping 95% confidence intervals
@@ -38,97 +39,200 @@ options(digits=3)
 
 # Experiment
 
-The narrative cloze task is a common evaluation task for script induction. I would like to understand humans' performance on the narrative cloze task.
+## Background
 
-In this task, participants read stories involving a particular entity. One of the events the entity is involved in is left blank. Participants are asked to fill in this blank with a plausible completion.
+Scripts are a kind of knowledge that people have that helps them understand narrative texts, including filling in their representation of the story with events that were not mentioned but that probably happened.
+
+Recent NLP work has developed initial script induction models and evaluated their performance at filling in the gaps in narrative text. Some of these models have access only to very pared-down linguistic information (essentially only the main verb of a sentence), which allows them to combine multiple sentences together but potentially looses a lot of important information, too.
+
+## Question
+
+How do people fill in gaps in narrative text?
+
+* To what extent can people accurately fill in gaps in natural narrative text?
+* When people are unable to fill in the original text, do they tend to agree with one another?
+* How detailed does the contextual linguistic information need to be for people to sensibly fill in the gaps in narrative texts?
+
+And how does this relate to the performance of script induction models?
+
+## Design
+
+51 Stimuli:
+    * 17 documents randomly sampled from "Dinners from Hell" blog (within Ss)
+    * 3 event chain / cloze test pairs for each document (between Ss)
+
+3 linguistic conditions (between Ss):
+    * caveman
+    * event only
+    * original text
+    
+### Pilot results
+
+In the pilot, we actually lost data from some participants, and unfortunately, this was length/time based and so the most conscientious participants were excluded.
+
+There were 51 cloze tasks in total, and only 17 were seen by each participant. We collected data from 24 participants, so not all of the cloze tasks had enough responses to make meaningful inferences about (e.g.) response overlap across participants.
 
 ```{r}
-# raw.data.path = "../data-collection/experiment3/production-results/"
-# all.data <- data.frame()
-# files <- dir(raw.data.path,pattern="*.json")
-# 
-# for (file.name in files) {
-#   json_file <- readLines(paste(raw.data.path,file.name,sep=""))
-#   json_file_str = paste(json_file, collapse = "")
-#   json_file_str = gsub(",}", "}", json_file_str)
-#   jso = jsonlite::fromJSON(json_file_str)
-#   
-#   # events = ((jso$answers)$data)$events
-#   # minutes = (max(events$time) - min(events$time)) / 60000
-#   
-#   trials = ((jso$answers)$data)$trials
-#   demographics = ((jso$answers)$data)$demographics
-#   for (i in 1:(nrow(demographics))) {
-#     trials[demographics[i,'qtype']] = demographics[i, 'response']
-#   }
-#   jso1 <- data.frame(trials)
-#   # jso1$total_minutes = minutes
-#   jso1$workerid = strsplit(file.name, '.json')[[1]]
-# 
-#   all.data <- rbind(all.data, jso1)
-# }
-# 
-# all.data = all.data %>% mutate(workerid = factor(as.numeric(factor(workerid))))
-#                                # minutes = as.numeric(minutes))
-# 
-# # all.data %>% group_by(workerid) %>%
-# #   summarise(condition = condition[1],
-# #             minutes=total_minutes[1]) %>%
-# #   as.data.frame %>%
-# #   filter(minutes > 10) %>%
-# #   mutate(bonus = round((minutes - 5)*0.05, 2))
-
-
+d = read.table('verb-processed-data.txt', sep=' ')
+names(d) = c('doc', 'chain', 'cloze', 'cond', 'prop.match.orig',
+             'prop.match.mode', 'n.match.mode', 'n', 'mode', 'loosely.orig', 'orig', 'n.loose.mode')
+d = d %>% mutate(prop.loosely.match = loosely.orig/n,
+                 cond = factor(cond, levels=c('event_only', 'caveman', 'original')),
+                 tag = paste(doc, chain, cloze, cond))
 ```
 
+#### Question 1: To what extent can people accurately fill in gaps in natural narrative text?
+
+First, we wanted to know whether the main verb of the original sentence was mentioned in the participants' responses. We searched wordnet for synonyms of each of the verbs that participants used checked for any overlap with the synonyms of the original main verb.
+
+```{r}
+# how many distince cloze tasks were in original text condition?
+n.cloze.orig = length(unique((d %>% filter(cond=='original'))$tag))
+
+recovered.from.orig.text = d %>% filter(cond=='original' & prop.loosely.match>0)
+```
+
+Of the `r n.cloze.orig` stimuli presented with the original passage text as context, only two of them had main verbs that were shown to be recovered (i.e. shared a synonym with one a response verb) by at least one participant.
 <!--
-## Demographics and attention checks
+ replied forget getting the manager... we are done here!
+[We started on our way out of the restaurant.]
+The manager was following us.
+(length 9 events in total)
 
-
-Comments:
-
-```{r}
-print(unique(all.data$comments))
-```
-
-Participants thought the study was about:
-
+[We waited some more, but only until we could snag our waiter, who was now quite a bit busier, since nearly an hour had passed and many more people had come in.]
+We got our waiter's attention and explained that we had not received our food, even though we ordered before the other party had even arrived.
+We explained the situation and she called our waiter over.
+(length 3 events in total)
 
 ```{r}
-print(unique(all.data$studyQuestionGuess))
+d %>% filter(cond=='original') %>%
+  ggplot(aes(x=prop.loosely.match)) +
+  geom_histogram(binwidth=0.01)
 ```
-
-
-Average completion time was `r round(mean(completion.time$minutes))` minutes.
-
-
-```{r}
-attention.checks = all.data %>% group_by(workerid) %>% summarise(attention.check = response[chain=='attention']=='apples') %>% as.data.frame
-good.Ss = attention.checks$workerid[attention.checks$attention.check]
-```
-
-`r length(unique(all.data$workerid)) - length(good.Ss)` participants were excluded for failing an attention check.
-
 -->
 
-```{r}
-# d = all.data %>% mutate(subid = workerid)
-# condition.design = d %>% group_by(condition) %>% summarise(n = length(unique(subid)))
-# print(condition.design)
-# # d = d %>% select(workerid, document, chain, clozeIndex, original, gloss, response,
-# #                  condition, trialnum)
-# # write.csv(d, 'experiment3.csv', row.names=F)
-```
+However, hand-coding whether the gist of the response was similar to the gist of the original event, [to do] .
+
+#### Question 2: When people are unable to fill in the original text, do they tend to agree with one another?
+
+#### Question 3: How detailed does the contextual linguistic information need to be for people to sensibly fill in the gaps in narrative texts?
+
+The other two linguistic conditions did not differ much in the proportion of participants who recovered the original text.
+
+Numerically, the event-only condition resulted in higher rates of successful recovery of the original text.
+<!-- statistical test -->
 
 ```{r}
-d = read.csv('experiment3.csv')
+d %>% mutate(one.loosely.match.orig = prop.loosely.match>0) %>%
+  group_by(cond) %>%
+  summarise(
+    n = length(one.loosely.match.orig),
+    low = ci.low(one.loosely.match.orig),
+    high = ci.high(one.loosely.match.orig),
+    loosely.match.orig.rate = mean(one.loosely.match.orig)) %>%
+  ggplot(aes(x=cond, y=loosely.match.orig.rate, fill=cond)) +
+  geom_bar(stat='identity') +
+  # geom_text(aes(label=n)) +
+  geom_errorbar(aes(ymin=low, ymax=high, x=cond), width=0) +
+  ylim(0, 1) +
+  xlab('linguistic detail') +
+  ylab('prop stim recovered by >1 Ss') +
+  ggtitle('Automatic check of recovering original text')
+
+recovered.from.orig.text = d %>% filter(prop.loosely.match>0) %>%
+  group_by(doc, chain, cloze) %>% summarise(conds = paste(cond, collapse=' '))
 ```
 
-There were between `r min(condition.design$n)` and `r max(condition.design$n)` participants in each of 3 conditions: full text for all entity-relevant sentences, "caveman" speak for all entity-relevant sentences, and "event" only sentences with only entity-role and main verb.
-
-# Results
+Among *only* the stimulus/condition pairs where at least one person recovered the original, a numerically higher proportion of participants recovered the original text when the context was provided in full linguistic detail. But there were only two tasks in that condition where any participants succeeded.
+<!-- statistical test -->
 
 ```{r}
+d %>% group_by(cond) %>%
+  filter(prop.loosely.match>0) %>%
+  summarise(
+    n = length(prop.match.mode),
+    low = ci.low(prop.loosely.match),
+    high = ci.high(prop.loosely.match),
+    prop.loosely.match = mean(prop.loosely.match)) %>%
+  ggplot(aes(x=cond, y=prop.loosely.match, fill=cond)) +
+  geom_bar(stat='identity') +
+  # geom_text(aes(label=n)) +
+  geom_errorbar(aes(ymin=low, ymax=high, x=cond), width=0) +
+  ylim(0, 1) +
+  xlab('linguistic detail') +
+  ylab('prop Ss match original') +
+  ggtitle('Successful subset of cloze tasks')
 ```
+
+In each of the three linguistic detail conditions, the most common response verb was given by around 20% of participants. The three conditions did not differ much.
+<!-- statistical test -->
+
+```{r}
+d %>% filter(n>2) %>% group_by(cond) %>%
+  summarise(
+    n = length(prop.match.mode),
+    low = ci.low(prop.loosely.match),
+    high = ci.high(prop.match.mode),
+    prop.match.mode = mean(prop.match.mode)) %>%
+  ggplot(aes(x=cond, y=prop.match.mode, fill=cond)) +
+  geom_bar(stat='identity') +
+  # geom_text(aes(label=n)) +
+  geom_errorbar(aes(ymin=low, ymax=high, x=cond), width=0) +
+  ylim(0, 1) +
+  xlab('linguistic detail') +
+  ylab('prop Ss matching mode') +
+  ggtitle('Automatic check of agreement')
+```
+
+### Question 4: How does human performance on this task relate to the performance of a PMI-based script induction model?
+
+<!--
+```{r}
+d %>% filter(loosely.orig > 0)
+d %>% filter(n>2) %>%
+  ggplot(aes(x=prop.loosely.match, colour=cond)) +
+  geom_density() +
+  xlab("percent of other participants' responses that match the original") +
+  ggtitle("N>2")
+ggsave("verb-match-orig-density.png")
+d %>% filter(n>2) %>%
+  ggplot(aes(x=prop.match.mode, colour=cond)) +
+  geom_density() +
+  xlab("percent of other participants' responses that match the mode") +
+  ggtitle("N>2")
+ggsave("verb-match-density.png")
+d$prop.match.orig
+d %>% filter(n>2) %>%
+  ggplot(aes(x=prop.match.mode, colour=cond)) +
+  geom_density() +
+  xlab("percent of other participants' responses that match the mode") +
+  ggtitle("N>2")
+ggsave("verb-match-density.png")
+
+d %>% filter(n==3) %>%
+  ggplot(aes(x=n.match.mode, fill=cond)) +
+  geom_histogram(binwidth=1) +
+  facet_wrap(~cond) +
+  xlab("number of other participants' responses that match the mode") +
+  ggtitle("items where N=3")
+ggsave("verb-match-hist-N3.png")
+
+d %>% filter(!is.na(prop.match.orig) & n==4) %>%
+  ggplot(aes(x=n.match.mode, fill=cond)) +
+  geom_histogram(binwidth=1) +
+  facet_wrap(~cond) +
+  xlab("number of other participants' responses that match the mode") +
+  ggtitle("items where N=4")
+ggsave("verb-match-hist-N4.png")
+
+subset(d, n.match.mode >= 1)$mode
+
+write.table(unique(d$mode))
+```
+-->
+
+## Future work
+
+One important observation is that most things that are mentioned in a narrative are at least a little bit uncommon given the context, otherwise they would not be interesting/informative enough to mention. How does this affect what people and machines can learn from narrative text?
 
 # References

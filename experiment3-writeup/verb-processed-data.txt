@@ -1,130 +1,130 @@
-025 10 0 caveman 0.0 0.0 1 3 serve
-025 10 0 original NA NA NA NA NA
-025 10 0 event_only 0.0 0.333333333333 2 3 have
-025 47 1 caveman 0.0 0.0 1 5 need
-025 47 1 event_only 0.0 0.5 3 4 come
-033 76 0 caveman 0.0 0.0 1 7 do
-033 76 0 original 0.0 0.5 3 4 have
-033 76 0 event_only 0.0 0.2 2 5 decide
-022 78 0 caveman 0.0 0.25 2 4 think
-022 78 0 event_only NA NA NA NA NA
-023 88 1 caveman 0.0 0.25 2 4 explain
-023 88 1 original 0.0 0.333333333333 2 3 tell
-023 88 1 event_only 0.0 0.333333333333 2 3 decide
-022 48 1 caveman 0.0 0.0 1 3 work
-022 48 1 original 0.0 0.0 1 3 proceed
-022 48 1 event_only NA NA NA NA NA
-086 40 0 caveman 0.0 0.2 2 5 do
-086 40 0 original 0.0 0.0 1 3 do
-086 40 0 event_only 0.0 0.25 2 4 have
-050 110 1 caveman NA NA NA NA NA
-050 110 1 original NA NA NA NA NA
-050 110 1 event_only 0.0 0.25 2 4 wonder
-271 18 2 caveman 0.0 0.0 1 3 leave
-271 18 2 original NA NA NA NA NA
-271 18 2 event_only NA NA NA NA NA
-086 40 1 caveman 0.0 0.142857142857 2 7 do
-086 40 1 original 0.0 0.0 1 3 seem
-086 40 1 event_only 0.0 0.0 1 3 decide
-120 125 1 caveman 0.0 0.0 1 4 like
-120 125 1 original NA NA NA NA NA
-120 125 1 event_only 0.0 0.0 1 4 look
-050 110 3 caveman 0.0 0.0 1 4 refuse
-050 110 3 original 0.0 0.0 1 4 want
-050 110 3 event_only NA NA NA NA NA
-271 18 1 caveman 0.0 0.0 1 3 pay
-271 18 1 original NA NA NA NA NA
-271 18 1 event_only NA NA NA NA NA
-050 110 2 caveman 0.0 0.0 1 5 like
-050 110 2 event_only NA NA NA NA NA
-248 86 1 caveman 0.0 0.0 1 4 wait
-248 86 1 original NA NA NA NA NA
-248 86 1 event_only 0.0 0.333333333333 2 3 order
-151 102 7 caveman 0.0 0.25 2 4 ask
-151 102 7 original 0.0 0.333333333333 2 3 begin
-171 58 0 caveman 0.0 0.0 1 4 go
-171 58 0 original NA NA NA NA NA
-171 58 0 event_only NA NA NA NA NA
-248 86 0 caveman 0.0 0.142857142857 2 7 sit
-248 86 0 original 0.0 0.0 1 4 look
-248 86 0 event_only 0.0 0.0 1 4 sit
-151 62 0 caveman 0.0 0.2 2 5 look
-151 62 0 original 0.0 0.333333333333 2 3 notice
-151 62 0 event_only 0.0 0.0 1 3 need
-153 22 0 caveman 0.0 0.0 1 4 see
-153 22 0 original NA NA NA NA NA
-153 22 0 event_only NA NA NA NA NA
-151 102 5 caveman NA NA NA NA NA
-151 102 5 event_only 0.0 0.25 2 4 ask
-196 68 3 caveman NA NA NA NA NA
-196 68 3 original 0.0 0.333333333333 2 3 do
-196 68 3 event_only NA NA NA NA NA
-191 11 3 caveman 0.0 0.166666666667 2 6 tell
-191 11 3 original NA NA NA NA NA
-191 11 3 event_only 0.0 0.333333333333 2 3 behave
-177 168 2 caveman 0.0 0.0 1 4 do
-177 168 2 original 0.0 0.0 1 3 stare
-153 22 1 caveman 0.0 0.142857142857 2 7 eat
-153 22 1 original 0.0 0.4 3 5 have
-153 22 1 event_only 0.0 0.0 1 5 look
-033 76 1 caveman 0.0 0.25 2 4 break
-033 76 1 original NA NA NA NA NA
-033 76 1 event_only NA NA NA NA NA
-023 88 5 caveman 0.0 0.0 1 4 ask
-023 88 5 original 0.0 0.0 1 3 ask
-023 88 5 event_only NA NA NA NA NA
-271 18 0 caveman 0.0 0.0 1 5 go
-271 18 0 original 0.0 0.0 1 4 rush
-271 18 0 event_only 0.0 0.25 2 4 leave
-196 68 5 caveman 0.0 0.333333333333 2 3 leave
-196 68 5 original NA NA NA NA NA
-196 68 5 event_only 0.0 0.2 2 5 comp
-177 168 0 caveman 0.0 0.2 2 5 drop
-177 168 0 original NA NA NA NA NA
-177 168 0 event_only 0.0 0.333333333333 2 3 drop
-063 84 0 caveman 0.0 0.0 1 5 sit
-063 84 0 original NA NA NA NA NA
-063 84 0 event_only 0.0 0.0 1 4 sit
-191 133 0 caveman NA NA NA NA NA
-191 133 0 original 0.0 0.666666666667 3 3 have
-191 133 0 event_only NA NA NA NA NA
-171 29 1 caveman 0.0 0.2 2 5 happen
-171 29 1 event_only 0.0 0.333333333333 2 3 happen
-063 84 1 caveman 0.0 0.166666666667 2 6 come
-063 84 1 original 0.0 0.25 2 4 have
-063 84 1 event_only 0.0 0.0 1 3 want
-196 68 6 caveman 0.0 0.333333333333 3 6 leave
-196 68 6 original NA NA NA NA NA
-196 68 6 event_only NA NA NA NA NA
-191 11 4 caveman 0.0 0.25 2 4 make
-191 11 4 original NA NA NA NA NA
-191 11 4 event_only 0.0 0.0 1 3 blame
-120 41 2 caveman NA NA NA NA NA
-120 41 2 original NA NA NA NA NA
-120 41 2 event_only 0.0 0.0 1 3 have
-177 20 1 caveman NA NA NA NA NA
-177 20 1 original NA NA NA NA NA
-177 20 1 event_only 0.0 0.0 1 4 go
-171 29 0 caveman NA NA NA NA NA
-171 29 0 original 0.0 0.0 1 4 enjoy
-171 29 0 event_only NA NA NA NA NA
-243 41 1 caveman 0.0 0.0 1 4 welcome
-243 41 1 original NA NA NA NA NA
-243 41 1 event_only 0.0 0.25 2 4 ask
-023 88 4 caveman 0.0 0.0 1 3 ask
-023 88 4 original NA NA NA NA NA
-023 88 4 event_only 0.0 0.0 1 3 ask
-120 41 0 caveman 0.0 0.0 1 5 arrive
-120 41 0 original 0.0 0.0 1 4 end
-243 41 0 caveman 0.0 0.2 2 5 do
-243 41 0 original 0.0 0.0 1 3 go
-243 41 0 event_only NA NA NA NA NA
-022 78 1 caveman 0.0 0.25 2 4 leave
-022 78 1 original 0.0 0.0 1 3 enjoy
-022 78 1 event_only 0.0 0.25 2 4 allow
-025 10 1 caveman 0.0 0.0 1 3 end
-025 10 1 original 0.0 0.25 2 4 have
-025 10 1 event_only NA NA NA NA NA
-243 21 0 caveman 0.0 0.333333333333 2 3 do
-243 21 0 original NA NA NA NA NA
-243 21 0 event_only NA NA NA NA NA
+025 10 0 caveman 0.0 0.0 0 3 serve 0 start 0
+025 10 0 original 0.0 0.0 0 2 suck 0 start 0
+025 10 0 event_only 0.0 0.333333333333 1 3 have 0 start 0
+025 47 1 caveman 0.0 0.0 0 5 need 0 mention 0
+025 47 1 event_only 0.0 0.5 2 4 come 0 mention 0
+033 76 0 caveman 0.0 0.0 0 7 do 0 break 0
+033 76 0 original 0.0 0.5 2 4 have 0 break 0
+033 76 0 event_only 0.2 0.2 1 5 decide 2 break 0
+022 78 0 caveman 0.0 0.25 1 4 think 0 allow 0
+022 78 0 event_only 0.0 0.0 0 1 stand 0 allow 0
+023 88 1 caveman 0.0 0.25 1 4 explain 0 interrupt 0
+023 88 1 original 0.0 0.333333333333 1 3 tell 0 interrupt 0
+023 88 1 event_only 0.0 0.333333333333 1 3 decide 0 interrupt 0
+022 48 1 caveman 0.0 0.0 0 3 work 0 try 0
+022 48 1 original 0.0 0.0 0 3 proceed 0 try 0
+022 48 1 event_only 0.0 0.5 1 2 be 0 try 0
+086 40 0 caveman 0.0 0.2 1 5 do 0 offer 0
+086 40 0 original 0.0 0.0 0 3 do 0 offer 0
+086 40 0 event_only 0.0 0.25 1 4 have 0 offer 0
+050 110 1 caveman 0.0 0.0 0 2 retire 0 hot 0
+050 110 1 original 0.0 0.5 1 2 be 0 hot 0
+050 110 1 event_only 0.0 0.25 1 4 wonder 0 hot 0
+271 18 2 caveman 0.0 0.0 0 3 leave 0 tip 0
+271 18 2 original 0.0 0.0 0 1 leave 0 tip 0
+271 18 2 event_only 0.0 0.0 0 2 do 0 tip 0
+086 40 1 caveman 0.0 0.142857142857 1 7 do 2 have 0
+086 40 1 original 0.0 0.0 0 3 seem 0 have 0
+086 40 1 event_only 0.333333333333 0.0 0 3 decide 2 have 0
+120 125 1 caveman 0.0 0.0 0 4 like 0 stand 0
+120 125 1 original 0.0 0.0 0 1 go 0 stand 0
+120 125 1 event_only 0.0 0.0 0 4 look 0 stand 0
+050 110 3 caveman 0.0 0.0 0 4 refuse 0 wonder 0
+050 110 3 original 0.0 0.0 0 4 want 0 wonder 0
+050 110 3 event_only 0.0 0.0 0 2 pay 0 wonder 0
+271 18 1 caveman 0.0 0.0 0 3 pay 0 remain 0
+271 18 1 original 0.0 0.0 0 1 have 0 remain 0
+271 18 1 event_only 0.0 0.0 0 1 thank 0 remain 0
+050 110 2 caveman 0.0 0.0 0 5 like 0 refuse 0
+050 110 2 event_only 0.0 0.0 0 1 wash 0 refuse 0
+248 86 1 caveman 0.0 0.0 0 4 wait 0 come 0
+248 86 1 original 0.0 0.5 1 2 offer 0 come 0
+248 86 1 event_only 0.0 0.333333333333 1 3 order 0 come 0
+151 102 7 caveman 0.0 0.25 1 4 ask 0 start 0
+151 102 7 original 0.0 0.333333333333 1 3 begin 3 start 0
+171 58 0 caveman 0.0 0.0 0 4 go 0 freezing 0
+171 58 0 original 0.0 0.5 1 2 tell 0 freezing 0
+171 58 0 event_only 0.0 0.0 0 2 bring 0 freezing 0
+248 86 0 caveman 0.142857142857 0.142857142857 1 7 sit 1 order 0
+248 86 0 original 0.0 0.0 0 4 look 0 order 0
+248 86 0 event_only 0.25 0.0 0 4 sit 2 order 0
+151 62 0 caveman 0.0 0.2 1 5 look 0 stick 0
+151 62 0 original 0.0 0.333333333333 1 3 notice 0 stick 0
+151 62 0 event_only 0.0 0.0 0 3 need 0 stick 0
+153 22 0 caveman 0.25 0.0 0 4 see 1 order 0
+153 22 0 original 0.0 0.0 0 1 be 0 order 0
+153 22 0 event_only 0.0 0.0 0 2 work 0 order 0
+151 102 5 caveman 0.0 0.5 1 2 ask 0 deliver 0
+151 102 5 event_only 0.0 0.25 1 4 ask 1 deliver 0
+196 68 3 caveman 0.0 0.0 0 2 ask 0 put 0
+196 68 3 original 0.0 0.333333333333 1 3 do 0 put 0
+196 68 3 event_only 0.0 0.0 0 1 happen 0 put 0
+191 11 3 caveman 0.0 0.166666666667 1 6 tell 0 thing 0
+191 11 3 original 0.0 0.0 0 1 do 0 thing 0
+191 11 3 event_only 0.0 0.333333333333 1 3 behave 0 thing 0
+177 168 2 caveman 0.0 0.0 0 4 do 0 embarrassed 0
+177 168 2 original 0.0 0.0 0 3 stare 0 embarrassed 0
+153 22 1 caveman 0.0 0.142857142857 1 7 eat 0 thing 0
+153 22 1 original 0.0 0.4 2 5 have 0 thing 0
+153 22 1 event_only 0.0 0.0 0 5 look 0 thing 0
+033 76 1 caveman 0.0 0.25 1 4 break 0 decide 0
+033 76 1 original 0.0 0.0 0 2 leave 0 decide 0
+033 76 1 event_only 0.0 0.0 0 2 hear 0 decide 0
+023 88 5 caveman 0.0 0.0 0 4 ask 0 tell 0
+023 88 5 original 0.0 0.0 0 3 ask 0 tell 0
+023 88 5 event_only 0.0 0.0 0 1 go 0 tell 0
+271 18 0 caveman 0.0 0.0 0 5 go 0 say 0
+271 18 0 original 0.0 0.0 0 4 rush 0 say 0
+271 18 0 event_only 0.0 0.25 1 4 leave 0 say 0
+196 68 5 caveman 0.0 0.333333333333 1 3 leave 0 throw 0
+196 68 5 original 0.0 0.0 0 1 run 0 throw 0
+196 68 5 event_only 0.0 0.2 1 5 comp 2 throw 0
+177 168 0 caveman 0.0 0.2 1 5 drop 0 decide 0
+177 168 0 original 0.0 0.0 0 2 threaten 0 decide 0
+177 168 0 event_only 0.0 0.333333333333 1 3 drop 0 decide 0
+063 84 0 caveman 0.0 0.0 0 5 sit 0 seconds 0
+063 84 0 original 0.0 0.0 0 2 overcook 0 seconds 0
+063 84 0 event_only 0.0 0.0 0 4 sit 0 seconds 0
+191 133 0 caveman 0.0 0.0 0 1 win 0 wait 0
+191 133 0 original 0.333333333333 0.666666666667 2 3 have 1 wait 0
+191 133 0 event_only 0.0 0.0 0 1 do 0 wait 0
+171 29 1 caveman 0.0 0.2 1 5 happen 0 pour 0
+171 29 1 event_only 0.0 0.333333333333 1 3 happen 0 pour 0
+063 84 1 caveman 0.0 0.166666666667 1 6 come 0 start 0
+063 84 1 original 0.0 0.25 1 4 have 0 start 0
+063 84 1 event_only 0.0 0.0 0 3 want 0 start 0
+196 68 6 caveman 0.0 0.333333333333 2 6 leave 0 shout 0
+196 68 6 original 0.0 0.0 0 2 appear 0 shout 0
+196 68 6 event_only 0.0 0.0 0 2 walk 0 shout 0
+191 11 4 caveman 0.0 0.25 1 4 make 0 behave 0
+191 11 4 original 0.0 0.0 0 2 crash 0 behave 0
+191 11 4 event_only 0.0 0.0 0 3 blame 0 behave 0
+120 41 2 caveman 0.0 0.0 0 2 check 0 seat 0
+120 41 2 original 0.0 0.0 0 1 do 0 seat 0
+120 41 2 event_only 0.0 0.0 0 3 have 1 seat 0
+177 20 1 caveman 0.5 0.0 0 2 go 1 be 0
+177 20 1 original 0.0 0.0 0 1 spot 0 be 0
+177 20 1 event_only 0.25 0.0 0 4 go 1 be 0
+171 29 0 caveman 0.0 0.0 0 2 begin 0 happen 0
+171 29 0 original 0.0 0.0 0 4 enjoy 0 happen 0
+171 29 0 event_only 0.0 0.0 0 2 pour 0 happen 0
+243 41 1 caveman 0.0 0.0 0 4 welcome 0 amicable 0
+243 41 1 original 0.0 0.0 0 2 seem 0 amicable 0
+243 41 1 event_only 0.0 0.25 1 4 ask 0 amicable 0
+023 88 4 caveman 0.0 0.0 0 3 ask 0 tell 0
+023 88 4 original 0.0 0.0 0 1 upset 0 tell 0
+023 88 4 event_only 0.0 0.0 0 3 ask 0 tell 0
+120 41 0 caveman 0.0 0.0 0 5 arrive 0 good 0
+120 41 0 original 0.0 0.0 0 4 end 0 good 0
+243 41 0 caveman 0.0 0.2 1 5 do 0 good 0
+243 41 0 original 0.0 0.0 0 3 go 0 good 0
+243 41 0 event_only 0.0 0.0 0 1 make 0 good 0
+022 78 1 caveman 0.0 0.25 1 4 leave 0 think 0
+022 78 1 original 0.0 0.0 0 3 enjoy 0 think 0
+022 78 1 event_only 0.0 0.25 1 4 allow 0 think 0
+025 10 1 caveman 0.0 0.0 0 3 end 0 freezing 0
+025 10 1 original 0.0 0.25 1 4 have 0 freezing 0
+025 10 1 event_only 0.0 0.5 1 2 be 0 freezing 0
+243 21 0 caveman 0.0 0.333333333333 1 3 do 2 come 0
+243 21 0 original 0.0 0.0 0 1 ask 0 come 0
+243 21 0 event_only 0.0 0.0 0 2 make 0 come 0

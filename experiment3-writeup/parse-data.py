@@ -15,18 +15,6 @@ def utf_8_encoder(unicode_csv_data):
     for line in unicode_csv_data:
         yield line.encode('utf-8')
 
-
-# from nltk.tokenize import WordPunctTokenizer
-# from nltk import pos_tag
-# from nltk.stem.wordnet import WordNetLemmatizer
-# tokenizer = WordPunctTokenizer()
-# def get_verbs(sentence):
-#   # pick all the words in the sentence that are POS-tagged as verbs
-#   # this is lame cause it picks up helping verbs...
-#   # ...and isn't lemmatizing
-#   sentence = tokenizer.tokenize(sentence)
-#   return [w[0] for w in pos_tag(sentence) if w[1][0]=='V']
-
 import requests, json
 def get_verbs(sentence):
   verbs = []
@@ -47,7 +35,9 @@ def get_main_verb(sentence):
   for parsed_sentence in parsed_sentences:
     for dep in parsed_sentence['basic-dependencies']:
       if dep['dep'] == 'ROOT':
-        return dep['dependentGloss']
+        depIndex = dep['dependent'] - 1
+        # parsed_sentence['tokens'][depIndex]['lemma']
+        return parsed_sentence['tokens'][depIndex]['lemma']
   return None
 
 tasks = {}
@@ -66,14 +56,10 @@ with codecs.open('experiment3.csv', 'rb', 'utf8') as csvfile:
           tasks[index] = { "orig_main_verb": get_main_verb(orig) }
         this_task = tasks[index]
         if cond not in this_task:
-          this_task[cond] = []
+          this_task[cond] = {"response_verbs": [], "responses": []}
         this_cond = this_task[cond]
-        this_cond.append(get_verbs(response))
+        this_cond["response_verbs"].append(get_verbs(response))
+        this_cond["responses"].append(response)
         print tasks[index]
-
-# for each cloze task,
-  # for each condition,
-    # % people who said original verb
-    # % people who said most common verb
 
 pickle.dump( tasks, open('tasks.p', 'wb') )
