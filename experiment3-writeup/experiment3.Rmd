@@ -58,13 +58,15 @@ And how does this relate to the performance of script induction models?
 ## Design
 
 51 Stimuli:
-    * 17 documents randomly sampled from "Dinners from Hell" blog (within Ss)
-    * 3 event chain / cloze test pairs for each document (between Ss)
+
+* 17 documents randomly sampled from "Dinners from Hell" blog (within Ss)
+* 3 event chain / cloze test pairs for each document (between Ss)
 
 3 linguistic conditions (between Ss):
-    * caveman
-    * event only
-    * original text
+
+* caveman
+* event only
+* original text
     
 ### Pilot results
 
@@ -111,7 +113,35 @@ d %>% filter(cond=='original') %>%
 ```
 -->
 
-However, hand-coding whether the gist of the response was similar to the gist of the original event, [to do] .
+However, hand-coding whether the gist of the response was similar to the gist of the original event, people do a lot better. Still, only about 25% of the stimuli were recovered by any of the participants, and on those conditions, only about 65% of participants chose that response.
+
+```{r}
+df = read.csv('experiment3-annotated.csv')
+
+df %>% filter(condition=='original') %>% group_by(condition) %>%
+  summarise(prop.match.orig = mean(vpmatch=='yes', na.rm=T)) %>%
+  ggplot(aes(x=1, y=prop.match.orig))
+
+## proportion of matching original (manually tagged)
+prop.match.orig = df %>% group_by(document, chain, clozeIndex, condition) %>%
+  summarise(prop.match.orig = mean(vpmatch=='yes', na.rm=T)) %>%
+  as.data.frame %>% group_by(condition) %>%
+  summarise(prop.match.orig = mean(prop.match.orig))
+
+## proportion of tasks where at least one person got it (manually tagged)
+prop.anyone.got.it = df %>% group_by(document, chain, clozeIndex, condition) %>%
+  summarise(match.orig = mean(vpmatch=='yes', na.rm=T)>0) %>%
+  as.data.frame %>% group_by(condition) %>%
+  summarise(prop.match.orig = mean(match.orig))
+
+## proportion of matching original (manually tagged) given success
+match.orig.given.success = df %>% group_by(document, chain, clozeIndex, condition) %>%
+  summarise(match.orig = mean(vpmatch=='yes', na.rm=T)>0,
+            prop.match.orig = mean(vpmatch=='yes', na.rm=T)) %>%
+  filter(match.orig) %>%
+  as.data.frame %>% group_by(condition) %>%
+  summarise(prop.match.orig = mean(prop.match.orig))
+```
 
 #### Question 2: When people are unable to fill in the original text, do they tend to agree with one another?
 
