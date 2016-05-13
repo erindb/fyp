@@ -37,23 +37,25 @@ ci.high <- function(x) {
 options(digits=3)
 ```
 
-# Experiment
 
-## Background
+
+# Background
 
 Scripts are a kind of knowledge that people have that helps them understand narrative texts, including filling in their representation of the story with events that were not mentioned but that probably happened.
 
 Recent NLP work has developed initial script induction models and evaluated their performance at filling in the gaps in narrative text. Some of these models have access only to very pared-down linguistic information (essentially only the main verb of a sentence), which allows them to combine multiple sentences together but potentially looses a lot of important information, too.
 
-## Question
+# Question
 
 How do people fill in gaps in narrative text?
 
 * To what extent can people accurately fill in gaps in natural narrative text?
-* When people are unable to fill in the original text, do they tend to agree with one another?
+* Whether or not people are able to fill in the original text, do they tend to agree with one another?
 * How detailed does the contextual linguistic information need to be for people to sensibly fill in the gaps in narrative texts?
 
 And how does this relate to the performance of script induction models?
+
+# Experiment
 
 ## Design
 
@@ -70,7 +72,7 @@ And how does this relate to the performance of script induction models?
     
 ### Pilot results
 
-In the pilot, we actually lost data from some participants, and unfortunately, this was length/time based and so the most conscientious participants were excluded.
+In the pilot, we lost data from some participants, and unfortunately, this was length/time based and so the most conscientious participants were excluded.
 
 There were 51 cloze tasks in total, and only 17 were seen by each participant. We collected data from 24 participants, so not all of the cloze tasks had enough responses to make meaningful inferences about (e.g.) response overlap across participants.
 
@@ -94,7 +96,7 @@ n.cloze.orig = length(unique((d %>% filter(cond=='original'))$tag))
 recovered.from.orig.text = d %>% filter(cond=='original' & prop.loosely.match>0)
 ```
 
-Of the `r n.cloze.orig` stimuli presented with the original passage text as context, only two of them had main verbs that were shown to be recovered (i.e. shared a synonym with one a response verb) by at least one participant.
+Of the `r n.cloze.orig` stimuli presented with the original passage text as context, only `r nrow(recovered.from.orig.text)` of them had main verbs that were shown to be recovered (i.e. shared a synonym with one a response verb) by at least one participant.
 <!--
  replied forget getting the manager... we are done here!
 [We started on our way out of the restaurant.]
@@ -113,37 +115,46 @@ d %>% filter(cond=='original') %>%
 ```
 -->
 
-However, hand-coding whether the gist of the response was similar to the gist of the original event, people do a lot better. Still, only about 25% of the stimuli were recovered by any of the participants, and on those conditions, only about 65% of participants chose that response.
-
 ```{r}
 df = read.csv('experiment3-annotated.csv')
 
-df %>% filter(condition=='original') %>% group_by(condition) %>%
-  summarise(prop.match.orig = mean(vpmatch=='yes', na.rm=T)) %>%
-  ggplot(aes(x=1, y=prop.match.orig))
+hand_annotated_stats = df %>% filter(condition=='original') %>%
+  group_by(document, chain, clozeIndex) %>%
+  summarise(prop.match = mean(vpmatch=='yes'),
+            any.match = prop.match>0)
 
-## proportion of matching original (manually tagged)
-prop.match.orig = df %>% group_by(document, chain, clozeIndex, condition) %>%
-  summarise(prop.match.orig = mean(vpmatch=='yes', na.rm=T)) %>%
-  as.data.frame %>% group_by(condition) %>%
-  summarise(prop.match.orig = mean(prop.match.orig))
-
-## proportion of tasks where at least one person got it (manually tagged)
-prop.anyone.got.it = df %>% group_by(document, chain, clozeIndex, condition) %>%
-  summarise(match.orig = mean(vpmatch=='yes', na.rm=T)>0) %>%
-  as.data.frame %>% group_by(condition) %>%
-  summarise(prop.match.orig = mean(match.orig))
-
-## proportion of matching original (manually tagged) given success
-match.orig.given.success = df %>% group_by(document, chain, clozeIndex, condition) %>%
-  summarise(match.orig = mean(vpmatch=='yes', na.rm=T)>0,
-            prop.match.orig = mean(vpmatch=='yes', na.rm=T)) %>%
-  filter(match.orig) %>%
-  as.data.frame %>% group_by(condition) %>%
-  summarise(prop.match.orig = mean(prop.match.orig))
+prop.tasks.with.hand.match = mean(hand_annotated_stats$any.match)
+prop.people.give.success = mean((hand_annotated_stats %>% filter(any.match))$prop.match)
 ```
 
-#### Question 2: When people are unable to fill in the original text, do they tend to agree with one another?
+However, hand-coding whether the gist of the response was similar to the gist of the original event, we can see that people are actually doing a lot better on this task. Still, only `r prop.tasks.with.hand.match`% of the stimuli were recovered by any of the participants, and on those conditions, only `r prop.people.give.success`% of participants chose that response.
+
+```{r}
+hand_annotated_vs_synset_matching = rbind(
+  d %>%
+    rename(document=doc, clozeIndex=cloze, condition=cond, prop.match=prop.loosely.match) %>%
+    select(document, chain, clozeIndex, prop.match, condition) %>%
+    mutate(matching.method='wordnet synsets on verbs'),
+  df %>%
+    group_by(document, chain, clozeIndex, condition) %>% 
+    summarise(prop.match = mean(vpmatch=='yes')) %>%
+    mutate(matching.method='subjective human judgement'))
+
+hand_annotated_vs_synset_matching %>% filter(condition=='original') %>%
+  group_by(matching.method) %>%
+  summarise(low = ci.low(prop.match),
+            high= ci.high(prop.match),
+            prop.match = mean(prop.match)) %>%
+  ggplot(., aes(x=matching.method, y=prop.match)) +
+  geom_bar(stat='identity') +
+  geom_errorbar(aes(x=matching.method, ymin=low, ymax=high), width=0.01) +
+  ylim(0, 1) +
+  ggtitle("participants' recovery of left-out original text")
+```
+
+Overall, people don't seem to perform especially well on the task of recovering left-out sentences.
+
+#### Question 2: Whether or not people are able to fill in the original text, do they tend to agree with one another?
 
 #### Question 3: How detailed does the contextual linguistic information need to be for people to sensibly fill in the gaps in narrative texts?
 
@@ -213,6 +224,19 @@ d %>% filter(n>2) %>% group_by(cond) %>%
   ylab('prop Ss matching mode') +
   ggtitle('Automatic check of agreement')
 ```
+
+```{r}
+df = read.csv('experiment3-annotated.csv')
+
+df %>% group_by(condition) %>%
+  summarise(prop.match.orig = mean(vpmatch=='yes', na.rm=T)) %>%
+  ggplot(aes(x=condition, y=prop.match.orig)) +
+  geom_bar(stat='identity')
+```
+
+histograms and entropy
+link in weekly update with additional figures
+is there anything in the data that suggests people are being informative?
 
 ### Question 4: How does human performance on this task relate to the performance of a PMI-based script induction model?
 
