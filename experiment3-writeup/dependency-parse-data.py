@@ -6,6 +6,8 @@ import re
 import json
 from nltk.corpus import wordnet as wn
 
+REPARSE = False
+
 original_csv_file = 'experiment3-annotated.csv'
 
 new_rows = []
@@ -23,23 +25,24 @@ for row in csvreader:
 	response_sentences.append(response_sentence)
 	new_rows.append(row)
 
-# tmp_sentences_file = 'tmp-sentences-file.txt'
-# with open(tmp_sentences_file, 'wb') as w:
-# 	w.write('\n'.join(response_sentences))
+if REPARSE:
+	tmp_sentences_file = 'tmp-sentences-file.txt'
+	with open(tmp_sentences_file, 'wb') as w:
+		w.write('\n'.join(response_sentences))
 
-# experiment_writeup_directory = os.getcwd()
+	experiment_writeup_directory = os.getcwd()
 
-# os.system("""
-# wd=`pwd`
-# cd ~/opt/corenlp
-# java -cp "*" -Xmx8g edu.stanford.nlp.pipeline.StanfordCoreNLP """ +
-# "-annotators tokenize,ssplit,pos,lemma,ner,parse,depparse " +
-# "-file " + experiment_writeup_directory + "/" + tmp_sentences_file +
-# " -outputFormat json " +
-# "-outputDirectory " + experiment_writeup_directory +
-# """ -replaceExtension
-# cd $wd
-# """)
+	os.system("""
+	wd=`pwd`
+	cd ~/opt/corenlp
+	java -cp "*" -Xmx8g edu.stanford.nlp.pipeline.StanfordCoreNLP """ +
+	"-annotators tokenize,ssplit,pos,lemma,ner,parse,depparse " +
+	"-file " + experiment_writeup_directory + "/" + tmp_sentences_file +
+	" -outputFormat json " +
+	"-outputDirectory " + experiment_writeup_directory +
+	""" -replaceExtension
+	cd $wd
+	""")
 
 def fix_index(i):
 	return i-1

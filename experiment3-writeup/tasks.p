@@ -123,7 +123,7 @@ p72
 aVHe ask.
 p73
 assg32
-Vmentioned
+Vmention
 p74
 sVevent_only
 p75
@@ -294,7 +294,7 @@ p170
 aVThey had brought coupons in that we didn't normally accept.
 p171
 assg32
-Vinterrupted
+Vinterrupt
 p172
 sVevent_only
 p173
@@ -385,7 +385,7 @@ p222
 aVThe man loudly complained and then proceeded to knock a glass off the bar.
 p223
 assg32
-Vtrying
+Vtry
 p224
 sVevent_only
 p225
@@ -554,7 +554,7 @@ p319
 aVOther people order their food.
 p320
 assg32
-Vcame
+Vcome
 p321
 sVoriginal
 p322
@@ -660,7 +660,7 @@ p380
 aVWe accept the offer.
 p381
 assg32
-Vhad
+Vhave
 p382
 sVoriginal
 p383
@@ -847,7 +847,7 @@ aasg16
 VIt seemed as though he was going to kiss my mum.
 p488
 assg32
-Vstanding
+Vstand
 p489
 sVevent_only
 p490
@@ -1059,7 +1059,7 @@ p608
 aVMy waitress wasn't very attentive.
 p609
 assg32
-Voffered
+Voffer
 p610
 sVevent_only
 p611
@@ -1149,7 +1149,7 @@ p659
 aVI get home from work late.
 p660
 assg32
-Vrefused
+Vrefuse
 p661
 sVevent_only
 p662
@@ -1277,7 +1277,7 @@ p732
 aVI asked for the manager.
 p733
 assg32
-Vstarted
+Vstart
 p734
 sVoriginal
 p735
@@ -1432,7 +1432,7 @@ aasg16
 VWe thank him.
 p822
 assg32
-Vremained
+Vremain
 p823
 sVoriginal
 p824
@@ -1546,7 +1546,7 @@ p886
 aVI'm never going to this restaurant again.
 p887
 assg32
-Vordered
+Vorder
 p888
 sVevent_only
 p889
@@ -1658,7 +1658,7 @@ p950
 aVI found a snot rag in my salad.
 p951
 assg32
-Vsticking
+Vstick
 p952
 sVevent_only
 p953
@@ -1734,7 +1734,7 @@ aasg16
 VThe price of the menu was absolutely ridiculous.
 p995
 assg32
-Vordered
+Vorder
 p996
 sVevent_only
 p997
@@ -1783,7 +1783,7 @@ p1022
 aVWaiter ask.
 p1023
 assg32
-Vdelivered
+Vdeliver
 p1024
 sVevent_only
 p1025
@@ -1984,7 +1984,7 @@ aasg16
 VWe didn't want him to disturb other diners.
 p1136
 assg32
-Vthings
+Vthing
 p1137
 sVevent_only
 p1138
@@ -2140,7 +2140,7 @@ p1222
 aVThe woman kept changing her order, and had been talking on her phone for five minutes.
 p1223
 assg32
-Vbreaks
+Vbreak
 p1224
 sVevent_only
 p1225
@@ -2405,7 +2405,7 @@ p1374
 aVOur waiter kept trying to rush us to finish our meals.
 p1375
 assg32
-Vsaid
+Vsay
 p1376
 sVevent_only
 p1377
@@ -2497,7 +2497,7 @@ p1427
 aVWe apologized many times.
 p1428
 assg32
-Vdecides
+Vdecide
 p1429
 sVoriginal
 p1430
@@ -2739,7 +2739,7 @@ p1565
 aVMy friend knocked over a dessert cart at a restaurant.
 p1566
 assg32
-Vdecided
+Vdecide
 p1567
 sVevent_only
 p1568
@@ -2905,7 +2905,7 @@ aasg16
 VThings did not seem clear.
 p1661
 assg32
-Vwaited
+Vwait
 p1662
 sVoriginal
 p1663
@@ -3006,7 +3006,7 @@ p1717
 aVMy kid started to scream loudly, because he was tired.
 p1718
 assg32
-Vbehaving
+Vbehave
 p1719
 sVevent_only
 p1720
@@ -3121,7 +3121,7 @@ p1783
 aVShe came back and asked us about the meal.
 p1784
 assg32
-Vstarted
+Vstart
 p1785
 sVevent_only
 p1786
@@ -3238,7 +3238,7 @@ p1849
 aVThe man next to us thought they weren't giving him the full size of steak he ordered.
 p1850
 assg32
-Vshouted
+Vshout
 p1851
 sVevent_only
 p1852
@@ -3300,7 +3300,7 @@ p1885
 aVHoliday end.
 p1886
 assg32
-Vpouring
+Vpour
 p1887
 sVevent_only
 p1888
@@ -3388,7 +3388,7 @@ aasg16
 VWe don't like to cause a fuss.
 p1935
 assg32
-Vseated
+Vseat
 p1936
 sVevent_only
 p1937
@@ -3460,7 +3460,7 @@ aasg16
 VWe spotted a couple of friends there.
 p1976
 assg32
-Vwere
+Vbe
 p1977
 sVevent_only
 p1978
@@ -3536,7 +3536,7 @@ p2019
 aVIt poured rain.
 p2020
 assg32
-Vhappened
+Vhappen
 p2021
 sVoriginal
 p2022
@@ -3712,7 +3712,7 @@ aasg16
 VHowever the customers were still upset.
 p2121
 assg32
-Vtold
+Vtell
 p2122
 sVevent_only
 p2123
@@ -3959,7 +3959,7 @@ aasg16
 VI go to the room.
 p2263
 assg32
-Vtold
+Vtell
 p2264
 sVoriginal
 p2265
@@ -4135,7 +4135,7 @@ aasg16
 VThe waitress asked for my order.
 p2363
 assg32
-Vcame
+Vcome
 p2364
 sVevent_only
 p2365
