@@ -150,7 +150,7 @@ hand_annotated_vs_synset_matching %>% filter(condition=='original') %>%
   ylab("proportion of participants who recovered original text") +
   xlab("method for determining match") +
   ggtitle("participants' recovery of left-out original text")
-ggsave('human.cloze.orig.png', width=8, height=5)
+ggsave('human.cloze.orig.png', width=5, height=3)
 ```
 
 Overall, people don't seem to perform especially well on the task of recovering left-out sentences.
@@ -183,7 +183,7 @@ df %>% filter(condition=='original') %>%
   facet_wrap(~tag, scale='free_x') +
   # theme(axis.text.x = element_blank())
   theme(axis.text.x = element_text(angle=60, hjust=1))
-ggsave('agreement-hist-orig.png', width=4, height=8)
+ggsave('human.agreement.hist.auto.png', width=8, height=10)
 ```
 
 For most of the cloze tasks, there was not much overlap in responses.
@@ -198,7 +198,7 @@ df %>% filter(condition=='original') %>%
   facet_wrap(~tag, scale='free_x') +
   # theme(axis.text.x = element_blank())
   theme(axis.text.x = element_text(angle=60, hjust=1))
-ggsave('agreement-hist-orig-by-hand.png', width=4, height=8)
+ggsave('human.agreement.hist.manual.png', width=8, height=10)
 ```
 
 This method shows a tiny bit more overlap in participants' responses.
@@ -230,6 +230,7 @@ agreement.df %>% filter(condition=='original') %>% group_by(method) %>%
   geom_bar(stat='identity') +
   geom_errorbar(aes(x=method, ymin=low, ymax=high), width=0.01) +
   ylim(0, 1)
+ggsave('human.agreement.orig.png', width=5, height=3)
 ```
 
 Overall, people didn't agree with one another very much on their answers to these cloze tasks.
@@ -250,6 +251,7 @@ hand_annotated_vs_synset_matching %>%
   geom_errorbar(aes(x=condition, ymin=low, ymax=high), width=0.01) +
   facet_wrap(~matching.method) +
   ylim(0, 1)
+ggsave('human.cloze.all.png', width=5, height=3)
 ```
 
 When we manually checked responses for having similar meaning to the original sentences, we find that including the full original text from the context increases the probability that people will recover something close to the original left-out sentence.
@@ -268,6 +270,7 @@ agreement.df %>%
   facet_wrap(~method) +
   geom_errorbar(aes(x=condition, ymin=low, ymax=high), width=0.01) +
   ylim(0, 1)
+ggsave('human.agreement.all.png', width=5, height=3)
 ```
 
 We found no difference in agreement across the three linguistic conditions.
