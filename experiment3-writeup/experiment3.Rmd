@@ -28,7 +28,7 @@ library(bootstrap)
 theme_new <- theme_set(theme_few())
 
 # for bootstrapping 95% confidence intervals
-theta <- function(x,xdata) {mean(xdata[x])}
+theta <- function(x,xdata) {mean(xdata[x], na.rm=T)}
 ci.low <- function(x) {
   quantile(bootstrap::bootstrap(1:length(x),1000,theta,x)$thetastar,.025)}
 ci.high <- function(x) {
@@ -36,8 +36,6 @@ ci.high <- function(x) {
 
 options(digits=3)
 ```
-
-
 
 # Background
 
@@ -134,11 +132,11 @@ hand_annotated_vs_synset_matching = rbind(
   d %>%
     rename(document=doc, clozeIndex=cloze, condition=cond, prop.match=prop.loosely.match) %>%
     select(document, chain, clozeIndex, prop.match, condition) %>%
-    mutate(matching.method='wordnet synsets on verbs'),
+    mutate(matching.method='auto'),
   df %>%
     group_by(document, chain, clozeIndex, condition) %>% 
     summarise(prop.match = mean(vpmatch=='yes')) %>%
-    mutate(matching.method='subjective human judgement'))
+    mutate(matching.method='manual'))
 
 hand_annotated_vs_synset_matching %>% filter(condition=='original') %>%
   group_by(matching.method) %>%
@@ -149,141 +147,138 @@ hand_annotated_vs_synset_matching %>% filter(condition=='original') %>%
   geom_bar(stat='identity') +
   geom_errorbar(aes(x=matching.method, ymin=low, ymax=high), width=0.01) +
   ylim(0, 1) +
+  ylab("proportion of participants who recovered original text") +
+  xlab("method for determining match") +
   ggtitle("participants' recovery of left-out original text")
+ggsave('human.cloze.orig.png', width=8, height=5)
 ```
 
 Overall, people don't seem to perform especially well on the task of recovering left-out sentences.
 
 #### Question 2: Whether or not people are able to fill in the original text, do they tend to agree with one another?
 
+We also wanted to know to what extent people agree on the main verb for the sentences they produce for a given cloze task.
+
+We used Stanford CoreNLP dependency parser to extract the root verb (or occasionally adjectival predicate: e.g. 'red' in 'The apple is red') from the sentences that people produced. For each predicate, we looked for the first synonym set in wordnet. If there was a synonymset for that word, we replaced it with the name of that synset (e.g. we replaced "travel" with its synset name "go").
+
+```{r, fig.width=4, fig.height=8}
+#histogram
+df = read.csv('experiment3-with-main-verbs.csv') %>%
+  mutate(synset = as.character(synset),
+         root.predicate = as.character(root.predicate),
+         synset=factor(synset, levels=names(table(synset))[rev(order(table(synset)))]),
+         tag = paste(document, chain, clozeIndex))
+
+# # not all the synset names were the same as the response predicate
+# df %>% filter(synset!=root.predicate) %>% select(synset, root.predicate)
+
+# # overall, words are kinda ziphian
+# df %>% ggplot(., aes(x=synset)) +
+#   geom_bar(stat='count') +
+#   theme(axis.text.x = element_blank())
+
+df %>% filter(condition=='original') %>%
+  ggplot(., aes(x=synset)) +
+  geom_bar(stat='count') +
+  facet_wrap(~tag, scale='free_x') +
+  # theme(axis.text.x = element_blank())
+  theme(axis.text.x = element_text(angle=60, hjust=1))
+ggsave('agreement-hist-orig.png', width=4, height=8)
+```
+
+For most of the cloze tasks, there was not much overlap in responses.
+
+In addition to this automated method of finding main event predicates, we also hand-annotated the pilot data with the experimenter's gloss of the main verb.
+
+```{r, fig.width=4, fig.height=8}
+#histogram
+df %>% filter(condition=='original') %>%
+  ggplot(., aes(x=vp)) +
+  geom_bar(stat='count') +
+  facet_wrap(~tag, scale='free_x') +
+  # theme(axis.text.x = element_blank())
+  theme(axis.text.x = element_text(angle=60, hjust=1))
+ggsave('agreement-hist-orig-by-hand.png', width=4, height=8)
+```
+
+This method shows a tiny bit more overlap in participants' responses.
+
+For all cloze tasks in the pilot where we have data from more than one participant, we calculated the entropy of the distribution of responses and divided by the maximum possible entropy given the number of participants. We subtracted this number from one to get an "agreement" measure. So a value of 0 corresponds to no agreement, and larger values correspond to more agreement. (Entropy by itself will not be an informative measure of agreement, since we have different numbers of participants in each condition.)
+
+<!-- robert's python package: http://homes.soic.indiana.edu/sdedeo/page7/page7.html -->
+
+```{r}
+#entropy/agreement measure
+
+agreement.df = df %>%
+  group_by(tag, condition) %>%
+  summarise(max.possible.entropy = log(length(tag)),
+            auto.entropy = entropy(table(synset)),
+            manual.entropy = entropy(table(vp))) %>%
+  filter(max.possible.entropy > 0) %>%
+  mutate(auto.agreement = 1 - (auto.entropy/max.possible.entropy),
+         manual.agreement = 1 - (manual.entropy/max.possible.entropy)) %>%
+  select(tag, auto.agreement, manual.agreement, condition) %>%
+  gather(method, agreement, 2:3) %>%
+  separate(method, into=c('method', 'trash')) %>% select(-trash)
+
+agreement.df %>% filter(condition=='original') %>% group_by(method) %>%
+  summarise(low = ci.low(agreement),
+            high = ci.high(agreement),
+            agreement = mean(agreement)) %>%
+  ggplot(., aes(x=method, y=agreement)) +
+  geom_bar(stat='identity') +
+  geom_errorbar(aes(x=method, ymin=low, ymax=high), width=0.01) +
+  ylim(0, 1)
+```
+
+Overall, people didn't agree with one another very much on their answers to these cloze tasks.
+
 #### Question 3: How detailed does the contextual linguistic information need to be for people to sensibly fill in the gaps in narrative texts?
 
-The other two linguistic conditions did not differ much in the proportion of participants who recovered the original text.
-
-Numerically, the event-only condition resulted in higher rates of successful recovery of the original text.
-<!-- statistical test -->
-
 ```{r}
-d %>% mutate(one.loosely.match.orig = prop.loosely.match>0) %>%
-  group_by(cond) %>%
-  summarise(
-    n = length(one.loosely.match.orig),
-    low = ci.low(one.loosely.match.orig),
-    high = ci.high(one.loosely.match.orig),
-    loosely.match.orig.rate = mean(one.loosely.match.orig)) %>%
-  ggplot(aes(x=cond, y=loosely.match.orig.rate, fill=cond)) +
+# success by condition (faceted by method)
+
+hand_annotated_vs_synset_matching %>%
+  filter(condition != '') %>%
+  group_by(matching.method, condition) %>%
+  summarise(low = ci.low(prop.match),
+            high= ci.high(prop.match),
+            prop.match = mean(prop.match, na.rm=T)) %>%
+  ggplot(., aes(x=condition, y=prop.match, fill=condition)) +
   geom_bar(stat='identity') +
-  # geom_text(aes(label=n)) +
-  geom_errorbar(aes(ymin=low, ymax=high, x=cond), width=0) +
-  ylim(0, 1) +
-  xlab('linguistic detail') +
-  ylab('prop stim recovered by >1 Ss') +
-  ggtitle('Automatic check of recovering original text')
-
-recovered.from.orig.text = d %>% filter(prop.loosely.match>0) %>%
-  group_by(doc, chain, cloze) %>% summarise(conds = paste(cond, collapse=' '))
+  geom_errorbar(aes(x=condition, ymin=low, ymax=high), width=0.01) +
+  facet_wrap(~matching.method) +
+  ylim(0, 1)
 ```
 
-Among *only* the stimulus/condition pairs where at least one person recovered the original, a numerically higher proportion of participants recovered the original text when the context was provided in full linguistic detail. But there were only two tasks in that condition where any participants succeeded.
-<!-- statistical test -->
+When we manually checked responses for having similar meaning to the original sentences, we find that including the full original text from the context increases the probability that people will recover something close to the original left-out sentence.
 
 ```{r}
-d %>% group_by(cond) %>%
-  filter(prop.loosely.match>0) %>%
-  summarise(
-    n = length(prop.match.mode),
-    low = ci.low(prop.loosely.match),
-    high = ci.high(prop.loosely.match),
-    prop.loosely.match = mean(prop.loosely.match)) %>%
-  ggplot(aes(x=cond, y=prop.loosely.match, fill=cond)) +
+# agreement by condition (faceted by method)
+
+agreement.df %>%
+  filter(condition != '') %>%
+  group_by(method, condition) %>%
+  summarise(low = ci.low(agreement),
+            high = ci.high(agreement),
+            agreement = mean(agreement)) %>%
+  ggplot(., aes(x=condition, y=agreement, fill=condition)) +
   geom_bar(stat='identity') +
-  # geom_text(aes(label=n)) +
-  geom_errorbar(aes(ymin=low, ymax=high, x=cond), width=0) +
-  ylim(0, 1) +
-  xlab('linguistic detail') +
-  ylab('prop Ss match original') +
-  ggtitle('Successful subset of cloze tasks')
+  facet_wrap(~method) +
+  geom_errorbar(aes(x=condition, ymin=low, ymax=high), width=0.01) +
+  ylim(0, 1)
 ```
 
-In each of the three linguistic detail conditions, the most common response verb was given by around 20% of participants. The three conditions did not differ much.
-<!-- statistical test -->
-
-```{r}
-d %>% filter(n>2) %>% group_by(cond) %>%
-  summarise(
-    n = length(prop.match.mode),
-    low = ci.low(prop.loosely.match),
-    high = ci.high(prop.match.mode),
-    prop.match.mode = mean(prop.match.mode)) %>%
-  ggplot(aes(x=cond, y=prop.match.mode, fill=cond)) +
-  geom_bar(stat='identity') +
-  # geom_text(aes(label=n)) +
-  geom_errorbar(aes(ymin=low, ymax=high, x=cond), width=0) +
-  ylim(0, 1) +
-  xlab('linguistic detail') +
-  ylab('prop Ss matching mode') +
-  ggtitle('Automatic check of agreement')
-```
-
-```{r}
-df = read.csv('experiment3-annotated.csv')
-
-df %>% group_by(condition) %>%
-  summarise(prop.match.orig = mean(vpmatch=='yes', na.rm=T)) %>%
-  ggplot(aes(x=condition, y=prop.match.orig)) +
-  geom_bar(stat='identity')
-```
-
-histograms and entropy
-link in weekly update with additional figures
-is there anything in the data that suggests people are being informative?
+We found no difference in agreement across the three linguistic conditions.
 
 ### Question 4: How does human performance on this task relate to the performance of a PMI-based script induction model?
 
-<!--
-```{r}
-d %>% filter(loosely.orig > 0)
-d %>% filter(n>2) %>%
-  ggplot(aes(x=prop.loosely.match, colour=cond)) +
-  geom_density() +
-  xlab("percent of other participants' responses that match the original") +
-  ggtitle("N>2")
-ggsave("verb-match-orig-density.png")
-d %>% filter(n>2) %>%
-  ggplot(aes(x=prop.match.mode, colour=cond)) +
-  geom_density() +
-  xlab("percent of other participants' responses that match the mode") +
-  ggtitle("N>2")
-ggsave("verb-match-density.png")
-d$prop.match.orig
-d %>% filter(n>2) %>%
-  ggplot(aes(x=prop.match.mode, colour=cond)) +
-  geom_density() +
-  xlab("percent of other participants' responses that match the mode") +
-  ggtitle("N>2")
-ggsave("verb-match-density.png")
+### Informativity in human responses
 
-d %>% filter(n==3) %>%
-  ggplot(aes(x=n.match.mode, fill=cond)) +
-  geom_histogram(binwidth=1) +
-  facet_wrap(~cond) +
-  xlab("number of other participants' responses that match the mode") +
-  ggtitle("items where N=3")
-ggsave("verb-match-hist-N3.png")
+is there anything in the data that suggests people are being informative?
 
-d %>% filter(!is.na(prop.match.orig) & n==4) %>%
-  ggplot(aes(x=n.match.mode, fill=cond)) +
-  geom_histogram(binwidth=1) +
-  facet_wrap(~cond) +
-  xlab("number of other participants' responses that match the mode") +
-  ggtitle("items where N=4")
-ggsave("verb-match-hist-N4.png")
-
-subset(d, n.match.mode >= 1)$mode
-
-write.table(unique(d$mode))
-```
--->
+## Informativity model of narrative generation
 
 ## Future work
 
