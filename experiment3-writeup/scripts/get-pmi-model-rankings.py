@@ -3,6 +3,7 @@
 import pickle
 import codecs, json
 documents_directory = '../../restaurant-script/documents'
+from nltk.tree import Tree
 
 def main():
   ## collect the set of documents in the experiment
@@ -82,10 +83,43 @@ class Dependencies:
     if len(candidates) == 1:
       return candidates[0]
     else:
-      print candidates
       print """
             TODO 6: I'm not sure what to do if there are no/multiple candidates
             """
+
+def extract_head_noun_index(parsestring, startIndex, endIndex):
+  ## if the referent is a long phrase, try to find the head noun
+  parse = Tree.fromstring(parsestring)
+  phrase_position = parse.treeposition_spanning_leaves(startIndex.good,
+                                                       endIndex.good)
+  phrase = parse[phrase_position]
+  noun_indices = []
+  ## we need to know where in the sentence the head noun occurred
+  ## so don't loose the information about the treeposition of the noun!
+  for treeposition in phrase.treepositions():
+    if len(treeposition)==1:
+      subtree = phrase[treeposition]
+      if subtree.label()=='NN':
+        noun = subtree[0]
+        noun_position = phrase_position + treeposition + (0,)
+        noun_index_candidates = [
+          Index(i, type='good') for i in range(len(parse.leaves())) if \
+          parse.leaf_treeposition(i)==noun_position
+        ]
+        if len(noun_index_candidates)!=1:
+          print """
+          ERROR 345: exactly one index in the tree should have that position!
+          """
+        noun_indices.append(noun_index_candidates[0])
+
+  if len(noun_indices)==1:
+    return noun_indices[0]
+  else:
+    print phrase.pos()
+    print """
+          TODO 1243: not sure what to do when referent phrase contains
+          no/multiple nouns at the highest level
+          """
 
 def create_corpus(exclude='000'):
 
@@ -134,9 +168,9 @@ def create_corpus(exclude='000'):
         if len(words)==1:
           referent = possibly_referent[0]
         else:
-          print """
-                TODO 1234: not sure what to do when the mention spans multiple words
-                """
+          noun_index = extract_head_noun_index(sentence['parse'], startIndex,
+                                               endIndex)
+          referent = dependencies.get(noun_index)
 
         ## figure out the governor of the referent
         governor = dependencies.get(referent.governor)
