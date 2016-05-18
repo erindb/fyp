@@ -8,7 +8,7 @@ from nltk.corpus import wordnet as wn
 
 REPARSE = False
 
-original_csv_file = 'experiment3-annotated.csv'
+original_csv_file = '../data/experiment3-annotated.csv'
 
 new_rows = []
 
@@ -26,7 +26,7 @@ for row in csvreader:
 	new_rows.append(row)
 
 if REPARSE:
-	tmp_sentences_file = 'tmp-sentences-file.txt'
+	tmp_sentences_file = '../data/tmp-sentences-file.txt'
 	with open(tmp_sentences_file, 'wb') as w:
 		w.write('\n'.join(response_sentences))
 
@@ -37,9 +37,9 @@ if REPARSE:
 	cd ~/opt/corenlp
 	java -cp "*" -Xmx8g edu.stanford.nlp.pipeline.StanfordCoreNLP """ +
 	"-annotators tokenize,ssplit,pos,lemma,ner,parse,depparse " +
-	"-file " + experiment_writeup_directory + "/" + tmp_sentences_file +
+	"-file " + experiment_writeup_directory + "/../data/" + tmp_sentences_file +
 	" -outputFormat json " +
-	"-outputDirectory " + experiment_writeup_directory +
+	"-outputDirectory " + experiment_writeup_directory + "/../data/"
 	""" -replaceExtension
 	cd $wd
 	""")
@@ -63,8 +63,8 @@ def get_synset(w, pos):
 		return w
 	return wn.synsets(w, pos)[0].name().split('.')[0]
 
-dependency_parsed_file = 'tmp-sentences-file.json'
-new_csv_file = 'experiment3-with-main-verbs.csv'
+dependency_parsed_file = '../data/tmp-sentences-file.json'
+new_csv_file = '../data/experiment3-with-main-verbs.csv'
 
 with open(dependency_parsed_file) as f:
 	data = json.loads(f.read())

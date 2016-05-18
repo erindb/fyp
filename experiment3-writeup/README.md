@@ -39,4 +39,7 @@ I did a lot of little nlp steps on the responses that people gave. It's a mess:
 10. collect-data.py
 	- reads tasks.p
 	- figures out whether participants' responses contain the main verb of the original
-	- writes 
+	- prints out some stuff that I cat to verb-processed-data.txt (space-separated file)
+
+11. verb-processed-data.txt
+	- only contains automatic matching of verbs across responses and original

@@ -44,7 +44,7 @@ tasks = {}
 main_verbs = {}
 
 header = True
-with codecs.open('experiment3.csv', 'rb', 'utf8') as csvfile:
+with codecs.open('../data/experiment3.csv', 'rb', 'utf8') as csvfile:
     csvreader = unicode_csv_reader(csvfile)
     for row in csvreader:
       if header:
