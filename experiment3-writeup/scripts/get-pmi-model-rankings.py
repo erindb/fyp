@@ -3,7 +3,14 @@
 import pickle
 import codecs, json
 documents_directory = '../../restaurant-script/documents'
+training_corpora_directory = '../data/training-corpora'
 from nltk.tree import Tree
+
+WARNINGS = False
+
+def warn(msg):
+  if WARNINGS:
+    print msg
 
 def main():
   ## collect the set of documents in the experiment
@@ -59,11 +66,13 @@ class Index:
     elif b.good < a.good:
       return b.good <= self.good and self.good < a.good
     else:
-      print """
+      warn("""
             WARNING 21345: I'm not sure if the indices
                            we're within should ever be identical
-            """
+            """)
       return a.good == self.good and self.good == b.good
+  def increment(self, i):
+    return Index(self.good + i, type='good')
 
 class Dep:
   def __init__(self, dependency):
@@ -72,6 +81,7 @@ class Dep:
     self.governor = Index(dependency['governor'])
     self.governorGloss = dependency['governorGloss']
     self.word = dependency['dependentGloss']
+    self.str = json.dumps(dependency)
 
 class Dependencies:
   def __init__(self, dependencies):
@@ -80,12 +90,31 @@ class Dependencies:
     return [d for d in self.list if d.index.within(startIndex, endIndex)]
   def get(self, index):
     candidates = [d for d in self.list if d.index.good == index.good]
-    if len(candidates) == 1:
+    if len(candidates) > 0:
+      if len(candidates) > 1:
+        warn("WARNING 6243: There are multiple candidates. " + \
+              "I'm taking the *first* of " + ", ".join([str(c.index.good) for c in candidates]))
       return candidates[0]
     else:
       print """
-            TODO 6: I'm not sure what to do if there are no/multiple candidates
+            ERROR 6: I'm not sure what to do if there are no candidates
             """
+  def str(self):
+    return [d.str for d in self.list]
+
+def index_at_position(tree, position):
+  noun_index_candidates = [
+    Index(i, type='good') for i in range(len(tree.leaves())) if \
+    tree.leaf_treeposition(i)==position
+  ]
+  if len(noun_index_candidates)!=1:
+    print tree.leaves()
+    print position
+    print """
+    ERROR 345: exactly one index in the tree should have that position!
+    """
+  else:
+    return noun_index_candidates[0]
 
 def extract_head_noun_index(parsestring, startIndex, endIndex):
   ## if the referent is a long phrase, try to find the head noun
@@ -93,33 +122,41 @@ def extract_head_noun_index(parsestring, startIndex, endIndex):
   phrase_position = parse.treeposition_spanning_leaves(startIndex.good,
                                                        endIndex.good)
   phrase = parse[phrase_position]
-  noun_indices = []
-  ## we need to know where in the sentence the head noun occurred
-  ## so don't loose the information about the treeposition of the noun!
-  for treeposition in phrase.treepositions():
-    if len(treeposition)==1:
-      subtree = phrase[treeposition]
-      if subtree.label()=='NN':
-        noun = subtree[0]
-        noun_position = phrase_position + treeposition + (0,)
-        noun_index_candidates = [
-          Index(i, type='good') for i in range(len(parse.leaves())) if \
-          parse.leaf_treeposition(i)==noun_position
-        ]
-        if len(noun_index_candidates)!=1:
-          print """
-          ERROR 345: exactly one index in the tree should have that position!
-          """
-        noun_indices.append(noun_index_candidates[0])
-
+  if type(phrase) is unicode:
+    return index_at_position(parse, phrase_position)
+  # ## we need to know where in the sentence the head noun occurred
+  # ## so don't loose the information about the treeposition of the noun!
+  subtree_direct_indices = [i for i in range(len(phrase)) if type(phrase[i]) is Tree]
+  noun_positions = [phrase_position + (i, 0,) for i in subtree_direct_indices if (phrase[i].label() in ['NN', 'NNS', 'NNP'])]
+  noun_indices = [index_at_position(parse, p) for p in noun_positions]
   if len(noun_indices)==1:
     return noun_indices[0]
   else:
-    print phrase.pos()
-    print """
-          TODO 1243: not sure what to do when referent phrase contains
-          no/multiple nouns at the highest level
-          """
+    noun_phrase_positions = [phrase_position + (i,) for i in subtree_direct_indices if phrase[i].label()=='NP']
+    if len(noun_phrase_positions)>0:
+      if len(noun_phrase_positions)!=1:
+        warn("WARNING 45: there were multiple top-level noun phrases. " + \
+              "I'm returning the head noun of the *first*")
+      for noun_phrase_pos in noun_phrase_positions:
+        noun_phrase = parse[noun_phrase_pos]
+        np_start_position = noun_phrase_pos + noun_phrase.leaf_treeposition(0)
+        np_start = index_at_position(parse, np_start_position)
+        np_end_in_np = noun_phrase.leaf_treeposition(len(noun_phrase.leaves())-1)
+        np_end_position = noun_phrase_pos + noun_phrase.leaf_treeposition(len(noun_phrase.leaves())-1)
+        np_end = index_at_position(parse, np_end_position).increment(1)
+        return extract_head_noun_index(parsestring, np_start, np_end)
+    else:
+      subtree_positions = [tp for tp in phrase.treepositions() if type(phrase[tp]) is Tree]
+      noun_positions = [tp + (0,) for tp in subtree_positions if (phrase[tp].label() in ['NN', 'NNS', 'NNP'])]
+      if len(noun_positions) > 0:
+        if len(noun_positions) != 1:
+          warn("WARNING 45243: there were multiple noun phrases. " + \
+                "I'm returning the *first* of " + " ".join([phrase[tp] for tp in noun_positions]))
+        return index_at_position(parse, phrase_position + noun_positions[0])
+      else:
+        warn("WARNING 1243: the phrase \"" + ' '.join(phrase.leaves()) + "\" contains no noun." + \
+              " I'm taking the last word in the phrase.")
+        return index_at_position(parse, phrase_position + phrase.leaf_treeposition(len(phrase.leaves())-1))
 
 def create_corpus(exclude='000'):
 
@@ -172,19 +209,23 @@ def create_corpus(exclude='000'):
                                                endIndex)
           referent = dependencies.get(noun_index)
 
-        ## figure out the governor of the referent
-        governor = dependencies.get(referent.governor)
-        ## and the type of that dependency
-        deptype = governor.type
-        ## to create the event
-        event = (governor.word, deptype)
+        if referent.governorGloss != "ROOT":
+          ## figure out the governor of the referent
+          governor = dependencies.get(referent.governor)
+          ## and the type of that dependency
+          deptype = referent.type
+          ## to create the event
+          event = (governor.word, deptype)
 
-        event_string = '->'.join(event)
-        events.append(event_string)
+          event_string = '->'.join(event)
+          events.append(event_string)
       event_string = ' '.join(events)
       document_chains.append(event_string)
     document_section = '\n'.join([doctag, docUUIDtag] + document_chains)
     document_sections.append(document_section)
+
+  corpus_filename = training_corpora_directory + "/corpus-excluding-" + exclude
+  codecs.open(corpus_filename, 'wb', 'utf-8').write("\n\n".join(document_sections))
 
 if __name__ == "__main__":
     main()
