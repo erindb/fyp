@@ -75,7 +75,7 @@ In the pilot, we lost data from some participants, and unfortunately, this was l
 There were 51 cloze tasks in total, and only 17 were seen by each participant. We collected data from 24 participants, so not all of the cloze tasks had enough responses to make meaningful inferences about (e.g.) response overlap across participants.
 
 ```{r}
-d = read.table('verb-processed-data.txt', sep=' ')
+d = read.table('data/verb-processed-data.txt', sep=' ')
 names(d) = c('doc', 'chain', 'cloze', 'cond', 'prop.match.orig',
              'prop.match.mode', 'n.match.mode', 'n', 'mode', 'loosely.orig', 'orig', 'n.loose.mode')
 d = d %>% mutate(prop.loosely.match = loosely.orig/n,
@@ -276,6 +276,34 @@ ggsave('plots/human.agreement.all.png', width=5, height=3)
 We found no difference in agreement across the three linguistic conditions.
 
 ### Question 4: How does human performance on this task relate to the performance of a PMI-based script induction model?
+
+We measured the PMI model performance on the cloze task by taking the highest ranked guess that was a synonym of (or exactly equal to) the actual main verb or the main verbs that people provided. There doesn't seem to be a relationship between how much people agreed and how highly the model could rank a matching verb. If no synonym matched, or if all rankings were below 200, we recorded the model's ranking as 200.
+
+```{r}
+aggr.agreement = agreement.df %>% group_by(tag) %>% summarise(agreement = mean(agreement))
+agreement = aggr.agreement$agreement
+names(agreement) = aggr.agreement$tag
+pmi = read.csv('data/pmi-model-rankings.csv')
+pmi %>%
+  filter(exactness=='syns') %>%
+  mutate(tag = paste(document, chain, cloze),
+         ranking = ifelse(ranking<200, ranking, 200)) %>%
+  group_by(document, chain, cloze, exactness, source) %>%
+  summarise(min.rank = min(ranking),
+            mean.rank = mean(ranking),
+            prop.rankings.in.top.50 = mean(ranking < 50),
+            human.agreement = agreement[tag[1]]) %>%
+  ggplot(aes(x=human.agreement, y=min.rank, colour=source)) +
+  geom_point(size=3, alpha=0.3) +
+  facet_grid(~source) +
+  xlab("participants' agreement") +
+  ylab("highest rank of synonym")
+ggsave('plots/human.agreement.by.pmi.model.ranking.png', width=5, height=3)
+# sum(pmi$ranking>200)
+# sum(pmi$ranking<=200)
+```
+
+There does not appear to be a relationship between agreement among people across all conditions and the ranking that PMI models give to the correct event, or the main verbs that people provide.
 
 ### Informativity in human responses
 

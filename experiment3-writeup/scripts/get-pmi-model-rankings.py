@@ -6,7 +6,7 @@ from nltk.tree import Tree
 import os
 from nltk.corpus import wordnet as wn
 import csv
-import erin_nachos
+import nachos
 
 WARNINGS = False
 RUN_ALL = False
@@ -14,6 +14,13 @@ RUN_ALL = False
 documents_directory = '../../restaurant-script/documents'
 training_corpora_directory = '../data/training-corpora'
 experiment_results_file = '../data/experiment3.csv'
+pmi_model_rankings_file = '../data/pmi-model-rankings.csv'
+
+write_rankings = csv.DictWriter(open(pmi_model_rankings_file, 'ab'),
+                                fieldnames=['document', 'chain', 'cloze',
+                                            'source', 'exactness',
+                                            'answer', 'ranking', 'role'])
+write_rankings.writeheader()
 
 def warn(msg):
   if WARNINGS:
@@ -28,6 +35,10 @@ def main():
 
   ## for each document:
   for document in documents:
+    training_file = '../data/training-corpora/corpus-excluding-' + document + '.gz'
+    cloze_test_file ='../data/cloze-tests/cloze-for-' + document + '-actual-exact'
+    nachos.nachos(cloze_file=cloze_test_file, training_file=training_file, docmin=3, threshold=10,
+                  subjobj=True, coref='all', model_out='tmp')
 
   ##   * create a version of the restaurant blogs corpus
   ##     with that document left out
@@ -43,18 +54,22 @@ def main():
 
       response_data = parse_responses()
       write_cloze_tests(document, cloze_task_tags, response_data[document])
-
-  ##        * for each generated cloze task (see arrows in write_cloze_tests):
-    chains = unique([t[1] for t in cloze_task_tags if t[0]==document])
-    for chain in chains:
-      for cloze_index in unique([t[2] for t in cloze_task_tags if t[0]==document and t[1]==chain]):
+  # ##        * for each generated cloze task (see arrows in write_cloze_tests):
+  #   chains = unique([t[1] for t in cloze_task_tags if t[0]==document])
+  #   for chain in chains:
+  #     for cloze_index in unique([t[2] for t in cloze_task_tags if t[0]==document and t[1]==chain]):
   ##          * run the PMI model to get the ranking of that event
-        for exactness in ['exact', 'syns']:
-          for source in ['actual', 'response']:
-            cloze_test_file = '../data/cloze-tests/cloze-for-' + document + '-' + source + '-' + exactness
-            training_file = '../data/training-corpora/corpus-excluding-' + document + '.gz'
-  ##        * find and RECORD the ranking
-            erin_nachos.nachos(cloze_file=cloze_test_file, training_file=training_file, docmin=3, threshold=10, subjobj=True, coref='all')
+    for exactness in ['exact', 'syns']:
+      for source in ['actual', 'response']:
+        cloze_test_file = '../data/cloze-tests/cloze-for-' + document + '-' + source + '-' + exactness
+##        * find and RECORD the ranking
+        rankings = nachos.nachos(cloze_file=cloze_test_file, training_file=training_file,
+                                 docmin=3, threshold=10, subjobj=True, coref='all', model_in='tmp')
+        for answer, ranking, chain_number, insert_index in rankings:
+          answer, role = answer.split('->')
+          write_rankings.writerow({'document': document, 'chain': chain_number, 'cloze': insert_index,
+                                    'source': source, 'exactness': exactness,
+                                    'answer': answer, 'ranking': ranking, 'role': role})
 
 def parse_responses():
   experiment_results_file_with_caveman = experiment_results_file[:-4] + '-with-caveman-parsing.csv'
@@ -302,7 +317,7 @@ def create_corpus(exclude='000'):
   corpus_filename = training_corpora_directory + "/corpus-excluding-" + exclude
   codecs.open(corpus_filename, 'wb', 'utf-8').write("\n\n".join(document_sections))
 
-def make_cloze_test(document, event_chain, cloze_index, answer=None):
+def make_cloze_test(document, chain, event_chain, cloze_index, answer=None):
     cloze = [event_chain[i] for i in range(len(event_chain)) if i!=int(cloze_index)]
 
     orig_answer, orig_role = event_chain[int(cloze_index)].split('->')
@@ -316,7 +331,7 @@ def make_cloze_test(document, event_chain, cloze_index, answer=None):
   ##  -->   * create the correct cloze task for the PMI model
     cloze_test = "\n".join([
       "<DOCNAME>" + document,
-      "<CHAIN> len:" + str(len(event_chain)),
+      "<CHAIN>" + chain,
       "<TEST>",
       "<ANSWER> " + new_answer,
       "<INSERT_INDEX>" + cloze_index,
@@ -431,7 +446,7 @@ def write_cloze_tests(document, cloze_task_tags, document_data):
     taks_data = document_data[chain][cloze_index]
     event_chain = event_chains[chain].split(" ")
 
-    actual_exact_cloze_test = make_cloze_test(document, event_chain, cloze_index)
+    actual_exact_cloze_test = make_cloze_test(document, chain, event_chain, cloze_index)
     actual_exact_cloze_tests.append(actual_exact_cloze_test)
     actual_syns_cloze_tests.append(actual_exact_cloze_test)
 
@@ -445,7 +460,7 @@ def write_cloze_tests(document, cloze_task_tags, document_data):
       for synonym in synonyms:
   ##        * for each synonym of the correct predicate:
   ##  -->       * create a cloze task for the PMI model
-        syn_cloze_test = make_cloze_test(document, event_chain, cloze_index, answer=synonym)
+        syn_cloze_test = make_cloze_test(document, chain, event_chain, cloze_index, answer=synonym)
         actual_syns_cloze_tests.append(syn_cloze_test)
 
   ##        * collect the main predicates of the responses that
@@ -453,7 +468,7 @@ def write_cloze_tests(document, cloze_task_tags, document_data):
   ##        * for each predicate that people gave in their responses:
         for response_verb in taks_data:
   ##  -->       * create a cloze task for the PMI model
-          response_exact_cloze_tests.append(make_cloze_test(document, event_chain, cloze_index, answer=response_verb))
+          response_exact_cloze_tests.append(make_cloze_test(document, chain, event_chain, cloze_index, answer=response_verb))
   ##            * collect the synonyms of the first synset in wordnet
           synsets = wn.synsets(response_verb)
           if len(synsets) > 0:
@@ -461,7 +476,7 @@ def write_cloze_tests(document, cloze_task_tags, document_data):
             for synonym in synonyms:
   ##            * for each synonym of the response predicates:
   ##  -->           * create a cloze task for the PMI model
-              response_syns_cloze_tests.append(make_cloze_test(document, event_chain, cloze_index, answer=synonym))
+              response_syns_cloze_tests.append(make_cloze_test(document, chain, event_chain, cloze_index, answer=synonym))
   
   codecs.open(cloze_test_filename_actual_exact, 'wb', 'utf-8').write("\n\n".join(unique(actual_exact_cloze_tests)))
   codecs.open(cloze_test_filename_actual_syns, 'wb', 'utf-8').write("\n\n".join(unique(actual_syns_cloze_tests)))
