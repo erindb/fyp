@@ -1,3 +1,0 @@
-[submodule "data-processing/nachos"]
-	path = nachos
-	url = https://github.com/rudinger/nachos.git
