@@ -41,96 +41,159 @@ more about how explanations work...? And vice versa?
 
 */
 
-// levels get progressively less easy
-var easiness = { 1: 0.8, 2: 0.5, 3: 0.2 };
-var levels = easiness.keys;
+var videoGame = function() {
+	// levels get progressively less easy
+	var easiness = { 1: 0.8, 2: 0.5, 3: 0.2 };
+	var levels = easiness.keys;
 
-// can change the length of the game:
-var highestLevel = 2;
+	// can change the length of the game:
+	var highestLevel = 2;
 
-var increaseBoredom = function(boredom) {
-	return boredom + 0.2;
-}
+	// boredome increases throughout the game.
+	// could increase more for a loss?
+	var increaseBoredom = function(boredom) {
+		return boredom + 0.2;
+	}
 
-var videoGameTransition = function(sequence, state) {
-	if (state.type == 'stop') {
-		var description = 'Anna stops playing.';
-		return sequence.concat([description]);
-	} else if (state.type == 'play') {
-		var description = 'Anna plays level ' + state.level + '.';
-		var outcome = flip(easiness[state.level]) ? 'win' : 'lose';
-		return videoGameTransition(
-			sequence.concat([description]),
-			_.extend(state, {type: outcome, boredom: increaseBoredom(state.boredom)})
-		)
-	} else if (state.type == 'win') {
-		if (state.level == highestLevel) {
-			var description = 'Anna wins the game.';
+	var videoGameTransition = function(sequence, state) {
+		if (state.type == 'stop') {
+			var description = 'Anna stops playing.';
+			return sequence.concat([description]);
+		} else if (state.type == 'play') {
+			var description = 'Anna plays level ' + state.level + '.';
+			var outcome = flip(easiness[state.level]) ? 'win' : 'lose';
 			return videoGameTransition(
 				sequence.concat([description]),
-				_.extend(state, {type: 'stop'})
+				_.extend(state, {type: outcome, boredom: increaseBoredom(state.boredom)})
 			)
-		} else {
-			var description = 'Anna wins level ' + state.level + '.';
+		} else if (state.type == 'win') {
+			if (state.level == highestLevel) {
+				var description = 'Anna wins the game.';
+				return videoGameTransition(
+					sequence.concat([description]),
+					_.extend(state, {type: 'stop'})
+				)
+			} else {
+				var description = 'Anna wins level ' + state.level + '.';
+				var nextAction = flip(state.boredom) ? 'bored' : 'play';
+				// Anna progresses to next level if she wins
+				var nextLevel = state.level + 1;
+				return videoGameTransition(
+					sequence.concat([description]),
+					_.extend(state, {type: nextAction, level: nextLevel})
+				)
+			}
+		} else if (state.type == 'lose') {
+			var description = 'Anna loses level ' + state.level + '.';
 			var nextAction = flip(state.boredom) ? 'bored' : 'play';
-			// Anna progresses to next level if she wins
-			var nextLevel = state.level + 1;
+			// Anna goes to level 1 when she loses any level
+			var nextLevel = 1;
 			return videoGameTransition(
 				sequence.concat([description]),
 				_.extend(state, {type: nextAction, level: nextLevel})
 			)
+		} else if (state.type == 'bored') {
+			var description = 'Anna gets bored.';
+			return videoGameTransition(
+				sequence.concat([description]),
+				_.extend(state, {type: 'stop'})
+			)
 		}
-	} else if (state.type == 'lose') {
-		var description = 'Anna loses level ' + state.level + '.';
-		var nextAction = flip(state.boredom) ? 'bored' : 'play';
-		// Anna goes to level 1 when she loses any level
-		var nextLevel = 1;
-		return videoGameTransition(
-			sequence.concat([description]),
-			_.extend(state, {type: nextAction, level: nextLevel})
-		)
-	} else if (state.type == 'bored') {
-		var description = 'Anna gets bored.';
-		return videoGameTransition(
-			sequence.concat([description]),
-			_.extend(state, {type: 'stop'})
-		)
 	}
-}
-
-var videoGame = function() {
 	return videoGameTransition([], {type: 'play', level: 1, boredom: 0.2});
 }
 
-var isSubsequence = function(sub, full) {
-	var fullstr = full.join('');
-	var substr = sub.join('.*');
-	return regex.match(substr, fullstr) != null;
-}
-
-var literalSequenceFinder = function (subsequence) {
+var literalSequenceFinder = function (subsequence, generativeModel) {
+	var isSubsequence = function(sub, full) {
+		var fullstr = full.join('');
+		var substr = sub.join('.*');
+		return regex.match(substr, fullstr) != null;
+	}
 	Rejection(function() {
-		var fullSequence = videoGame();
+		var fullSequence = generativeModel();
 		condition( isSubsequence(subsequence, fullSequence) )
 		return fullSequence;
 	}, 10)
 }
 
-var storyteller = function(fullSequence) {
-	Rejection(function() {
-		var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
-		var interpretedSequence = sample(literalSequenceFinder(subsequence));
-		condition( fullSequence.join('') == interpretedSequence.join('') )
-		return subsequence;
-	}, 10)
+var lengthCost = function(story) {
+	return story.length;
+}
+var noCost = function(story) {
+	return 0;
 }
 
-display(storyteller([
+var InformativeStoryteller = function(parameters) {
+	var fullSequence = parameters.fullSequence;
+	var generativeModel = parameters.generativeModel;
+	var cost = parameters.cost;
+
+	return Rejection(function() {
+		var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
+		var interpretedSequence = sample(literalSequenceFinder(subsequence, generativeModel));
+		condition( fullSequence.join('') == interpretedSequence.join('') )
+		factor( - cost(subsequence) )
+		return subsequence;
+	}, 100)
+}
+
+var UninformativeStoryTeller = function(parameters) {
+	var fullSequence = parameters.fullSequence;
+	var generativeModel = parameters.generativeModel;
+	var cost = parameters.cost;
+
+	return Rejection(function() {
+		// any subsequence of the original sequence is acceptable.
+		var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
+		// literalStoryteller doesn't need to be understood
+		factor( - cost(subsequence) )
+		return subsequence;
+	}, 100)
+}
+
+var fullSequence = [
 	'Anna plays level 1.',
 	'Anna loses level 1.',
 	'Anna gets bored.',
 	'Anna stops playing.'
-]));
+]
+map(function(event) {return event}, fullSequence)
+// for each item in the full sequence, how likely is it to be mentioned?
+// what's the conditional probability of it given the other parts of the story?
+// what's the marginal probability of it overall?
+
+// var informativeStoryDistributionWithLengthCost = InformativeStoryteller({
+// 	fullSequence: ,
+// 	generativeModel: videoGame,
+// 	cost: lengthCost
+// });
+
+// var informativeStoryDistributionWithNoCost = InformativeStoryteller({
+// 	fullSequence: [
+// 		'Anna plays level 1.',
+// 		'Anna loses level 1.',
+// 		'Anna gets bored.',
+// 		'Anna stops playing.'
+// 	],
+// 	generativeModel: videoGame,
+// 	cost: noCost
+// });
+
+// var uninformativeStoryDistributionWithLengthCost = UninformativeStoryTeller({
+// 	fullSequence: [
+// 		'Anna plays level 1.',
+// 		'Anna loses level 1.',
+// 		'Anna gets bored.',
+// 		'Anna stops playing.'
+// 	],
+// 	generativeModel: videoGame,
+// 	cost: lengthCost
+// });
+
+// display('uninformative with length')
+// display(uninformativeStoryDistributionWithLengthCost.hist)
+// display('informative with length')
+// display(informativeStoryDistributionWithLengthCost)
 
 /*
 My intuition:
@@ -141,6 +204,20 @@ An informativity-based storytelling model (InformativityModel)
 A probability-based (DumbInformativityModel) model
 	* might not mention if Anna gets bored, since that's likely to happen?
 	* might be likely to mention that Anna played level 2?
+*/
+
+/*
+what if stories can have discourse connectives:
+but, and, so, because
+
+when should it mention an event at all
+when should it mention it *and* use a modifier
+*/
+
+/*
+Make a graph of the probability of recovering a left-out event
+from an informative storyteller vs. recovering a left-out event
+from a random storyteller.
 */
 
 'finished'
