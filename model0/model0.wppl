@@ -1,155 +1,116 @@
-// to run this file: webppl --require regex model0.wppl
+// to run this file:
+// webppl --require stories model0.wppl
 
-/*
+var generativeModel = generativeModels.routeToSchool
+display(generativeModel())
 
-## Question
+// var literalSequenceFinder = cache(function (subsequence, generativeModel) {
+// 	var isSubsequence = function(sub, full) {
+// 		var fullstr = full.join('');
+// 		var substr = sub.join('.*');
+// 		return stories.regex.match(substr, fullstr) != null;
+// 	}
+// 	Rejection(function() {
+// 		var fullSequence = generativeModel();
+// 		condition( isSubsequence(subsequence, fullSequence) )
+// 		return fullSequence;
+// 	}, 100)
+// })
 
-How do people generate stories from events?
+// var lengthCost = function(story) {
+// 	return story.length;
+// }
+// var noCost = function(story) {
+// 	return 0;
+// }
 
-## Generative Model
+// var costs = {
+// 	length: lengthCost,
+// 	none: noCost
+// }
 
-* Have a stochastic transition network where
-some events are more probable than others
+// var storyteller = function(parameters) {
+// 	var fullSequence = parameters.fullSequence;
+// 	var generativeModel = parameters.generativeModel;
+// 	var cost = parameters.cost;
+// 	var informative = parameters.informative;
 
-* Sample event chains from this network:
-That's what happened.
+// 	if (informative) {
+// 		return Rejection(function() {
+// 			var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
+// 			var interpretedSequence = sample(literalSequenceFinder(subsequence, generativeModel));
+// 			condition( fullSequence.join('') == interpretedSequence.join('') )
+// 			factor( - cost(subsequence) )
+// 			return subsequence;
+// 		}, 100)
+// 	} else {
+// 		return Rejection(function() {
+// 			// any subsequence of the original sequence is acceptable.
+// 			var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
+// 			// literalStoryteller doesn't need to be understood
+// 			factor( - cost(subsequence) )
+// 			return subsequence;
+// 		}, 100)
+// 	}
+// }
 
-* Generate stories from these chains using a
-story generator
 
-## Story generator
+// Make a graph:
+// for each item in the full sequence, how likely is it to be mentioned?
+// what's the conditional probability of it given the other parts of the story?
+// what's the marginal probability of it overall?
 
-BasicModel:
-Just comment on a subset of what happened.
 
-DumbInformativityModel:
-P(mention | happen) depends on probability of event.
-
-InformativityModel:
-P(mention | happen) depends on predictability of event given context.
-
-## Another (future) question
-
-If we know how people's choices of what events to mention
-is biased, can we interpret their stories better?
-
-## Related ideas...
-
-A thought: I like to think of explanations as stories whose
-conclusion is the thing you want to explain.
-So understanding the kinds of informativity constraints
-on what should go into a story could help understand a bit
-more about how explanations work...? And vice versa?
-
-*/
-
-var literalSequenceFinder = cache(function (subsequence, generativeModel) {
-	var isSubsequence = function(sub, full) {
-		var fullstr = full.join('');
-		var substr = sub.join('.*');
-		return stories.regex.match(substr, fullstr) != null;
-	}
-	Rejection(function() {
-		var fullSequence = generativeModel();
-		condition( isSubsequence(subsequence, fullSequence) )
-		return fullSequence;
-	}, 100)
-})
-
-var lengthCost = function(story) {
-	return story.length;
-}
-var noCost = function(story) {
-	return 0;
-}
-
-var costs = {
-	length: lengthCost,
-	none: noCost
-}
-
-var storyteller = function(parameters) {
-	var fullSequence = parameters.fullSequence;
-	var generativeModel = parameters.generativeModel;
-	var cost = parameters.cost;
-	var informative = parameters.informative;
-
-	if (informative) {
-		return Rejection(function() {
-			var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
-			var interpretedSequence = sample(literalSequenceFinder(subsequence, generativeModel));
-			condition( fullSequence.join('') == interpretedSequence.join('') )
-			factor( - cost(subsequence) )
-			return subsequence;
-		}, 100)
-	} else {
-		return Rejection(function() {
-			// any subsequence of the original sequence is acceptable.
-			var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
-			// literalStoryteller doesn't need to be understood
-			factor( - cost(subsequence) )
-			return subsequence;
-		}, 100)
-	}
-}
-
-/*
-Make a graph:
-for each item in the full sequence, how likely is it to be mentioned?
-what's the conditional probability of it given the other parts of the story?
-what's the marginal probability of it overall?
-*/
-
-var fullSequence = [
-	'Anna plays level 1.',
-	'Anna loses level 1.',
-	'Anna gets bored.',
-	'Anna stops playing.'
-]
-var informativeStory = storyteller({
-	fullSequence: fullSequence,
-	generativeModel: generativeModels.videoGame,
-	cost: costs.length,
-	informative: true
-})
-var uninformativeShortStory = storyteller({
-	fullSequence: fullSequence,
-	generativeModel: generativeModels.videoGame,
-	cost: costs.length,
-	informative: false
-})
-var uninformativeStory = storyteller({
-	fullSequence: fullSequence,
-	generativeModel: generativeModels.videoGame,
-	cost: costs.none,
-	informative: false
-})
-var marginalizeMention = function(event, storyDistribution) {
-	var marginalized = Rejection(function() {
-		var story = sample(storyDistribution)
-		// return true iff event is in story
-		return (story.indexOf(event) > -1)
-	}, 100)
-	return Math.exp(marginalized.score([], true))
-}
-var marginalizeMentionFunction = function(event, generativeModel) {
-	var marginalized = Rejection(function() {
-		var story = generativeModel()
-		// return true iff event is in story
-		return (story.indexOf(event) > -1)
-	}, 100)
-	return Math.exp(marginalized.score([], true))
-}
-var eventStats = function(event) {
-	return {
-		'event': event,
-		'probMentionUninformative':marginalizeMention(event, uninformativeStory),
-		'probMentionInformative': marginalizeMention(event, informativeStory),
-		'probMentionUninformativeShort': marginalizeMention(event, uninformativeShortStory),
-		'marginalProbGivenGenerativeModel': marginalizeMentionFunction(event, generativeModels.videoGame)
-	}
-}
-display(map(eventStats, fullSequence))
+// var fullSequence = [
+// 	'Anna plays level 1.',
+// 	'Anna loses level 1.',
+// 	'Anna gets bored.',
+// 	'Anna stops playing.'
+// ]
+// var informativeStory = storyteller({
+// 	fullSequence: fullSequence,
+// 	generativeModel: generativeModels.videoGame,
+// 	cost: costs.length,
+// 	informative: true
+// })
+// var uninformativeShortStory = storyteller({
+// 	fullSequence: fullSequence,
+// 	generativeModel: generativeModels.videoGame,
+// 	cost: costs.length,
+// 	informative: false
+// })
+// var uninformativeStory = storyteller({
+// 	fullSequence: fullSequence,
+// 	generativeModel: generativeModels.videoGame,
+// 	cost: costs.none,
+// 	informative: false
+// })
+// var marginalizeMention = function(event, storyDistribution) {
+// 	var marginalized = Rejection(function() {
+// 		var story = sample(storyDistribution)
+// 		// return true iff event is in story
+// 		return (story.indexOf(event) > -1)
+// 	}, 100)
+// 	return Math.exp(marginalized.score([], true))
+// }
+// var marginalizeMentionFunction = function(event, generativeModel) {
+// 	var marginalized = Rejection(function() {
+// 		var story = generativeModel()
+// 		// return true iff event is in story
+// 		return (story.indexOf(event) > -1)
+// 	}, 100)
+// 	return Math.exp(marginalized.score([], true))
+// }
+// var eventStats = function(event) {
+// 	return {
+// 		'event': event,
+// 		'probMentionUninformative':marginalizeMention(event, uninformativeStory),
+// 		'probMentionInformative': marginalizeMention(event, informativeStory),
+// 		'probMentionUninformativeShort': marginalizeMention(event, uninformativeShortStory),
+// 		'marginalProbGivenGenerativeModel': marginalizeMentionFunction(event, generativeModels.videoGame)
+// 	}
+// }
+// display(map(eventStats, fullSequence))
 
 // var informativeStoryDistributionWithLengthCost = InformativeStoryteller({
 // 	fullSequence: ,
@@ -196,11 +157,7 @@ A probability-based (DumbInformativityModel) model
 */
 
 /*
-what if stories can have discourse connectives:
-but, and, so, because
 
-when should it mention an event at all
-when should it mention it *and* use a modifier
 */
 
 /*
