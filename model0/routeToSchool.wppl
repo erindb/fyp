@@ -1,0 +1,103 @@
+var routeToSchool = function() {
+	// school is on the corner of 1st Ave. and A St.
+	// home is on the corner of 34d Ave. and B St.
+	// there's a bike path from B St. to school
+	// the bus stops at the corner of 1st Ave. and B St.
+
+	var streetsNS = ['1st Ave', '2nd Ave', '3rd Ave'];
+	var streetsEW = ['A St', 'B St'];
+
+	var homeCrossStreet = { NS: '3rd Ave', EW: 'B St' };
+	var schoolCrossStreet = { NS: '1st Ave', EW: 'A St'};
+
+	var transition = function(sequence, state) {
+		if (state.type == 'go inside') {
+			var description = 'Anna went inside.';
+			return sequence.concat([description]);
+		}
+		else if (state.type == 'decide') {
+			var decision = uniformDraw([
+				'take the bus',
+				'walk',
+				'bike'
+			]);
+			var description = 'Anna decided to ' + decision +
+				' to school.';
+			var nextAction = decision=='bike' ? 'prepare' : 'leave home';
+			return transition(
+				sequence.concat([description]),
+				_.extend(state, {
+					type: nextAction,
+					mode: decision
+				})
+			);
+		} else if (state.type == 'prepare') {
+			var description = 'Anna got out her bicycle.';
+			return transition(
+				sequence.concat([description]),
+				_.extend(state, {
+					type: 'leave home'
+				})
+			);
+		} else if (state.type == 'leave home') {
+			var description = 'Anna left home.';
+			return transition(
+				sequence.concat([description]),
+				_.extend(state, {
+					type: 'intersecion',
+					NS: homeCrossStreet.NS,
+					EW: homeCrossStreet.EW,
+					direction: null
+				})
+			);
+		} else if (state.type == 'intersecion') {
+			// depending on model of transport,
+			// transition probabilities are different
+			// at any intersection,
+			// one might turn or continue
+			// bikes and walkers are likely to take the bike path
+
+			display(streetsNS.indexOf(state.NS))
+			display(streetsEW.indexOf(state.EW))
+
+			// if Anna is taking the bus, she goes to the bus stop.
+			// if Anna is walking or biking, she probably goes down B St.
+
+			// var optionsNS = stories.range(0, streetsNS.indexOf(state.NS));
+			// var optionsEW = stories.range(0, streetsEW.indexOf(state.EW));
+
+			// display(map(function(i) {return streetsNS[i];}, optionsNS));
+			// display(map(function(i) {return streetsNS[i];}, optionsEW));
+
+			// var nextStreet = 
+
+			var description = "She went down B St."
+
+			var newNS = '1st Ave';
+			var newEW = 'A St';
+
+			if (newNS==schoolCrossStreet.NS & newEW==schoolCrossStreet.EW) {
+				return transition(
+					sequence.concat([description]),
+					_.extend(state, {
+						type: 'arrive'
+					})
+				);
+			}
+
+		} else if (state.type == 'arrive') {
+			var description = 'Anna arrived at school.'
+			return transition(
+				sequence.concat([description]),
+				_.extend(state, {
+					type: 'go inside'
+				})
+			);
+		}
+	}
+	return transition([], {type: 'decide'});
+}
+
+display(routeToSchool())
+
+"finished"
