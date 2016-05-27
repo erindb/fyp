@@ -1,85 +1,10 @@
 // to run this file:
 // webppl --require stories model0.wppl
 
-var lengthCost = function(story) {
-	return story.length;
-}
-var noCost = function(story) {
-	return 0;
-}
+// var dist = generativeModels.videoGame;
+// // var dist = generativeModels.routeToSchool;
 
-var costs = {
-	length: lengthCost,
-	none: noCost
-}
-
-var nSamples = 100;
-
-var literalSequenceFinder = cache(function (subsequence, generativeModel) {
-	var isSubsequence = function(sub, full) {
-		var fullstr = full.join('');
-		var substr = sub.join('.*');
-		return stories.regex.match(substr, fullstr) != null;
-	}
-	Rejection(function() {
-		var fullSequence = generativeModel();
-		condition( isSubsequence(subsequence, fullSequence) )
-		return fullSequence;
-	}, nSamples)
-})
-
-var storyteller = cache(function(parameters) {
-	var fullSequence = parameters.fullSequence;
-	var generativeModel = parameters.generativeModel;
-	var cost = parameters.cost;
-	var informative = parameters.informative;
-
-	if (informative) {
-		return Rejection(function() {
-			var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
-			var interpretedSequence = sample(literalSequenceFinder(subsequence, generativeModel));
-			condition( fullSequence.join('') == interpretedSequence.join('') )
-			factor( - cost(subsequence) )
-			return subsequence;
-		}, nSamples)
-	} else {
-		return Rejection(function() {
-			// any subsequence of the original sequence is acceptable.
-			var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
-			// literalStoryteller doesn't need to be understood
-			factor( - cost(subsequence) )
-			return subsequence;
-		}, nSamples)
-	}
-})
-
-var pragmaticSequenceFinder = function(parameters) {
-	var assumeInformativeSpeaker = parameters.assumeInformativeSpeaker;
-	var generativeModel = parameters.generativeModel;
-	var speakerCost = parameters.speakerCost;
-	var story = parameters.story;
-
-	// sample a full sequence
-	return Rejection(function() {
-		var fullSequence = generativeModel();
-		var storyDistribution = storyteller({
-			fullSequence: fullSequence,
-			generativeModel: generativeModel,
-			cost: speakerCost,
-			informative: assumeInformativeSpeaker
-		})
-		factor( storyDistribution.score(story) );
-		return fullSequence;
-	}, 10)
-}
-
-// Make a graph:
-// for each item in the full sequence, how likely is it to be mentioned?
-// what's the conditional probability of it given the other parts of the story?
-// what's the marginal probability of it overall?
-
-var narrativeClozeTask = function() {
-}
+// display(dist);
 
 var examples = [
 	{
@@ -93,7 +18,7 @@ var examples = [
 			'Anna loses level 1.',
 			'Anna gets bored.'
 		],
-		generativeModel: generativeModels.videoGame
+		dist: generativeModels.videoGame
 	},
 	{
 		fullSequence: [
@@ -108,148 +33,60 @@ var examples = [
 			'Anna decided to walk to school.',
 			'She took the bike path.'
 		],
-		generativeModel: generativeModels.routeToSchool
+		dist: generativeModels.routeToSchool
 	}
 ]
 
-display('start running functions for time test')
-
 map(function(example) {
-	// // time <1s / 2 @100
-	// literalSequenceFinder(example.story, example.generativeModel);
+	display(literalListener({
+		story: example.story,
+		dist: example.dist
+	}));
 
-	// // time ~7s / 2 @100
-	// storyteller({
-	// 	fullSequence: example.fullSequence,
-	// 	generativeModel: example.generativeModel,
-	// 	cost: costs.length,
-	// 	informative: true
-	// })
+	display(storyteller({
+		fullSequence: example.fullSequence,
+		informative: true,
+		cost: costs.lengthCost,
+		dist: example.dist
+	}));
 
-	// // time <1s / 2 @100
-	// storyteller({
-	// 	fullSequence: example.fullSequence,
-	// 	generativeModel: example.generativeModel,
-	// 	cost: costs.length,
-	// 	informative: false
-	// })
+	display(storyteller({
+		fullSequence: example.fullSequence,
+		informative: false,
+		cost: costs.lengthCost,
+		dist: example.dist
+	}));
 
-	// // time >1m / 2 @100
-	// // time >1m / 2 @10
-	// // time >1m / 2 w/ rejection  @1
-	// display(pragmaticSequenceFinder({
-	// 	assumeInformativeSpeaker: true,
-	// 	generativeModel: example.generativeModel,
-	// 	speakerCost: costs.length,
-	// 	story: example.story
-	// }))
+	display(storyteller({
+		fullSequence: example.fullSequence,
+		informative: false,
+		cost: costs.noCost,
+		dist: example.dist
+	}));
 
-	// time >1m / 2 w/ rejection @1
-	display(pragmaticSequenceFinder({
-		assumeInformativeSpeaker: false,
-		generativeModel: example.generativeModel,
-		speakerCost: costs.length,
-		story: example.story
+	display('==========   uninformative =========')
+	display(pragmaticListener({
+		story: example.story,
+		dist: example.dist,
+		speakerCost: costs.lengthCost,
+		assumeInformativeSpeaker: false
+	}))
+
+	display('==========   informative =========')
+	display(pragmaticListener({
+		story: example.story,
+		dist: example.dist,
+		speakerCost: costs.lengthCost,
+		assumeInformativeSpeaker: true
 	}))
 }, examples);
 
-// var informativeStory = storyteller({
-// 	fullSequence: fullSequence,
-// 	generativeModel: generativeModels.videoGame,
-// 	cost: costs.length,
-// 	informative: true
-// })
-// var uninformativeShortStory = storyteller({
-// 	fullSequence: fullSequence,
-// 	generativeModel: generativeModels.videoGame,
-// 	cost: costs.length,
-// 	informative: false
-// })
-// var uninformativeStory = storyteller({
-// 	fullSequence: fullSequence,
-// 	generativeModel: generativeModels.videoGame,
-// 	cost: costs.none,
-// 	informative: false
-// })
-// var marginalizeMention = function(event, storyDistribution) {
-// 	var marginalized = Rejection(function() {
-// 		var story = sample(storyDistribution)
-// 		// return true iff event is in story
-// 		return (story.indexOf(event) > -1)
-// 	}, 100)
-// 	return Math.exp(marginalized.score([], true))
-// }
-// var marginalizeMentionFunction = function(event, generativeModel) {
-// 	var marginalized = Rejection(function() {
-// 		var story = generativeModel()
-// 		// return true iff event is in story
-// 		return (story.indexOf(event) > -1)
-// 	}, 100)
-// 	return Math.exp(marginalized.score([], true))
-// }
-// var eventStats = function(event) {
-// 	return {
-// 		'event': event,
-// 		'probMentionUninformative':marginalizeMention(event, uninformativeStory),
-// 		'probMentionInformative': marginalizeMention(event, informativeStory),
-// 		'probMentionUninformativeShort': marginalizeMention(event, uninformativeShortStory),
-// 		'marginalProbGivenGenerativeModel': marginalizeMentionFunction(event, generativeModels.videoGame)
-// 	}
-// }
-// display(map(eventStats, fullSequence))
+var narrativeClozeTask = function() {
+}
 
-// var informativeStoryDistributionWithLengthCost = InformativeStoryteller({
-// 	fullSequence: ,
-// 	generativeModel: videoGame,
-// 	cost: lengthCost
-// });
+// Make a graph:
+// for each item in the full sequence, how likely is it to be mentioned?
+// what's the conditional probability of it given the other parts of the story?
+// what's the marginal probability of it overall?
 
-// var informativeStoryDistributionWithNoCost = InformativeStoryteller({
-// 	fullSequence: [
-// 		'Anna plays level 1.',
-// 		'Anna loses level 1.',
-// 		'Anna gets bored.',
-// 		'Anna stops playing.'
-// 	],
-// 	generativeModel: videoGame,
-// 	cost: noCost
-// });
-
-// var uninformativeStoryDistributionWithLengthCost = UninformativeStoryTeller({
-// 	fullSequence: [
-// 		'Anna plays level 1.',
-// 		'Anna loses level 1.',
-// 		'Anna gets bored.',
-// 		'Anna stops playing.'
-// 	],
-// 	generativeModel: videoGame,
-// 	cost: lengthCost
-// });
-
-// display('uninformative with length')
-// display(uninformativeStoryDistributionWithLengthCost.hist)
-// display('informative with length')
-// display(informativeStoryDistributionWithLengthCost)
-
-/*
-My intuition:
-An informativity-based storytelling model (InformativityModel)
-	* will not talk about what level Anna plays,
-	* will talk about the *last* level Anna won (or lost?)
-	* will mention if Anna is bored, or if she wins the game
-A probability-based (DumbInformativityModel) model
-	* might not mention if Anna gets bored, since that's likely to happen?
-	* might be likely to mention that Anna played level 2?
-*/
-
-/*
-
-*/
-
-/*
-Make a graph of the probability of recovering a left-out event
-from an informative storyteller vs. recovering a left-out event
-from a random storyteller.
-*/
-
-'finished'
+"finished"
