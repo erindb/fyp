@@ -43,73 +43,11 @@ more about how explanations work...? And vice versa?
 
 */
 
-var videoGame = function() {
-	// levels get progressively less easy
-	var easiness = { 1: 0.8, 2: 0.5, 3: 0.2 };
-	var levels = easiness.keys;
-
-	// can change the length of the game:
-	var highestLevel = 2;
-
-	// boredome increases throughout the game.
-	// could increase more for a loss?
-	var increaseBoredom = function(boredom) {
-		return boredom + 0.2;
-	}
-
-	var videoGameTransition = function(sequence, state) {
-		if (state.type == 'stop') {
-			var description = 'Anna stops playing.';
-			return sequence.concat([description]);
-		} else if (state.type == 'play') {
-			var description = 'Anna plays level ' + state.level + '.';
-			var outcome = flip(easiness[state.level]) ? 'win' : 'lose';
-			return videoGameTransition(
-				sequence.concat([description]),
-				_.extend(state, {type: outcome, boredom: increaseBoredom(state.boredom)})
-			)
-		} else if (state.type == 'win') {
-			if (state.level == highestLevel) {
-				var description = 'Anna wins the game.';
-				return videoGameTransition(
-					sequence.concat([description]),
-					_.extend(state, {type: 'stop'})
-				)
-			} else {
-				var description = 'Anna wins level ' + state.level + '.';
-				var nextAction = flip(state.boredom) ? 'bored' : 'play';
-				// Anna progresses to next level if she wins
-				var nextLevel = state.level + 1;
-				return videoGameTransition(
-					sequence.concat([description]),
-					_.extend(state, {type: nextAction, level: nextLevel})
-				)
-			}
-		} else if (state.type == 'lose') {
-			var description = 'Anna loses level ' + state.level + '.';
-			var nextAction = flip(state.boredom) ? 'bored' : 'play';
-			// Anna goes to level 1 when she loses any level
-			var nextLevel = 1;
-			return videoGameTransition(
-				sequence.concat([description]),
-				_.extend(state, {type: nextAction, level: nextLevel})
-			)
-		} else if (state.type == 'bored') {
-			var description = 'Anna gets bored.';
-			return videoGameTransition(
-				sequence.concat([description]),
-				_.extend(state, {type: 'stop'})
-			)
-		}
-	}
-	return videoGameTransition([], {type: 'play', level: 1, boredom: 0.2});
-}
-
 var literalSequenceFinder = cache(function (subsequence, generativeModel) {
 	var isSubsequence = function(sub, full) {
 		var fullstr = full.join('');
 		var substr = sub.join('.*');
-		return regex.match(substr, fullstr) != null;
+		return stories.regex.match(substr, fullstr) != null;
 	}
 	Rejection(function() {
 		var fullSequence = generativeModel();
@@ -128,10 +66,6 @@ var noCost = function(story) {
 var costs = {
 	length: lengthCost,
 	none: noCost
-}
-
-var generativeModels = {
-	videoGame: videoGame
 }
 
 var storyteller = function(parameters) {
