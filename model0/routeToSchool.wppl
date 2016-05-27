@@ -1,6 +1,6 @@
 var routeToSchool = function() {
 	// school is on the corner of 1st Ave. and A St.
-	// home is on the corner of 34d Ave. and B St.
+	// home is on the corner of 3rd Ave. and B St.
 	// there's a bike path from B St. to school
 	// the bus stops at the corner of 1st Ave. and B St.
 
@@ -17,13 +17,13 @@ var routeToSchool = function() {
 		}
 		else if (state.type == 'decide') {
 			var decision = uniformDraw([
-				'take the bus',
+				// 'take the bus', //implement this later
 				'walk',
 				'bike'
 			]);
 			var description = 'Anna decided to ' + decision +
 				' to school.';
-			var nextAction = decision=='bike' ? 'prepare' : 'leave home';
+			var nextAction = decision=='bike' ? 'get bike' : 'leave home';
 			return transition(
 				sequence.concat([description]),
 				_.extend(state, {
@@ -31,7 +31,7 @@ var routeToSchool = function() {
 					mode: decision
 				})
 			);
-		} else if (state.type == 'prepare') {
+		} else if (state.type == 'get bike') {
 			var description = 'Anna got out her bicycle.';
 			return transition(
 				sequence.concat([description]),
@@ -41,50 +41,129 @@ var routeToSchool = function() {
 			);
 		} else if (state.type == 'leave home') {
 			var description = 'Anna left home.';
+			// if biking or walking, likely going down B St.,
+			// but this should be handled in a factor
+			// that says bike path is more likely
+			// var probs = [0.5, 0.5];
+			// var direction = categorical(probs, ['NS', 'EW']);
+			var direction = uniformDraw(['NS', 'EW']);
 			return transition(
 				sequence.concat([description]),
 				_.extend(state, {
 					type: 'intersecion',
 					NS: homeCrossStreet.NS,
 					EW: homeCrossStreet.EW,
-					direction: null
+					direction: direction
 				})
 			);
 		} else if (state.type == 'intersecion') {
+
+			// we know what direction we're going
+			var description = 'She went down ' + state[state.direction] + '.';
+
+			var getNextTurn = function(state) {
+				if (state.direction=='NS') {
+					// if we're headed N/S we're going to choose an E/W street next
+					// depending on how many more E/W streets are left, we turn on them
+					// and start going E/W
+
+					// if we're already as far E/W as we need to be,
+					// just go to school, there are no more turns to make
+					if (schoolCrossStreet.NS==state.NS) {
+						return _.extend(state, {
+							EW: schoolCrossStreet.EW,
+							direction: 'EW'
+						});
+					} else {
+						var currentSt = state.EW;
+						var currentIndex = streetsEW.indexOf(currentSt);
+						var nextIndex = randomInteger(currentIndex);
+						var nextSt = streetsEW[nextIndex];
+						return _.extend(state, {
+							EW: nextSt,
+							direction: 'EW'
+						});
+					}
+				} else if (state.direction=='EW') {
+					// if we're headed E/W,
+					// choose a N/S street to turn on
+					// and go in that direction
+					
+					// if we're already as far N/S as we need to be,
+					// just go to school, there are no more turns to make
+					if (schoolCrossStreet.EW==state.EW) {
+						return _.extend(state, {
+							NS: schoolCrossStreet.NS,
+							direction: 'NS'
+						});
+					} else {
+						var currentSt = state.NS;
+						var currentIndex = streetsNS.indexOf(currentSt);
+						var nextIndex = randomInteger(currentIndex);
+						var nextSt = streetsNS[nextIndex];
+						return _.extend(state, {
+							NS: nextSt,
+							direction: 'NS'
+						});
+					}
+				}
+			}
+
+			// if we're headed E/W on B St, we
+			// might take the bike path to school.
+			if (state.EW=='B St' & state.direction=='EW') {
+				if (flip()) {
+					return transition(
+						sequence.concat([description]),
+						_.extend(state, {
+							type: 'bike path'
+						})
+					);
+				}
+			}
+
+			var nextTurn = getNextTurn(state);
+
+			// we go some number of streets in that direction
+			// and then go in the other direction down a new street
+
+			// TO DO:
 			// depending on model of transport,
 			// transition probabilities are different
 			// at any intersection,
 			// one might turn or continue
 			// bikes and walkers are likely to take the bike path
 
-			display(streetsNS.indexOf(state.NS))
-			display(streetsEW.indexOf(state.EW))
-
+			// TO DO:
 			// if Anna is taking the bus, she goes to the bus stop.
-			// if Anna is walking or biking, she probably goes down B St.
+			// if Anna is walking or biking, she probably goes down B St. to get to the bike path
 
-			// var optionsNS = stories.range(0, streetsNS.indexOf(state.NS));
-			// var optionsEW = stories.range(0, streetsEW.indexOf(state.EW));
-
-			// display(map(function(i) {return streetsNS[i];}, optionsNS));
-			// display(map(function(i) {return streetsNS[i];}, optionsEW));
-
-			// var nextStreet = 
-
-			var description = "She went down B St."
-
-			var newNS = '1st Ave';
-			var newEW = 'A St';
-
-			if (newNS==schoolCrossStreet.NS & newEW==schoolCrossStreet.EW) {
+			if (nextTurn.NS==schoolCrossStreet.NS & nextTurn.EW==schoolCrossStreet.EW) {
 				return transition(
 					sequence.concat([description]),
 					_.extend(state, {
 						type: 'arrive'
 					})
 				);
+			} else {
+				return transition(
+					sequence.concat([description]),
+					_.extend(state, {
+						type: 'intersecion',
+						NS: nextTurn.NS,
+						EW: nextTurn.EW,
+						direction: nextTurn.direction
+					})
+				);
 			}
-
+		} else if (state.type == 'bike path') {
+			var description = 'She took the bike path.';
+			return transition(
+				sequence.concat([description]),
+				_.extend(state, {
+					type: 'arrive'
+				})
+			);
 		} else if (state.type == 'arrive') {
 			var description = 'Anna arrived at school.'
 			return transition(
