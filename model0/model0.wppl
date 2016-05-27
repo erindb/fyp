@@ -1,3 +1,5 @@
+// to run this file: webppl --require regex model0.wppl
+
 /*
 
 ## Question
@@ -103,7 +105,7 @@ var videoGame = function() {
 	return videoGameTransition([], {type: 'play', level: 1, boredom: 0.2});
 }
 
-var literalSequenceFinder = function (subsequence, generativeModel) {
+var literalSequenceFinder = cache(function (subsequence, generativeModel) {
 	var isSubsequence = function(sub, full) {
 		var fullstr = full.join('');
 		var substr = sub.join('.*');
@@ -113,8 +115,8 @@ var literalSequenceFinder = function (subsequence, generativeModel) {
 		var fullSequence = generativeModel();
 		condition( isSubsequence(subsequence, fullSequence) )
 		return fullSequence;
-	}, 10)
-}
+	}, 100)
+})
 
 var lengthCost = function(story) {
 	return story.length;
@@ -123,33 +125,46 @@ var noCost = function(story) {
 	return 0;
 }
 
-var InformativeStoryteller = function(parameters) {
+var costs = {
+	length: lengthCost,
+	none: noCost
+}
+
+var generativeModels = {
+	videoGame: videoGame
+}
+
+var storyteller = function(parameters) {
 	var fullSequence = parameters.fullSequence;
 	var generativeModel = parameters.generativeModel;
 	var cost = parameters.cost;
+	var informative = parameters.informative;
 
-	return Rejection(function() {
-		var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
-		var interpretedSequence = sample(literalSequenceFinder(subsequence, generativeModel));
-		condition( fullSequence.join('') == interpretedSequence.join('') )
-		factor( - cost(subsequence) )
-		return subsequence;
-	}, 100)
+	if (informative) {
+		return Rejection(function() {
+			var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
+			var interpretedSequence = sample(literalSequenceFinder(subsequence, generativeModel));
+			condition( fullSequence.join('') == interpretedSequence.join('') )
+			factor( - cost(subsequence) )
+			return subsequence;
+		}, 100)
+	} else {
+		return Rejection(function() {
+			// any subsequence of the original sequence is acceptable.
+			var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
+			// literalStoryteller doesn't need to be understood
+			factor( - cost(subsequence) )
+			return subsequence;
+		}, 100)
+	}
 }
 
-var UninformativeStoryTeller = function(parameters) {
-	var fullSequence = parameters.fullSequence;
-	var generativeModel = parameters.generativeModel;
-	var cost = parameters.cost;
-
-	return Rejection(function() {
-		// any subsequence of the original sequence is acceptable.
-		var subsequence = filter(function(sentence) {return flip(0.5);}, fullSequence);
-		// literalStoryteller doesn't need to be understood
-		factor( - cost(subsequence) )
-		return subsequence;
-	}, 100)
-}
+/*
+Make a graph:
+for each item in the full sequence, how likely is it to be mentioned?
+what's the conditional probability of it given the other parts of the story?
+what's the marginal probability of it overall?
+*/
 
 var fullSequence = [
 	'Anna plays level 1.',
@@ -157,10 +172,50 @@ var fullSequence = [
 	'Anna gets bored.',
 	'Anna stops playing.'
 ]
-map(function(event) {return event}, fullSequence)
-// for each item in the full sequence, how likely is it to be mentioned?
-// what's the conditional probability of it given the other parts of the story?
-// what's the marginal probability of it overall?
+var informativeStory = storyteller({
+	fullSequence: fullSequence,
+	generativeModel: generativeModels.videoGame,
+	cost: costs.length,
+	informative: true
+})
+var uninformativeShortStory = storyteller({
+	fullSequence: fullSequence,
+	generativeModel: generativeModels.videoGame,
+	cost: costs.length,
+	informative: false
+})
+var uninformativeStory = storyteller({
+	fullSequence: fullSequence,
+	generativeModel: generativeModels.videoGame,
+	cost: costs.none,
+	informative: false
+})
+var marginalizeMention = function(event, storyDistribution) {
+	var marginalized = Rejection(function() {
+		var story = sample(storyDistribution)
+		// return true iff event is in story
+		return (story.indexOf(event) > -1)
+	}, 100)
+	return Math.exp(marginalized.score([], true))
+}
+var marginalizeMentionFunction = function(event, generativeModel) {
+	var marginalized = Rejection(function() {
+		var story = generativeModel()
+		// return true iff event is in story
+		return (story.indexOf(event) > -1)
+	}, 100)
+	return Math.exp(marginalized.score([], true))
+}
+var eventStats = function(event) {
+	return {
+		'event': event,
+		'probMentionUninformative':marginalizeMention(event, uninformativeStory),
+		'probMentionInformative': marginalizeMention(event, informativeStory),
+		'probMentionUninformativeShort': marginalizeMention(event, uninformativeShortStory),
+		'marginalProbGivenGenerativeModel': marginalizeMentionFunction(event, generativeModels.videoGame)
+	}
+}
+display(map(eventStats, fullSequence))
 
 // var informativeStoryDistributionWithLengthCost = InformativeStoryteller({
 // 	fullSequence: ,

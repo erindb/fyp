@@ -14,6 +14,9 @@ experiment3-writeup/scripts/readers.py
 experiment3-writeup/scripts/model.py
 experiment3-writeup/scripts/score.py
 experiment3-writeup/scripts/cloze.py
+experiment3-writeup/scripts/accumulate.py
+experiment3-writeup/scripts/utils.py
+experiment3-writeup/scripts/tmp
 experiment3-writeup/scripts/*.pyc
 experiment3-writeup/scripts/tmp.json
 experiment3-writeup/data/training-corpora
