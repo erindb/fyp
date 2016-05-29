@@ -13,7 +13,7 @@
 \title{Recovering gaps in stories}
  
 \author{{\large \bf Erin Bennett} (erindb@stanford.edu) \\ %and
-  {\large {\bf Noah D. Goodman}} (ngoodman@stanford.edu) \\
+%   {\large {\bf Noah D. Goodman}} (ngoodman@stanford.edu) \\
   Department of Psychology, Stanford University}
 
 
@@ -55,15 +55,37 @@ Understanding and representing this kind of human knowledge in machines is a lon
 
 \subsubsection{Scripts in Psychology}
 
+Researchers have identified many subtle ways in which human commonsense knowledge comes to play in understanding stories, from which events of a story are more or less memorable to whether a definite (“the”) or indefinite (“a”) article is more appropriate in a given context. One way of articulating commonsense knowledge is that it can be organized into scripts: stereotypical sequences of events for a particular domain \shortcite{schank1977scripts}. Individual handwritten scripts for domains like restaurants, movie theatres, etc. have been created and used to predict phenomena in story understanding.
+
 \todo{end with: people can fill in gaps}
 
 \subsubsection{Script Induction in Natural Language Processing}
 
+Handwritten scripts are somewhat bounded since they can be time-consuming and require expert annotation, and because  people seem to know many more scripts than researchers could reasonably write down. And so researchers in natural language processing have recently been trying to learn scripts from natural language corpora.
+
+\todo{
+\shortcite{chambers2008unsupervised}
+\shortcite{chambers2013event}
+\shortcite{pichotta2014statistical}
+}
+
+% \shortcite<e.g.>{chambers2008unsupervised}. One challenge in doing script induction like this that there is no clear evaluation metric we can use to determine whether these algorithms are successfully learning scripts. Chambers & Jurafsky (2008) suggested an initial evaluation metric in which sentences could be removed from chains of events and models could be tested on whether they can appropriately fill in the left-out event. However, future work showed that this task, the Narrative Cloze Task, was more effectively solved by shallow language models than by models aimed at acquiring commonsense knowledge (Rudinger et al., 2015a).
+
 \todo{end with: narrative cloze task}
+
+These algorithms require evaluation metrics to determine successful learning and inspire extentions. For this purpose, \shortciteA{chambers2008unsupervised} suggested an initial evaluation metric in which sentences could be removed from chains of events and models could be tested on whether they can appropriately fill in the left-out event. This task, the ``narrative cloze task'' has been used to evaluation a variety of script induction models \shortcite<e.g.>{chambers2013event, pichotta2014statistical, rudinger2015learning, pichotta2016learning}.
+
+% to do: look at http://journals.cambridge.org/action/displayAbstract?fromPage=online&aid=360730&fileId=S0305000905007014
 
 \subsection{Narrative Cloze Task}
 
-\todo{ we would like to know whether narrative cloze task is a good measure of human commonsense. how does the fact that natural stories are generated informatively affect this task? }
+\todo{ we would like to know whether narrative cloze task is a good measure of human commonsense.}
+
+\shortciteA{rudinger2015script} showed that narrative cloze tasks tend to be more effectively solved by shallow language models than by models aimed at acquiring commonsense knowledge.
+In response to concerns about the effectiveness of narrative cloze tasks for specifically targeting commonsense knowledge, \shortciteA{mostafazadeh2016corpus} very recently developed a dataset with an alternative evaluation metric, a {\em story} cloze task in which models must determine the conclusion of a crowdsourced 4-sentence story segement.
+\shortciteA{pichotta2016learning} chose to extend their narrative cloze tasks so that the model's inferences were compared to people's inferences about what might have been the held-out event.
+
+\todo{how does the fact that natural stories are generated informatively affect this task? }
 
 \section{Experiment}
 
@@ -112,6 +134,8 @@ As this resulted in very low scores, we also manually determined a single word `
 \subsection{Results}
 
 \todo{people are not good at this task.}
+
+The agreement metric is similar to that of \shortciteA{pichotta2016learning}, since they also elicited people's judgements of what might held-out events might have been and compared that to their model's performance. Unlike our results here, they showed that their LSTM did see gains when tested on the crowdsourced answers to the narrative cloze task relative to when it was tested on the event in the original text.
 
 \section{Illustrative Simulations}
 
