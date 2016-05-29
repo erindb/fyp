@@ -1,88 +1,170 @@
 // to run this file:
 // webppl --require stories model0.wppl
 
-// var dist = generativeModels.videoGame;
-// // var dist = generativeModels.routeToSchool;
+var runThroughStorytellingFunctions = function() {
+	var examples = [
+		{
+			fullSequence: [
+				'Anna plays level 1.',
+				'Anna loses level 1.',
+				'Anna gets bored.',
+				'Anna stops playing.'
+			],
+			story: [
+				'Anna loses level 1.',
+				'Anna gets bored.'
+			],
+			distLabel: 'videoGame'
+		},
+		{
+			fullSequence: [
+				'Anna decided to walk to school.',
+				'Anna left home.',
+				'She went down B St.',
+				'She took the bike path.',
+				'Anna arrived at school.',
+				'Anna went inside.'
+			],
+			story: [
+				'Anna decided to walk to school.',
+				'She took the bike path.'
+			],
+			distLabel: 'routeToSchool'
+		}
+	]
 
-// display(dist);
+	map(function(example) {
+		display(literalListener({
+			story: example.story,
+			distLabel: example.distLabel
+		}));
 
-var examples = [
-	{
-		fullSequence: [
-			'Anna plays level 1.',
-			'Anna loses level 1.',
-			'Anna gets bored.',
-			'Anna stops playing.'
-		],
-		story: [
-			'Anna loses level 1.',
-			'Anna gets bored.'
-		],
-		dist: generativeModels.videoGame
-	},
-	{
-		fullSequence: [
-			'Anna decided to walk to school.',
-			'Anna left home.',
-			'She went down B St.',
-			'She took the bike path.',
-			'Anna arrived at school.',
-			'Anna went inside.'
-		],
-		story: [
-			'Anna decided to walk to school.',
-			'She took the bike path.'
-		],
-		dist: generativeModels.routeToSchool
+		display(storyteller({
+			fullSequence: example.fullSequence,
+			informative: true,
+			costLabel: 'lengthCost',
+			distLabel: example.distLabel
+		}));
+
+		display(storyteller({
+			fullSequence: example.fullSequence,
+			informative: false,
+			costLabel: 'lengthCost',
+			distLabel: example.distLabel
+		}));
+
+		display(storyteller({
+			fullSequence: example.fullSequence,
+			informative: false,
+			costLabel: 'noCost',
+			distLabel: example.distLabel
+		}));
+
+		display('==========   uninformative =========')
+		display(pragmaticListener({
+			story: example.story,
+			distLabel: example.distLabel,
+			speakerCostLabel: 'lengthCost',
+			assumeInformativeSpeaker: false
+		}))
+
+		display('==========   informative =========')
+		display(pragmaticListener({
+			story: example.story,
+			distLabel: example.distLabel,
+			speakerCostLabel: 'lengthCost',
+			assumeInformativeSpeaker: true
+		}))
+	}, examples);
+};
+
+var narrativeClozeTask = function(parameters) {
+	var distLabel = parameters.distLabel;
+	var dist = generativeModels[distLabel];
+	var informativeStoryteller = parameters.informativeStoryteller;
+	var listenerType = parameters.listenerType;
+	var listener = listenerType=='pragmatic' ? pragmaticListener : literalListener;
+	var assumeInformativeSpeaker = parameters.assumeInformativeSpeaker;
+
+	// sample an event sequence
+	var actualEventSequence = sample(dist);
+
+	// sample a story for that event sequence
+	// (either informative or not)
+	var actualStory = sample(storyteller({
+		fullSequence: actualEventSequence,
+		informative: informativeStoryteller,
+		costLabel: 'lengthCost',
+		distLabel: distLabel
+	}));
+
+	// if the story is non-null...
+	// (sometimes the best story could be to say nothing
+	// because the events were so typical)
+	// (and actually, if the story is longer than 1,
+	// so something will be left for the cloze task)
+	if (actualStory.length > 1) {
+
+		// randomly delete one event from the story
+		var removeIndex = randomInteger(actualStory.length);
+		var storyClozeTask = stories.clozify(actualStory, removeIndex);
+		var partialStory = storyClozeTask.full;
+		var correctAnswer = actualStory[removeIndex];
+
+		// ask a listener model (either pragmatic or literal)
+		// to generate the underlying sequence
+		var inferredSequence = sample(listener({
+			story: partialStory,
+			distLabel: distLabel,
+			speakerCostLabel: 'lengthCost',
+			assumeInformativeSpeaker: assumeInformativeSpeaker
+		}));
+
+		// from the inferred underlying sequence
+		// either sample an unmentioned event at random,
+		// or try to find a story that mentions another event
+		// in the blank position
+		var fullstr = inferredSequence.join('');
+		var pattern = (storyClozeTask.before).join('.*') + '(.*)' +
+			(storyClozeTask.after).join('.*');
+		var match = stories.regex.match(pattern, fullstr);
+		var possiblyHappenedAtIndex = match ? match[1] : '';
+		if (possiblyHappenedAtIndex.length > 0) {
+			var clozeAnswersAndEmpty = possiblyHappenedAtIndex.split('.');
+			var clozeAnswers = clozeAnswersAndEmpty.slice(0, clozeAnswersAndEmpty.length-1);
+			var clozeAnswer = uniformDraw(clozeAnswers) + '.';
+
+			// return "correct" iff the inferred unmentioned event
+			// is the actual left-out event
+			return correctAnswer==clozeAnswer ? 'correct' : 'incorrect';
+		} else {
+			return 'no response';
+		}
+	} else {
+		return 'invalid';
 	}
-]
-
-map(function(example) {
-	display(literalListener({
-		story: example.story,
-		dist: example.dist
-	}));
-
-	display(storyteller({
-		fullSequence: example.fullSequence,
-		informative: true,
-		cost: costs.lengthCost,
-		dist: example.dist
-	}));
-
-	display(storyteller({
-		fullSequence: example.fullSequence,
-		informative: false,
-		cost: costs.lengthCost,
-		dist: example.dist
-	}));
-
-	display(storyteller({
-		fullSequence: example.fullSequence,
-		informative: false,
-		cost: costs.noCost,
-		dist: example.dist
-	}));
-
-	display('==========   uninformative =========')
-	display(pragmaticListener({
-		story: example.story,
-		dist: example.dist,
-		speakerCost: costs.lengthCost,
-		assumeInformativeSpeaker: false
-	}))
-
-	display('==========   informative =========')
-	display(pragmaticListener({
-		story: example.story,
-		dist: example.dist,
-		speakerCost: costs.lengthCost,
-		assumeInformativeSpeaker: true
-	}))
-}, examples);
-
-var narrativeClozeTask = function() {
 }
+
+// runThroughStorytellingFunctions();
+
+// predictions:
+// these domains might be so simple that the pragmatic model
+// will actually get the correct answer.
+// but probably more complex domains would be difficult for
+// both kinds of models
+// if the speaker were not informative, the task *might* be easier
+display(narrativeClozeTask({
+	distLabel: 'videoGame',
+	informativeStoryteller: true,
+	listenerType: 'pragmatic', 
+	assumeInformativeSpeaker: true
+}));
+display(narrativeClozeTask({
+	distLabel: 'routeToSchool',
+	informativeStoryteller: true,
+	listenerType: 'pragmatic', 
+	assumeInformativeSpeaker: true
+}));
 
 // Make a graph:
 // for each item in the full sequence, how likely is it to be mentioned?
