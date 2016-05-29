@@ -1,0 +1,147 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage{cogsci}
+
+% \documentclass[12pt,a4paper]{article}
+% \usepackage[a4paper, total={6.5in, 9in}]{geometry}
+
+\usepackage{pslatex}
+\usepackage{apacite}
+\usepackage{color}
+
+\newcommand{\todo}[1]{{\color{red}#1}}
+
+\title{Recovering gaps in stories}
+ 
+\author{{\large \bf Erin Bennett} (erindb@stanford.edu) \\ %and
+  {\large {\bf Noah D. Goodman}} (ngoodman@stanford.edu) \\
+  Department of Psychology, Stanford University}
+
+
+\begin{document}
+
+\maketitle
+
+
+\begin{abstract}
+
+Humans have a great deal of commonsense knowledge -- e.g. about causal relations, abstract roles, and common coocurrances -- that we implicitly use in understanding the world.
+This knowledge allows us to fill in gaps in the stories that people tell, inferring other events that likely happened given what a speaker chooses to mention.
+Some recent script induction models have been developed to learn commonsense knowledge from natural language corpora.
+One common evaluation metric for script induction models is the "narrative cloze task" in which one event from a chain of events described in a corpus is left out for the model to recover.
+While this is a reasonable starting point, based in the intuition that humans are able to infer unmentioned events in stories, several sources of information suggest that the task may not be an ideal metric for commonsense knowledge acquisition.
+In this paper, we present an experiment which demonstrate that recovering events that were mentioned in {\em actual} stories may be very difficult for people to do with much accuracy, even with rich linguistic information to draw on.
+We also show that agreement among human participants about how to complete a narrative is similarly low, and that even when participants agree with one another, the inferences of existing script induction models does not appear to track their choices.
+Finally, in simulations of very simple domains with handwritten "scripts", we confirm that events mentioned in an informative story tend to be much less recoverable by a rational listener with domain knowledge than events that are true but not mentioned.
+
+\textbf{Keywords:} 
+commonsense knowledge ; script induction ; narrative cloze ; narrative understanding
+\end{abstract}
+
+\section{Introduction}
+
+Humans have a great deal of commonsense knowledge that we implicitly use in understanding the world.
+This commonsense knowledge includes knowledge about causal relations between events.
+For example if a glass falls on the floor, most people would agree that it will probably break.
+Commonsense knowledge also involves knowledge about abstract roles that people, places, and things can play in a situation.
+For example, if someone is a server at a restaurant, we expect that they ask for orders, bring food, and are paid to be there.
+Commonsense knowledge can also refer to the myriad of facts and features that tend to coocur with particular contexts.
+For example, when you walk into a restaurant, you expect to see tables, silverware, and possibly a bar.
+% %<complete_nonsense>
+% Commonsense knowledge might also include factual, relational knowledge, such as the fact that the restaurant Olive Garden serves mostly pasta, or that on Stanford University's campus, Subway is next to Panda Express. However, this more concrete, factual knowledge is currently easier to formally specify and hence more tractable for machines to acquire, than the more abstract knowledge of cause, roles, and features in the previous examples.
+% %</complete_nonsense>
+Understanding and representing this kind of human knowledge in machines is a long-standing problem in artificial intelligence, and many researchers have \todo{thought about this problem and made useful contributions.}
+
+\subsection{Background}
+
+\subsubsection{Scripts in Psychology}
+
+\todo{end with: people can fill in gaps}
+
+\subsubsection{Script Induction in Natural Language Processing}
+
+\todo{end with: narrative cloze task}
+
+\subsection{Narrative Cloze Task}
+
+\todo{ we would like to know whether narrative cloze task is a good measure of human commonsense. how does the fact that natural stories are generated informatively affect this task? }
+
+\section{Experiment}
+
+\subsection{Participants}
+
+We recruited \todo{N} participants from Amazon Mechanical Turk.
+All participants were from the U.S.
+\todo{N participants were excluded because they were not native English speakers.}
+
+\subsection{Materials}
+
+\shortciteA{rudinger2015learning} demonstrated that reasonable performance could be achieved on domain-specific natural text.
+Using ``Dinners from Hell'' \cite{dinnersfromhell}, a blog about negative experiences in restaurants, Rudinger et al. trained several coreference-chain models and evaluated their performance using a narrative cloze task.
+We used the same blog as our training corpus for the single-protagonist narrative chain PMI model and as a source of our narrative cloze tests.
+We scraped 273 stories from the blog, and uniformly selected \todo{N} documents for the narrative cloze tests in our experiment, excluding a few off-topic documents, e.g. letters to the editor.
+For each document in the corpus, we used CoreNLP annotators \cite{corenlp} to get dependency parses \cite{depparse} and coreference chains \cite{coref2013a, coref2013b, coref2011, coref2010}.
+\todo{how we chose cloze tasks for documents}
+
+The models tested by \shortciteA{rudinger2015learning} had access to only a small amount of linguistic information in the narrative cloze test, since each event was reduced to a single verb and the syntactic role of protagonist.
+We wanted to test people's performance on the task under this constraint, but we also wanted to test them on more complex versions of the task, since other more complex models can be tested on narrative cloze tasks with more linguistic information.
+
+We therefore manipulated the original text in three different ways.
+In one condition, we gave people the full text of every sentence that contained a mention of the protagonist, which is much more information than the coreference chain models had access to in their version of the narrative cloze task. In a second condition, somewhat resembling the structure of the narrative cloze task used by \shortciteA{pichotta2014statistical}, we provided people with a ``caveman-speak'' version of the sentence that contained the lemmatized (or participle-form in the case of passive sentences) main verb and a few of its principle arguments: the head of any subject or object noun phrases and the preposition and head noun of any prepositional phrase. For example, the sentence ``Just to spite him, we remained at our table for nearly 3 hours.'' was reduced to ``We remain at table for hours.'' in this condition.
+
+\subsection{Procedure}
+
+\todo{
+in pilots, people did not understand the task.
+we blurred out the original text and inserted a textbox with instructions near it
+we used corenlp on the webserver to check that all responses were parsable before participants' responses would be accepted and they could continue to the next question
+}
+
+\subsection{Analyses}
+
+\subsubsection{Response processing}
+
+We extracted main verbs from the responses using CoreNLP, and used NLTK's interface to WordNet \shortcite{bird2009natural, miller1998wordnet} to find all synonyms of that word in all of its synsets. If any verbs or synonym that participants mentioned was the same as the original verb, we recorded that participant's response on that cloze task as correct.
+As this resulted in very low scores, we also manually determined a single word ``gloss'' of each response using the experimenter's subjective judgement. These glosses were chosen generously such that for any set of responses with similar meanings, they were labeled with the same gloss. We consider this a reasonable upper bound on how well participants might be doing on this task.
+
+\subsubsection{PMI model comparison}
+
+\todo{
+\shortciteA{rudinger2015learning} helpfully provided code that we were able to use with only slight modification
+}
+
+\subsection{Results}
+
+\todo{people are not good at this task.}
+
+\section{Illustrative Simulations}
+
+\todo{
+We did a few different simulations of the narrative cloze task, assuming a tiny little toy domain with "scripts" that we hand wrote.
+
+Unsurprisingly,
+a model that infers left-out events from a story does worse when the story was generated by an informative storyteller than when the story is just a random subsequence of events
+also, its pretty easy to infer events that *weren't mentioned* by an informative storyteller, which is the actual thing that people said scripts were good for and which inspired the narrative cloze task.
+}
+
+\section{Discussion}
+
+\subsection{Future Directions}
+
+While natural language is readily available in vast quantities on the internet, sentences that people freely generate tend to be very complex and can often mention events or ideas outside the story they are telling. These features of natural language make both script induction and narrative cloze tasks difficult. For this reason, there have been efforts to use crowdsourcing to collect corpora of stories that are more focused, shorter, and contain more simple language \shortcite{li2013story, mostafazadeh2016corpus}. \shortciteA{li2013story} collected stories focused on particular topics (a trip to a restaurant, a bank robbery, etc.) for which they asked the story writers to use very simple language and then recruited readers to identify and exclude mentions of unrelated events. \shortciteA{mostafazadeh2016corpus} crowdsourced a slightly different, highly structure corpus of 5-sentence-long stories. These stories span a huge variety of commonsense domains, as story writers were told to write about anything they thought readers would easily understand.
+
+It could be argued that given sufficiently curated corpora, narrative cloze tasks would be easier for humans and their success reflective of their commonsense knowledge. One possible test of this would be to repeat all of our analyses on these more simplified crowdsourced corpora.
+
+\todo{Also, we could use word2vec, glove, or sentence2vec embeddings to check similarity between people's responses, though since manually annotating the responses didn't seem to change the results, that might not be all that worthwhile.}
+
+% \section{Acknowledgments}
+
+% j s mcdonnel, cocolab, cohort, allen
+
+\bibliographystyle{apacite}
+
+\setlength{\bibleftmargin}{.125in}
+\setlength{\bibindent}{-\bibleftmargin}
+
+\bibliography{fyp}
+
+\end{document}
