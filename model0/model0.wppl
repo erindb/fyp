@@ -78,13 +78,15 @@ var runThroughStorytellingFunctions = function() {
 	}, examples);
 };
 
-var narrativeClozeTask = function(parameters) {
+// TO DO:
+// sample a narrative cloze task, and get the overall probability of
+// success for different kinds of models for that particular task
+
+var createNarrativeClozeTask = function(parameters) {
 	var distLabel = parameters.distLabel;
 	var dist = generativeModels[distLabel];
+	var costLabel = parameters.costLabel;
 	var informativeStoryteller = parameters.informativeStoryteller;
-	var listenerType = parameters.listenerType;
-	var listener = listenerType=='pragmatic' ? pragmaticListener : literalListener;
-	var assumeInformativeSpeaker = parameters.assumeInformativeSpeaker;
 
 	// sample an event sequence
 	var actualEventSequence = sample(dist);
@@ -94,7 +96,7 @@ var narrativeClozeTask = function(parameters) {
 	var actualStory = sample(storyteller({
 		fullSequence: actualEventSequence,
 		informative: informativeStoryteller,
-		costLabel: 'lengthCost',
+		costLabel: costLabel,
 		distLabel: distLabel
 	}));
 
@@ -110,39 +112,230 @@ var narrativeClozeTask = function(parameters) {
 		var storyClozeTask = stories.clozify(actualStory, removeIndex);
 		var partialStory = storyClozeTask.full;
 		var correctAnswer = actualStory[removeIndex];
-
-		// ask a listener model (either pragmatic or literal)
-		// to generate the underlying sequence
-		var inferredSequence = sample(listener({
-			story: partialStory,
-			distLabel: distLabel,
-			speakerCostLabel: 'lengthCost',
-			assumeInformativeSpeaker: assumeInformativeSpeaker
-		}));
-
-		// from the inferred underlying sequence
-		// either sample an unmentioned event at random,
-		// or try to find a story that mentions another event
-		// in the blank position
-		var fullstr = inferredSequence.join('');
-		var pattern = (storyClozeTask.before).join('.*') + '(.*)' +
-			(storyClozeTask.after).join('.*');
-		var match = stories.regex.match(pattern, fullstr);
-		var possiblyHappenedAtIndex = match ? match[1] : '';
-		if (possiblyHappenedAtIndex.length > 0) {
-			var clozeAnswersAndEmpty = possiblyHappenedAtIndex.split('.');
-			var clozeAnswers = clozeAnswersAndEmpty.slice(0, clozeAnswersAndEmpty.length-1);
-			var clozeAnswer = uniformDraw(clozeAnswers) + '.';
-
-			// return "correct" iff the inferred unmentioned event
-			// is the actual left-out event
-			return correctAnswer==clozeAnswer ? 'correct' : 'incorrect';
-		} else {
-			return 'no response';
+		return {
+			removeIndex: removeIndex,
+			storyClozeTask: storyClozeTask,
+			partialStory: partialStory,
+			costLabel: costLabel,
+			correctAnswer: correctAnswer
 		}
 	} else {
 		return 'invalid';
 	}
+}
+
+var createUnmentionedClozeTask = function(parameters) {
+	var distLabel = parameters.distLabel;
+	var dist = generativeModels[distLabel];
+	var costLabel = parameters.costLabel;
+	var informativeStoryteller = parameters.informativeStoryteller;
+
+	// sample an event sequence
+	var actualEventSequence = sample(dist);
+
+	// sample a story for that event sequence
+	// (either informative or not)
+	var actualStory = sample(storyteller({
+		fullSequence: actualEventSequence,
+		informative: informativeStoryteller,
+		costLabel: costLabel,
+		distLabel: distLabel
+	}));
+
+	// if the story is non-null...
+	// (sometimes the best story could be to say nothing
+	// because the events were so typical)
+	// (and actually, if the story is longer than 1,
+	// so something will be left for the cloze task)
+	if (actualStory.length > 0) {
+		// randomly choze one event from the original sequence
+		// that was not mentioned in the story to be the target
+		// of the unmentionedClozeTask
+
+		// determine which events were not mentioned in the story
+		var unmentionedEventsData = reduce(
+			function(next, acc) {
+				var unmentionedEvents = acc.unmentionedEvents;
+				var storyUnaccountedFor = acc.storyUnaccountedFor;
+				var insertIndexInStory = acc.insertIndexInStory;
+				if (last(storyUnaccountedFor)==next) {
+					// if the last item of the story matches the current event,
+					// then this event was mentioned. don't add it to the
+					// unmentioned events, but do decrement the index in the story
+					// and take away that event from those unaccounted for
+					return({
+						unmentionedEvents: unmentionedEvents,
+						storyUnaccountedFor: most(storyUnaccountedFor),
+						insertIndexInStory: insertIndexInStory-1
+					});
+				} else {
+					// otherwise, this event was unmentioned. add it to the
+					// beginning of the unmentioned events list, including
+					// its index.
+					return({
+						unmentionedEvents: [[next, insertIndexInStory]].concat(
+							unmentionedEvents
+						),
+						storyUnaccountedFor: storyUnaccountedFor,
+						insertIndexInStory: insertIndexInStory
+					});
+				}
+			},
+			{
+				unmentionedEvents: [],
+				storyUnaccountedFor: actualStory,
+				insertIndexInStory: actualStory.length
+			},
+			actualEventSequence
+		).unmentionedEvents;
+
+		if (unmentionedEventsData.length > 0) {
+			// sample one at random
+			var unmentionedEventData = uniformDraw(unmentionedEventsData);
+			var correctAnswer = unmentionedEventData[0];
+			var removeIndex = unmentionedEventData[1];
+			var hypotheticalStory = insertAt(actualStory, removeIndex, correctAnswer);
+			var storyClozeTask = stories.clozify(hypotheticalStory, removeIndex);
+
+			var task = {
+				removeIndex: removeIndex,
+				storyClozeTask: storyClozeTask,
+				partialStory: actualStory,
+				costLabel: costLabel,
+				correctAnswer: correctAnswer
+			};
+
+			return task;
+		} else {
+			return 'invalid';
+		}
+	} else {
+		return 'invalid';
+	}
+}
+
+var answerNarrativeClozeTask = function(parameters) {
+	var distLabel = parameters.distLabel;
+	var dist = generativeModels[distLabel];
+	var costLabel = parameters.costLabel;
+	var listenerType = parameters.listenerType;
+	var listener = listenerType=='pragmatic' ? pragmaticListener : literalListener;
+	var assumeInformativeSpeaker = parameters.assumeInformativeSpeaker
+
+	var removeIndex = (parameters.task).removeIndex;
+	var storyClozeTask = (parameters.task).storyClozeTask;
+	var partialStory = (parameters.task).partialStory;
+	var correctAnswer = (parameters.task).correctAnswer;
+
+	// ask a listener model (either pragmatic or literal)
+	// to generate the underlying sequence
+	var inferredSequence = sample(listener({
+		story: partialStory,
+		distLabel: distLabel,
+		speakerCostLabel: costLabel,
+		assumeInformativeSpeaker: assumeInformativeSpeaker
+	}));
+
+	// from the inferred underlying sequence
+	// either sample an unmentioned event at random,
+	// or try to find a story that mentions another event
+	// in the blank position
+	var fullstr = inferredSequence.join('');
+	var pattern = (storyClozeTask.before).join('.*') + '(.*)' +
+		(storyClozeTask.after).join('.*');
+	var match = stories.regex.match(pattern, fullstr);
+	var possiblyHappenedAtIndex = match ? match[1] : '';
+	if (possiblyHappenedAtIndex.length > 0) {
+		var clozeAnswersAndEmpty = possiblyHappenedAtIndex.split('.');
+		var clozeAnswers = clozeAnswersAndEmpty.slice(0, clozeAnswersAndEmpty.length-1);
+		var clozeAnswer = uniformDraw(clozeAnswers) + '.';
+
+		// return "correct" iff the inferred unmentioned event
+		// is the actual left-out event
+		return correctAnswer==clozeAnswer ? 'correct' : 'incorrect';
+	} else {
+		return 'no response';
+	}
+}
+
+var clozePerformanceForTask = function(task, parameters) {
+	var distLabel = parameters.distLabel;
+	var costLabel = parameters.costLabel;
+	var listenerType = parameters.listenerType;
+	var assumeInformativeSpeaker = parameters.assumeInformativeSpeaker;
+
+	// for each cloze task, get probability of correct answer
+	var clozePerformance = Infer(
+		{method: 'enumerate'},
+		function() {
+			return answerNarrativeClozeTask({
+				distLabel: distLabel,
+				costLabel: costLabel,
+				listenerType: listenerType,
+				assumeInformativeSpeaker: assumeInformativeSpeaker,
+				task: task,
+			});
+		}
+	);
+	return Math.exp(clozePerformance.score('correct'));
+}
+
+var narrativeClozeTask = function(parameters) {
+	var distLabel = parameters.distLabel;
+	var dist = generativeModels[distLabel];
+	var costLabel = parameters.costLabel;
+	var informativeStoryteller = parameters.informativeStoryteller;
+	var listenerType = parameters.listenerType;
+	var listener = listenerType=='pragmatic' ? pragmaticListener : literalListener;
+	var assumeInformativeSpeaker = parameters.assumeInformativeSpeaker;
+
+	var clozePerformanceAcrossTasks = Infer(
+		{method: 'enumerate'},
+		function() {
+			var task = createNarrativeClozeTask({
+				distLabel: distLabel,
+				costLabel: costLabel,
+				informativeStoryteller: informativeStoryteller
+			});
+			condition(task != 'invalid');
+			if (task != 'invalid') {
+				return clozePerformanceForTask(task, parameters);
+			} else {
+				return 'invalid';
+			}
+		}
+	);
+
+	return clozePerformanceAcrossTasks;
+}
+
+var unmentionedClozeTask = function(parameters) {
+	var distLabel = parameters.distLabel;
+	var dist = generativeModels[distLabel];
+	var costLabel = parameters.costLabel;
+	var informativeStoryteller = parameters.informativeStoryteller;
+	var listenerType = parameters.listenerType;
+	var listener = listenerType=='pragmatic' ? pragmaticListener : literalListener;
+	var assumeInformativeSpeaker = parameters.assumeInformativeSpeaker;
+
+	var clozePerformanceAcrossTasks = Infer(
+		{method: 'enumerate'},
+		function() {
+			var task = createUnmentionedClozeTask({
+				distLabel: distLabel,
+				costLabel: costLabel,
+				informativeStoryteller: informativeStoryteller
+			});
+			condition(task != 'invalid');
+			if (task != 'invalid') {
+				return clozePerformanceForTask(task, parameters);
+			} else {
+				return 'invalid';
+			}
+		}
+	);
+
+	return clozePerformanceAcrossTasks;
 }
 
 // runThroughStorytellingFunctions();
@@ -153,18 +346,52 @@ var narrativeClozeTask = function(parameters) {
 // but probably more complex domains would be difficult for
 // both kinds of models
 // if the speaker were not informative, the task *might* be easier
-display(narrativeClozeTask({
-	distLabel: 'videoGame',
-	informativeStoryteller: true,
-	listenerType: 'pragmatic', 
-	assumeInformativeSpeaker: true
-}));
-display(narrativeClozeTask({
-	distLabel: 'routeToSchool',
-	informativeStoryteller: true,
-	listenerType: 'pragmatic', 
-	assumeInformativeSpeaker: true
-}));
+map(function(distLabel) {
+	// for each domain,
+	map(function(informativeStoryteller) {
+		// for both informative and uninformative storytellers
+		// generating the cloze task for the stories
+		// map(function(costLabel) {
+			var costLabel = 'lengthCost';
+			// for storytellers that try to be brief
+			// and those that don't
+
+			// assume the listener is pragmatic and imagines
+			// the storyteller to have been informative
+
+			var averageNarrativeClozePerformance = expectation(
+				narrativeClozeTask({
+					distLabel: distLabel,
+					informativeStoryteller: informativeStoryteller,
+					costLabel: costLabel,
+					listenerType: 'pragmatic',
+					assumeInformativeSpeaker: true
+				}),
+				function(x) {return x}
+			);
+
+			var averageUnmentionedClozePerformance = expectation(
+				unmentionedClozeTask({
+					distLabel: distLabel,
+					informativeStoryteller: informativeStoryteller,
+					costLabel: costLabel,
+					listenerType: 'pragmatic',
+					assumeInformativeSpeaker: true
+				}),
+				function(x) {return x}
+			);
+
+			display([
+				distLabel,
+				informativeStoryteller,
+				costLabel,
+				averageNarrativeClozePerformance,
+				averageUnmentionedClozePerformance
+			].join(','));
+
+		// }, ['lengthCost', 'noCost'])
+	}, [true, false])
+}, ['videoGame', 'routeToSchool']);
 
 // Make a graph:
 // for each item in the full sequence, how likely is it to be mentioned?
