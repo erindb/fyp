@@ -182,7 +182,6 @@ var experiment = {
   // log data to send to mturk here
   data: {
     trials: [],
-    events: [],
     demographics: [],
     randomSeed: aRandomSeed,
   },
@@ -281,7 +280,7 @@ var experiment = {
     $('.response').remove();
     $('.prompt').remove();
     showSlide("trial");
-    if (experiment.data.condition=="full_text") {
+    if (experiment.data.condition=="original") {
       $(".instructions.caveman").hide();
     } else {
       $(".instructions.full_text").hide();
@@ -414,7 +413,7 @@ var experiment = {
   },
   finished: function() {
     experiment.state.log = experiment.defaultLog();
-    clearInterval(mouseLoggerId);
+    // clearInterval(mouseLoggerId);
     experiment.data.startTime = startTime;
     experiment.data.seed =  aRandomSeed;
     // Show the finish slide.
@@ -453,53 +452,3 @@ $(document).ready(function() {
     alert("You have already completed the maximum number of HITs allowed by this requester. Please click 'Return HIT'.");
   }
 })
-
-// -------- record all the events ----------
-var x = 0;
-var y = 0;
-
-var slideLeftMargin = parseFloat($(".slide").css("margin-left")) +
-      parseFloat($(".slide").css("padding-left"))
-
-document.onmousemove = function(e) {
-  x = (e.pageX - slideLeftMargin) / $(".slide").width();
-  y = e.pageY / $(".slide").height();
-};
-$(document).click(function(e) {
-  experiment.data.events.push({
-        type: "click",
-        x: x,
-        y: y,
-        time: time()
-  });
-});
-$(document).keyup(function(e){
-  experiment.data.events.push({
-        type: "keyup",
-        keyCode: e.keyCode,
-        key: String.fromCharCode(e.keyCode),
-        time: time()
-  });
-});
-var mouseLoggerId;
-$(document).ready(function() {
-  $(".continue").click(function() {
-    $(this).unbind("click");
-    this.blur();
-    experiment.data.events.push({
-          type: "click",
-          x: x,
-          y: y,
-          time: time()
-    });
-    experiment.next();
-  });
-  mouseLoggerId = setInterval(function(e) {
-    experiment.data.events.push({
-          type: "position",
-          x: x,
-          y: y,
-          time: time()
-    });
-  }, 50);
-});
