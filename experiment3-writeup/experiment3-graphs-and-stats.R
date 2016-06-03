@@ -124,7 +124,7 @@ verb.data = read.csv('data/experiment3-with-main-verbs.csv') %>%
   mutate(method=factor(method)) %>%
   as.data.frame
 
-agreement = verb.data %>%
+agreement.data = verb.data %>%
   group_by(tag, condition, method) %>%
   summarise(max.possible.entropy = log(length(tag)),
             ### to do: bootstrap correction!!!
@@ -133,7 +133,7 @@ agreement = verb.data %>%
   mutate(agreement = 1 - (entropy/max.possible.entropy))  %>%
   as.data.frame
 
-agreement %>%
+agreement.data %>%
   group_by(method, condition) %>%
   summarise(low = ci.low(agreement),
             high = ci.high(agreement),
@@ -163,30 +163,57 @@ agreement.stats('automatic')
 
 ################## human and model comparison ########################
 
-aggr.agreement = agreement %>% group_by(tag) %>% summarise(agreement = mean(agreement))
+aggr.agreement = agreement.data %>% group_by(tag, method) %>% summarise(agreement = mean(agreement))
+aggr.performance = cloze.df %>%
+  mutate(tag=paste(document, chain, clozeIndex)) %>%
+  group_by(tag, matching.method) %>% summarise(prop.match = mean(prop.match)) %>%
+  as.data.frame
 agreement = aggr.agreement$agreement
 names(agreement) = aggr.agreement$tag
 pmi = read.csv('data/pmi-model-rankings.csv')
 comparison = pmi %>%
   filter(exactness=='syns') %>%
-  mutate(tag = paste(document, chain, cloze),
+  mutate(mytag = paste(document, chain, cloze),
          ranking = ifelse(ranking<100, ranking, 100),
          source = factor(source,
                          levels=c('actual', 'response'),
                          labels=c('Actual Verbs', 'Response Verbs'))) %>%
-  group_by(document, chain, cloze, exactness, source) %>%
+  group_by(mytag, exactness, source) %>%
   summarise(min.rank = min(ranking),
             mean.rank = mean(ranking),
             prop.rankings.in.top.50 = mean(ranking < 50),
-            human.agreement = agreement[tag[1]]) %>%
-  as.data.frame
-ggplot(comparison, aes(x=human.agreement, y=min.rank, colour=source)) +
-  geom_point(size=4, alpha=0.3) +
+            agreement.auto=(aggr.agreement%>%filter(method=='automatic' & tag==mytag[1]))[['agreement']][1],
+            agreement.manual=(aggr.agreement%>%filter(method=='manual' & tag==mytag[1]))[['agreement']][1],
+            performance.auto=(aggr.performance%>%filter(matching.method=='Automatic Matching' & tag==mytag[1]))[['prop.match']][1],
+            performance.manual=(aggr.performance%>%filter(matching.method=='Manual Matching' & tag==mytag[1]))[['prop.match']][1]) %>%
+  gather(measure, value, 7:10) %>%
+  separate(measure, into=c('measure', 'matching.method')) %>%
+  spread(measure, value) %>%
+  mutate(matching.method=factor(matching.method, levels=c('auto', 'manual'), labels=c('Automatic Matching', 'Manual Matching')))
+# comparison %>%
+#   ggplot(., aes(x=value, y=min.rank, colour=matching.method, shape=measure)) +
+#   geom_point(size=4, alpha=0.5) +
+#   facet_grid(measure~source) +
+#   xlab("Participants") +
+#   ylab("Model's Best Rank") +
+#   scale_colour_few()
+# ggsave('../paper/images/human-model-comparison.png', width=10, height=4)
+comparison %>%
+  ggplot(., aes(x=agreement, y=min.rank, colour=matching.method)) +
+  geom_point(size=4, alpha=0.5) +
   facet_grid(~source) +
   xlab("Participants' Agreement") +
   ylab("Model's Best Rank") +
   scale_colour_few()
-ggsave('../paper/images/human-model-comparison.png', width=10, height=4)
+# ggsave('../paper/images/human-model-comparison.png', width=10, height=4)
+# comparison %>%
+#   ggplot(., aes(x=performance, y=min.rank, colour=matching.method)) +
+#   geom_point(size=4, alpha=0.5) +
+#   facet_grid(~source) +
+#   xlab("Participants' Performance") +
+#   ylab("Model's Best Rank") +
+#   scale_colour_few()
+# ggsave('../paper/images/human-model-comparison-performance.png', width=10, height=4)
 
 print('human agreement is not correlated with model responses')
 print(with(comparison, cor.test(min.rank, human.agreement)))

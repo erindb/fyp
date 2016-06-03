@@ -229,6 +229,7 @@ While this is not the most recent or successful model of its kind, it performed 
 The model produces ranked lists of candidate events, and various metrics have been adopted for assessing performance.
 % could throw some citations in here
 One common metric is recall of the actual event within the top N candidates (different papers use different thresholds). Another metric is to determine the model's ranking of the actual event. Because we want to measure against the original text but also against the varied responses that participants gave, we would like a metric of success that considers a set of correct events, rather than a single correct event. We therefore chose, among the set of ``correct'' events, the highest ranking event\footnote{Taking the average of the rankings yielded similar results.} and used its rank to represent the model's performance on that task. For tasks where none of the correct events were recalled, the ranking 100 is used for graphing.
+One potential issue with this metric is that when there are more words to compare to, the minimum rank is likely to be lower. When human responses are used as a source of correct words to compare to, the correlation between human agreement and model min rank variables might be underestimated, since lower agreement might implies more unique words. However, this is not a concern when the source of comparison is the original response or when model ranking is compared to human performance as opposed to agreement, which yield similar results.
 
 \subsection{Results \& Discussion}
 
@@ -241,7 +242,7 @@ Overall, as \citeA{chambers2008unsupervised} predicted when they introduced this
  \label{fig:human-cloze}
 \end{figure}
 
-\todo{people don't agree with one another}
+When we measured agreement between participants rather than success at recovering the actual event, the advantage from linguistic detail is no longer apparent (p>0.05 with both automatic and manual tagging). However, participants agreed with one another according to this metric slightly more often than they recovered the original text (8\% with automatic tagging, 11\% with manual tagging). These results are shown in Figure \ref{fig:human-model-comparison}.
 
 % [1] "with  manual  tagging, original condition is no better than the other two:"
 %     Estimate   Std. Error      t value     Pr(>|t|) 
@@ -291,7 +292,7 @@ Overall, as \citeA{chambers2008unsupervised} predicted when they introduced this
 \begin{figure}
  \centering
  \includegraphics[width=0.4\textwidth]{images/human-model-comparison.png}
- \caption{The model does not appear to increase in its ability to recover at least one synonym of the humans' responses as agreement between participants increases.}
+ \caption{The model does not appear to increase in its ability to recover at least one synonym of the humans' responses as agreement between participants increases. Tasks where no human responses were recalled by the model are given the placeholder ranking 100.}
  \label{fig:human-model-comparison}
 \end{figure}
 
