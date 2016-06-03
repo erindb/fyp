@@ -72,7 +72,7 @@ And how does this relate to the performance of script induction models?
 
 In the pilot, we lost data from some participants, and unfortunately, this was length/time based and so the most conscientious participants were excluded.
 
-There were 51 cloze tasks in total, and only 17 were seen by each participant. We collected data from 24 participants, so not all of the cloze tasks had enough responses to make meaningful inferences about (e.g.) response overlap across participants.
+There were 46 cloze tasks in total, and only 17 were seen by each participant. We collected data from 24 participants, so not all of the cloze tasks had enough responses to make meaningful inferences about (e.g.) response overlap across participants.
 
 ```{r}
 d = read.table('data/verb-processed-data.txt', sep=' ')
@@ -81,6 +81,18 @@ names(d) = c('doc', 'chain', 'cloze', 'cond', 'prop.match.orig',
 d = d %>% mutate(prop.loosely.match = loosely.orig/n,
                  cond = factor(cond, levels=c('event_only', 'caveman', 'original')),
                  tag = paste(doc, chain, cloze, cond))
+```
+
+```{r}
+demographics.et.al = read.csv('data/anonymized-results.csv')
+demographics.summary = demographics.et.al %>%
+  group_by(workerid, condition, age, comments, education, language,
+           ethnicity, gender, languageFree, studyQuestionGuess) %>%
+  summarise() %>% as.data.frame()
+
+ = demographics.et.al %>%
+  group_by(condition, document, chain, clozeIndex) %>%
+  summarise(N=length(condition))
 ```
 
 #### Question 1: To what extent can people accurately fill in gaps in natural narrative text?

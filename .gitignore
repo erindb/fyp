@@ -22,3 +22,9 @@ experiment3-writeup/scripts/tmp.json
 experiment3-writeup/data/training-corpora
 experiment3-writeup/data/cloze-tests
 local-nachos
+*.bst
+*.aux
+*.bbl
+*.blg
+*.log
+*.backup
