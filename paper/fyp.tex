@@ -51,10 +51,11 @@ For example, when you walk into a restaurant, you expect to see tables, silverwa
 % %<complete_nonsense>
 % Commonsense knowledge might also include factual, relational knowledge, such as the fact that the restaurant Olive Garden serves mostly pasta, or that on Stanford University's campus, Subway is next to Panda Express. However, this more concrete, factual knowledge is currently easier to formally specify and hence more tractable for machines to acquire, than the more abstract knowledge of cause, roles, and features in the previous examples.
 % %</complete_nonsense>
-Understanding and representing this kind of human knowledge in machines is a long-standing problem in artificial intelligence, and many researchers have \todo{thought about this problem and made useful contributions.}
+Understanding and representing this kind of human knowledge in machines is a long-standing problem in artificial intelligence, and many researchers have thought about this problem and made useful contributions.
 % Researchers have been working to operationalize what we mean by commonsense knowledge for many years.
-
-In this paper we \todo{do some stuff}.
+One challenge in operationalizing human commonsense for artificial intelligence is how to evaluate performance of models. In one evaluation method, the narrative cloze task, models must recover a left-out event from a coreference chain in a natural language corpus.
+We explore human performance on this task in a pilot experiment, demonstrating that people's performance, and even their agreement with each other, is quite low on these task.
+In an appendix section we explore how storytellers' intention to be informative makes the narrative cloze task much more difficult than recovering {\em unmentioned} events, the task that humans are thought to do quite well at and which inspired the narrative cloze task.
 
 \subsection{Background}
 
@@ -210,7 +211,7 @@ The agreement metric tracks humans' intuition rather than the original text, and
 
 \subsubsection{Single-entity Event Chain Model Comparison}
 
-We compare the human data to the single-entity event chain model of \citeA{chambers2008unsupervised}. In this model \todo{insert math here}.
+We compare the human data to the single-entity event chain model of \citeA{chambers2008unsupervised}. In this model, the authors select corefference chains of events using Stanford CoreNLP's dependency parser \cite{corenlp,depparse}. They construct a coocurrance matrix between all pairs of events, where an event is a tuple of a main verbe and the role of the coreferenced entity (e.g. subject, direct object, object of prepositional phrase). Events are said to coocur if they are in the same coreference chain, that is if their main verbs have a correferring entity shared across the arguments of those roles. Once the coocurrance matrix is constructed, core script-like knowledge can be characterized by clusters of events. These models approach the narrative cloze task by chosing an event by maximizing the average pointwise mutual information between the target event and all of the context events provided in the narrative cloze task, with some discounting to penalize low occuring words. For the sake of evalution of this inference, the authors looked only at verbs.
 % find narrative relations between events (evaluate with narrative cloze task)
 % each protagonist offers a different perspective on the narrative chain
 % find a partial ordering (evaluate with order coherence metric)
@@ -222,6 +223,7 @@ We compare the human data to the single-entity event chain model of \citeA{chamb
 % Toledo pulled McCann aside and told him he’d start.
 % McCann quickly completed his first two passes.
 % The events where McCann is the protagonist are (threw subject), (pulled object), (told object), (start subject), (completed subject). The more these verbs share the role of the protagonist (i.e. the protagonist of a given document is both the object of pulled and the object of told), the better a script is that contains (pulled object) and (told object), and so the more likely it is that the model will fill in (told object) in a cloze task where the model sees (pulled object). The model ends up learning clusters of events that tend to co-occur. The order of these events is inferred based on syntactic features like tense and uses Timebank for supervised data. (This is based on work in Chambers et al., 2007). The scripts we end up with are directed graphs where nodes are events involving a protagonist and edges are "before" relations.
+
 \citeA{rudinger2015learning} helpfully provided code for this model that we were able to use with only slight modification.
 We run the model with the maximum likelihood parameters from \citeA{rudinger2015script}'s experiments.
 While this is not the most recent or successful model of its kind, it performed well among the models tested by \citeA{rudinger2015script} and provides an interesting comparison to the human performance.
@@ -310,7 +312,9 @@ In response to recent concerns about the effectiveness of narrative cloze tasks 
 
 \subsection{Future Directions}
 
-\todo{larger N}
+The clearest next steps for this project would be to increase the number of participants in order to get a more representative view of people's performance on these tasks.
+
+In addition, there have been many more models used for script induction since \citeA{chambers2008unsupervised}, and it may be that the performance of these more recent models might track the performance or agreement of people in our experiment. There is some work collecting human judgements of model candidates that suggests that some models track human intuition at least to some extent even if they do not perform especially well at recovering the original text \cite{pichotta2016learning}.
 
 While natural language is readily available in vast quantities on the internet, sentences that people freely generate tend to be very complex and can often mention events or ideas outside the story they are telling. These features of natural language make both script induction and narrative cloze tasks difficult. For this reason, there have been efforts to use crowdsourcing to collect corpora of stories that are more focused, shorter, and contain more simple language \cite{li2013story, mostafazadeh2016corpus}. \citeA{li2013story} collected stories focused on particular topics (a trip to a restaurant, a bank robbery, etc.) for which they asked the story writers to use very simple language and then recruited readers to identify and exclude mentions of unrelated events. \citeA{mostafazadeh2016corpus} crowdsourced a slightly different, highly structure corpus of 5-sentence-long stories. These stories span a huge variety of commonsense domains, as story writers were told to write about anything they thought readers would easily understand.
 

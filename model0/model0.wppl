@@ -351,45 +351,49 @@ map(function(distLabel) {
 	map(function(informativeStoryteller) {
 		// for both informative and uninformative storytellers
 		// generating the cloze task for the stories
-		// map(function(costLabel) {
-			var costLabel = 'lengthCost';
+		// or not
+		map(function(costLabel) {
+			// var costLabel = 'lengthCost';
 			// for storytellers that try to be brief
 			// and those that don't
 
+			map(function(assumeInformativeStoryteller) {
 			// assume the listener is pragmatic and imagines
 			// the storyteller to have been informative
+			// ... or not
 
-			var averageNarrativeClozePerformance = expectation(
-				narrativeClozeTask({
-					distLabel: distLabel,
-					informativeStoryteller: informativeStoryteller,
-					costLabel: costLabel,
-					listenerType: 'pragmatic',
-					assumeInformativeSpeaker: true
-				}),
-				function(x) {return x}
-			);
+				var averageNarrativeClozePerformance = expectation(
+					narrativeClozeTask({
+						distLabel: distLabel,
+						informativeStoryteller: informativeStoryteller,
+						costLabel: costLabel,
+						listenerType: 'pragmatic',
+						assumeInformativeSpeaker: assumeInformativeStoryteller
+					}),
+					function(x) {return x}
+				);
 
-			var averageUnmentionedClozePerformance = expectation(
-				unmentionedClozeTask({
-					distLabel: distLabel,
-					informativeStoryteller: informativeStoryteller,
-					costLabel: costLabel,
-					listenerType: 'pragmatic',
-					assumeInformativeSpeaker: true
-				}),
-				function(x) {return x}
-			);
+				var averageUnmentionedClozePerformance = expectation(
+					unmentionedClozeTask({
+						distLabel: distLabel,
+						informativeStoryteller: informativeStoryteller,
+						costLabel: costLabel,
+						listenerType: 'pragmatic',
+						assumeInformativeSpeaker: assumeInformativeStoryteller
+					}),
+					function(x) {return x}
+				);
 
-			display([
-				distLabel,
-				informativeStoryteller,
-				costLabel,
-				averageNarrativeClozePerformance,
-				averageUnmentionedClozePerformance
-			].join(','));
-
-		// }, ['lengthCost', 'noCost'])
+				display([
+					distLabel,
+					assumeInformativeStoryteller?'assume.informative.story':'assume.uinformative.story',
+					informativeStoryteller?'informative.story':'uninformative.story',
+					costLabel,
+					averageNarrativeClozePerformance,
+					averageUnmentionedClozePerformance
+				].join(','));
+			}, [true, false])
+		}, ['lengthCost', 'noCost'])
 	}, [true, false])
 }, ['videoGame', 'routeToSchool']);
 

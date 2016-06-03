@@ -1,0 +1,21 @@
+Processing model0.wppl
+videoGame,assume.informative.story,informative.story,lengthCost,0.47142287901769586,0.616310336810344
+videoGame,assume.uinformative.story,informative.story,lengthCost,0.4658274730855815,0.6028674462829337
+videoGame,assume.informative.story,informative.story,noCost,0.5905232261175097,0.7526182105110891
+videoGame,assume.uinformative.story,informative.story,noCost,0.5809947044664087,0.7375061296384708
+videoGame,assume.informative.story,uninformative.story,lengthCost,0.5105888640804713,0.5775912290577332
+videoGame,assume.uinformative.story,uninformative.story,lengthCost,0.5018368353538756,0.5664944362265703
+videoGame,assume.informative.story,uninformative.story,noCost,0.5983199856860083,0.7087887573172172
+videoGame,assume.uinformative.story,uninformative.story,noCost,0.588205204939288,0.6954399927188346
+routeToSchool,assume.informative.story,informative.story,lengthCost,0.31911233308287135,0.4641985823846082
+routeToSchool,assume.uinformative.story,informative.story,lengthCost,0.31659087279498543,0.4592697737633641
+routeToSchool,assume.informative.story,informative.story,noCost,0.47387538907983834,0.6632226059527601
+routeToSchool,assume.uinformative.story,informative.story,noCost,0.47025365389738694,0.657488881200688
+routeToSchool,assume.informative.story,uninformative.story,lengthCost,0.3248263860567218,0.38718800422512967
+routeToSchool,assume.uinformative.story,uninformative.story,lengthCost,0.3212650065120139,0.3827675934545782
+routeToSchool,assume.informative.story,uninformative.story,noCost,0.45842403898424533,0.5743886317368502
+routeToSchool,assume.uinformative.story,uninformative.story,noCost,0.4539254608104101,0.5691278284096263
+
+* Program return value:
+
+finished
