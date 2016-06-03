@@ -229,7 +229,6 @@ While this is not the most recent or successful model of its kind, it performed 
 The model produces ranked lists of candidate events, and various metrics have been adopted for assessing performance.
 % could throw some citations in here
 One common metric is recall of the actual event within the top N candidates (different papers use different thresholds). Another metric is to determine the model's ranking of the actual event. Because we want to measure against the original text but also against the varied responses that participants gave, we would like a metric of success that considers a set of correct events, rather than a single correct event. We therefore chose, among the set of ``correct'' events, the highest ranking event\footnote{Taking the average of the rankings yielded similar results.} and used its rank to represent the model's performance on that task. For tasks where none of the correct events were recalled, the ranking 100 is used for graphing.
-One potential issue with this metric is that when there are more words to compare to, the minimum rank is likely to be lower. When human responses are used as a source of correct words to compare to, the correlation between human agreement and model min rank variables might be underestimated, since lower agreement might implies more unique words. However, this is not a concern when the source of comparison is the original response or when model ranking is compared to human performance as opposed to agreement, which yield similar results.
 
 \subsection{Results \& Discussion}
 
@@ -255,6 +254,9 @@ When we measured agreement between participants rather than success at recoverin
 % [1] "with  automatic  tagging, average agreement: 0.079"
 % [1] "degrees of freedom: 3,109"
 
+% From these findings, it seems likely that improvement at the narrative cloze task would not translate to human-like performance and even a model with human-level commonsense would likely do poorly at the narrative cloze task.
+These findings suggest that success at narrative cloze tasks does not easily translate to having human-like commonsense knowledge.
+
 \begin{figure}
  \centering
  \includegraphics[width=0.4\textwidth]{images/human-agreement.png}
@@ -262,7 +264,9 @@ When we measured agreement between participants rather than success at recoverin
  \label{fig:human-agreement}
 \end{figure}
 
-\todo{people's agreement doesn't track model agreement}
+We also compared \citeA{chambers2008unsupervised}'s model's minimum rank applied to a ``correct'' response (either a synonym of the actual underlying response or a synonym of a response participants gave) to human agreement and found no significant correlation (p>0.05). That is, the model is not clearly improving in how much it tracks the original text or human intuition as humans become more consistent with one another in their responses.
+
+One potential issue with comparing the min rank metric for model performance to human agreement is that when there are more words to compare to, the minimum rank is likely to be lower. When human responses are used as a source of correct words to compare to, the correlation between human agreement and model min rank variables might be underestimated, since lower agreement might implies more unique words. However, this is not a concern when the source of comparison is the original response or when model ranking is compared to human performance as opposed to agreement, which yield similar results.
 
 % [1] "human agreement is not correlated with model responses"
 % 
