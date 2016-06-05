@@ -149,7 +149,7 @@ agreement.data %>%
 ggsave('../paper/images/human-agreement.png', width=10, height=4)
 
 agreement.stats = function(this.method) {
-  agree = agreement %>% filter(method==this.method) %>%
+  agree = agreement.data %>% filter(method==this.method) %>%
     select(tag, condition, agreement)
   agree.fit = summary(lm(agreement ~ condition, data=agree, contrasts=list(condition='contr.helmert')))
   print(paste('with ', this.method, ' tagging, original condition is no better than the other two:'))
@@ -205,7 +205,7 @@ comparison %>%
   xlab("Participants' Agreement") +
   ylab("Model's Best Rank") +
   scale_colour_few()
-# ggsave('../paper/images/human-model-comparison.png', width=10, height=4)
+ggsave('../paper/images/human-model-comparison.png', width=10, height=4)
 # comparison %>%
 #   ggplot(., aes(x=performance, y=min.rank, colour=matching.method)) +
 #   geom_point(size=4, alpha=0.5) +
