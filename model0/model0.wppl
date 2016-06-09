@@ -338,68 +338,95 @@ var unmentionedClozeTask = function(parameters) {
 	return clozePerformanceAcrossTasks;
 }
 
+var model = function(RParams) {
+  return expectation(Infer({method:"enumerate"}, function() {
+  	var taskFunction = RParams.mentioned ? createNarrativeClozeTask : createUnmentionedClozeTask;
+  	var task = taskFunction({
+  		distLabel: RParams.distLabel,
+  		costLabel: RParams.costLabel,
+  		informativeStoryteller: RParams.informativeStoryteller
+  	});
+  	condition(task != 'invalid');
+  	if (task != 'invalid') {
+  		return clozePerformanceForTask(task, {
+    			distLabel: RParams.distLabel,
+    			costLabel: RParams.costLabel,
+    			informativeStoryteller: RParams.informativeStoryteller,
+    			listenerType: RParams.listenerType,
+    			assumeInformativeSpeaker: RParams.assumeInformativeSpeaker
+    		});
+  	} else {
+  		return 'invalid';
+  	}
+  }), function(x) {return x;})
+}
+
+var runThroughParameters = function() {
+	// predictions:
+	// these domains might be so simple that the pragmatic model
+	// will actually get the correct answer.
+	// but probably more complex domains would be difficult for
+	// both kinds of models
+	// if the speaker were not informative, the task *might* be easier
+	map(function(distLabel) {
+		// for each domain,
+		map(function(informativeStoryteller) {
+			// for both informative and uninformative storytellers
+			// generating the cloze task for the stories
+			// or not
+			map(function(costLabel) {
+				// var costLabel = 'lengthCost';
+				// for storytellers that try to be brief
+				// and those that don't
+
+				map(function(assumeInformativeStoryteller) {
+				// assume the listener is pragmatic and imagines
+				// the storyteller to have been informative
+				// ... or not
+
+					var averageNarrativeClozePerformance = expectation(
+						narrativeClozeTask({
+							distLabel: distLabel,
+							informativeStoryteller: informativeStoryteller,
+							costLabel: costLabel,
+							listenerType: 'pragmatic',
+							assumeInformativeSpeaker: assumeInformativeStoryteller
+						}),
+						function(x) {return x}
+					);
+
+					var averageUnmentionedClozePerformance = expectation(
+						unmentionedClozeTask({
+							distLabel: distLabel,
+							informativeStoryteller: informativeStoryteller,
+							costLabel: costLabel,
+							listenerType: 'pragmatic',
+							assumeInformativeSpeaker: assumeInformativeStoryteller
+						}),
+						function(x) {return x}
+					);
+
+					display([
+						distLabel,
+						assumeInformativeStoryteller?'assume.informative.story':'assume.uinformative.story',
+						informativeStoryteller?'informative.story':'uninformative.story',
+						costLabel,
+						averageNarrativeClozePerformance,
+						averageUnmentionedClozePerformance
+					].join(','));
+				}, [true, false])
+			}, ['lengthCost', 'noCost'])
+		}, [true, false])
+	}, ['videoGame', 'routeToSchool']);
+}
+
+// runThroughParameters();
 // runThroughStorytellingFunctions();
-
-// predictions:
-// these domains might be so simple that the pragmatic model
-// will actually get the correct answer.
-// but probably more complex domains would be difficult for
-// both kinds of models
-// if the speaker were not informative, the task *might* be easier
-map(function(distLabel) {
-	// for each domain,
-	map(function(informativeStoryteller) {
-		// for both informative and uninformative storytellers
-		// generating the cloze task for the stories
-		// or not
-		map(function(costLabel) {
-			// var costLabel = 'lengthCost';
-			// for storytellers that try to be brief
-			// and those that don't
-
-			map(function(assumeInformativeStoryteller) {
-			// assume the listener is pragmatic and imagines
-			// the storyteller to have been informative
-			// ... or not
-
-				var averageNarrativeClozePerformance = expectation(
-					narrativeClozeTask({
-						distLabel: distLabel,
-						informativeStoryteller: informativeStoryteller,
-						costLabel: costLabel,
-						listenerType: 'pragmatic',
-						assumeInformativeSpeaker: assumeInformativeStoryteller
-					}),
-					function(x) {return x}
-				);
-
-				var averageUnmentionedClozePerformance = expectation(
-					unmentionedClozeTask({
-						distLabel: distLabel,
-						informativeStoryteller: informativeStoryteller,
-						costLabel: costLabel,
-						listenerType: 'pragmatic',
-						assumeInformativeSpeaker: assumeInformativeStoryteller
-					}),
-					function(x) {return x}
-				);
-
-				display([
-					distLabel,
-					assumeInformativeStoryteller?'assume.informative.story':'assume.uinformative.story',
-					informativeStoryteller?'informative.story':'uninformative.story',
-					costLabel,
-					averageNarrativeClozePerformance,
-					averageUnmentionedClozePerformance
-				].join(','));
-			}, [true, false])
-		}, ['lengthCost', 'noCost'])
-	}, [true, false])
-}, ['videoGame', 'routeToSchool']);
 
 // Make a graph:
 // for each item in the full sequence, how likely is it to be mentioned?
 // what's the conditional probability of it given the other parts of the story?
 // what's the marginal probability of it overall?
 
-"finished"
+// "finished"
+map(model, RParamsList)

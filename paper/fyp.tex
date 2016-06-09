@@ -199,7 +199,11 @@ Regardless of whether people are able to recover the actual underlying text, we 
 To do this we need to a quantity to represent ``agreement''. We calculated an empirical entropy of the sample distribution of human responses
 %(we use a naive entropy, with $P(response) \approx \hat{P}(response) := \frac{N_{response}}{N_{total}}$)
 for each cloze task. We first find a gloss for each response, which we determine by finding the root verb and then choosing the name corresponding to that verb's first WordNet synset's.
-Given these responses, we cacluate the spread by use a boostrap correction to a naive estimate of entropy \cite{dedeo2013bootstrap}, which is less biased than a naive estimate alone (in which $P(response) \approx \hat{P}(response) := \frac{N_{response}}{N_{total}}$).
+Given these responses, we cacluate the spread by using
+%a boostrap correction to 
+a naive estimate of entropy 
+%\cite{dedeo2013bootstrap}, which is less biased than a naive estimate alone 
+(in which $P(response) \approx \hat{P}(response) := \frac{N_{response}}{N_{total}}$).
 However, since different conditions had different total numbers of participants, this quantity alone would be a poor representation of the spread of responses. For example, if 2 participants gave a total of 2 unique responses our sample distribution of responses would have the same calculated entropy as if 5 of 10 participants gave one response and the other 5 gave another. Intuitively, the latter represents clearer agreement among participants than the former, and so we divide this empirial entropy by its maximum possible value for that set of participants. Our measure of agreement is the additive inverse of this scaled entropy, namely:
 
 $$\mbox{agreement} := - \frac{\hat{H}(R)}{\log(N)}$$
@@ -304,11 +308,11 @@ One potential issue with comparing the min rank metric for model performance to 
 
 \section{Discussion}
 
-\todo{intoduce discussion}
+Overall, we found little agreement between people about the correct answer to the narrative cloze tasks in our pilot experiment, and few participants recovered the original text. Previous authors have observed that the level of linguistic detail in the narrative cloze test might explain the difficulty. In our results, linguistic detail did not seem to be the only cause of people's low performance on the narrative cloze task, but it likely does matter to people's performance.
+
+% Our pilot experiment suggests that performance on a narrative cloze task does not clearly translate to human-like commonsense reasoning, and even the responses that humans give to the task are not sufficiently consistent across all participants to be used as an alternative gold standard for answers to the narrative cloze task.
 
 In response to recent concerns about the effectiveness of narrative cloze tasks for specifically targeting commonsense knowledge, \citeA{mostafazadeh2016corpus} very recently developed a dataset with an alternative evaluation metric, a {\em story} cloze task in which models must determine the conclusion of a crowdsourced 4-sentence story segement, and \citeA{pichotta2016learning} chose to extend their narrative cloze tasks so that the model's inferences were compared to people's inferences about what might have been the held-out event.
-
-\subsection{Future Directions}
 
 The clearest next steps for this project would be to increase the number of participants in order to get a more representative view of people's performance on these tasks.
 
@@ -318,7 +322,7 @@ While natural language is readily available in vast quantities on the internet, 
 
 It could be argued that given sufficiently curated corpora, narrative cloze tasks would be easier for humans and their success reflective of their commonsense knowledge. One possible test of this would be to repeat all of our analyses on these more simplified crowdsourced corpora.
 
-\todo{state the intended takeaway}
+Our pilot experiment suggests that performance on a narrative cloze task does not clearly translate to human-like commonsense reasoning, and even the responses that humans give to the task are not sufficiently consistent across all participants to be used as an alternative gold standard for answers to the narrative cloze task.
 
 % \todo{Also, we could use word2vec, glove, or sentence2vec embeddings to check similarity between people's responses, though since manually annotating the responses didn't seem to change the results, that might not be all that worthwhile.}
 
@@ -430,10 +434,25 @@ We performed a few different simulations of the narrative cloze task, assuming a
 % \label{tab:sampled-stories}
 % \end{table}
 
+% A promising modeling approach for capturing the quantitative
+% details of human language use is the Rational SpeechActs
+% (RSA) framework (Frank & Goodman, 2012; Goodman
+% & Stuhlmuller, 2013). The RSA framework has been ¨
+% applied to many language interpretation tasks (e.g. Goodman
+% & Stuhlmuller, 2013; Kao, Wu, Bergen, & Goodman, ¨
+% 2014),
 
-We model an informative storyteller and an uninformative storyteller. The uninformative storyteller samples a subset of events to describe uniformly from the event sequence. The informative storyteller is a rational speach act model \cite{} where \todo{the meaning of an event is that it happened but other unmentioned events might have to be inferred.} This storytelling model depends on a literal listener model, which infers other events that might have occurred in between the mentioned events such that the whole event sequence could be generated plausibly from the generative model and all of the events mentioned by the speaker occurred in the relative order that they were mentioned.
+We model an informative storyteller and an uninformative storyteller. The uninformative storyteller samples a subset of events to describe uniformly from the event sequence. The informative storyteller is a rational speach act model \cite{frank2012predicting, goodman2013knowledge} where the meaning of a sequence of events is that these events happened in the order mentioned, but other unmentioned events might have to be inferred. The meanings of individual events are booleans -- either they happened or they did not -- and each event is sampled directly as one unit in the generative model. The pragmatic storytelling model is subject to a utility function of not mentioning too many events, but communicating the full event sequence to a literal listener that fills in gaps according to their probability in the generative model. Other storytelling models that are not informative simply sample a subset of events uniformly to mention in the story. A pragmatic listener model, which we suggest might be analogous to human performance in the narrative cloze task, simulates the stories that a storyteller would have told for different underlying event sequences and infers which is most likely to have happened.
+% This storytelling model depends on a literal listener model, which infers other events that might have occurred in between the mentioned events such that the whole event sequence could be generated plausibly from the generative model and all of the events mentioned by the speaker occurred in the relative order that they were mentioned.
 
-We test a model of pragmatic reasoning on whether it can infer \todo{a target left-out event from a story}.
+We test a model of pragmatic reasoning on whether it can infer a target left-out event from a story. We vary whether the underlying story was informatively sampled or uniformly sampled. We also measure whether mentioned events or unmentioned events are easier for the pragmatic model to recover.
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.4\textwidth]{images/cloze-simulation.png}
+ \caption{In our simulations of two toy domains, mentioned events in informative stories are very difficult to recover relative to unmentioned events, or events mentioned in uninformative stories.}
+ \label{fig:cloze-simulation}
+\end{figure}
 
 Perhaps unsurprisingly,
 a rational model that infers left-out events from a story does worse when the story was generated by an informative storyteller than when the story is just a random subsequence of events (see Figure \ref{fig:cloze-simulation}.
