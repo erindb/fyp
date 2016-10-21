@@ -128,19 +128,58 @@ In our pilot experiment, we provide support for the speculation that the narrati
 
 % \todo{how does the fact that natural stories are generated informatively affect this task? }
 
-\section{Pilot Experiment}
+\section{Pilot}
 
 % \todo{We ran a pilot instead of the full N.}
 
-\subsection{Participants}
+We ran a pilot experiment to explore how humans might perform on various versions of the Narrative Cloze Task.
+The human versions of the task ranged from one that is very similar to how models of script induction have been evaluated to one that gives human participants maximal linguistic context.
+We compared the performance of human participants to the success of a script induction model implemented by \citeA{rudinger2015learning}.
+The participants in our pilot experiment were presented with the same sentences and event chains as the script induction model was presented with.
+Humans performed very poorly on this task, and we found no relationship between human and model responses.
+
+\subsection{Items}
+
+\citeA{rudinger2015learning} demonstrated that reasonable performance could be achieved on domain-specific natural text.
+Using ``Dinners from Hell'' \cite{dinnersfromhell}, a blog about negative experiences in restaurants, Rudinger et al. trained several coreference-chain models and evaluated their performance using a narrative cloze task.
+
+For both the human and model versions of the Narrative Cloze Task, we used event chains extracted from the ``Dinners from Hell" corpus.
+We scraped 273 stories from the blog, and uniformly selected 17 documents for the narrative cloze tests in our experiment, excluding a few off-topic documents, e.g. letters to the editor.
+For each document in the corpus, we used CoreNLP annotators \cite{corenlp} to extract dependency parses \cite{depparse} and coreference chains \cite{coref2013a, coref2013b, coref2011, coref2010}.
+Documents varied in the number of coreference chains they contained.
+We chose up to 3 sentences from up to 2 coreference chains to create 3 cloze tasks per document if possible.
+For documents with only one coreference chain, or only short coreference chains, we created fewer than 3 cloze tasks. 
+In each cloze task, we showed all but one sentence from the coreference chain (possibly in some reduced form) to human participants or to the script induction model.
+The remaining sentence was left for the participants or the model to recover based on the rest of the coreference chain.
+
+For human participants, we left a blank text field for people to freely fill in their own guess about the left-out sentence (Figure \ref{fig:trial}).
+There were a total of 46 cloze tasks, and each participant saw a random set of 17 (one for each document).
+The script induction model was evaluated on all 46 cloze tasks.
+
+\subsection{Human Experiment}
+
+\subsubsection{Participants}
 
 For our pilot experiment, we recruited
 %% see Rscript
 24 participants from Amazon Mechanical Turk.
-All participants were from the U.S.
+All participants were native speakers of English with U.S. IP addresses.
 %% see Rscript
 % N participants were excluded because they were not native English speakers.
-Due to technical errors, a number of other participants (approximately 5) participated but we were unable to record their results.
+Due to a technical error in recording the data, we were unable to record data for approximately 5 additional participants.
+There was some bias introduced by this error, such that the participants most affected by the error were those that gave the most lengthly responses.
+
+\subsubsection{Procedure}
+
+\subsubsection{Human Performance Metrics}
+
+\subsection{Model}
+
+\subsubsection{Training Data}
+
+\subsubsection{Model Performance Metrics}
+
+\subsection{Participants}
 
 \subsection{Materials}
 
