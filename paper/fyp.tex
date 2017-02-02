@@ -128,13 +128,26 @@ In our pilot experiment, we provide support for the speculation that the narrati
 
 % \todo{how does the fact that natural stories are generated informatively affect this task? }
 
-\section{Pilot}
+\section{Experiment}
+
+Question: Does narrative cloze task track human commonsense knowledge?
+People have commonsense knowledge. Do they do well on the task?
+Is there a relationship between how well people do in recovering a particular left-out event and how well a script-induction model does?
+If the task is difficult, is that due to the oversimplification of the language or because the task of recovering a left-out event is intrinsically difficult?
+
 
 % \todo{We ran a pilot instead of the full N.}
 
 We ran a pilot experiment to explore how humans might perform on various versions of the Narrative Cloze Task.
-The human versions of the task ranged from one that is very similar to how models of script induction have been evaluated to one that gives human participants maximal linguistic context.
-We compared the performance of human participants to the success of a script induction model implemented by \citeA{rudinger2015learning}.
+We know that humans have commonsense knowledge, so if the narrative cloze task tracks human-like commonsense knowledge, then there should be a version of the task that humans can perform well.
+And if the narrative cloze task tracks human-like commonsense knowledge, then humans' success at the task should correlate with the model's success. That is, items that humans perform highest on or show the most agreement on should be items on which the model also scores highly.
+
+Making a version of the narrative cloze task for humans has one very obvious challenge, which is the very minimal linguistic information given to the model.
+The model is trained on chains of verbs and the argument role of the protagonist, but this is not an easily interpretable representation to humans. So if humans perform poorly at this task, it may be because of the difficulty of interpreting the language of the events rather than because filling in gaps in narrative event chains is difficult for people.
+
+We therefore included three levels of linguistic detail in the human version of the task. In one condition, participants saw very minimal language, similar to the information provided to the model. In another condition, participants were given the full sentence for each event. In the final condition, participants were provided with an intermediate representation of the sentence with the main nouns, verbs, negation, and prepositions.
+
+We compared the performance of human participants on their version of the task to the performance of a script induction model implemented by \citeA{rudinger2015learning}.
 The participants in our pilot experiment were presented with the same sentences and event chains as the script induction model was presented with.
 Humans performed very poorly on this task, and we found no relationship between human and model responses.
 
@@ -143,7 +156,7 @@ Humans performed very poorly on this task, and we found no relationship between 
 \citeA{rudinger2015learning} demonstrated that reasonable performance could be achieved on domain-specific natural text.
 Using ``Dinners from Hell'' \cite{dinnersfromhell}, a blog about negative experiences in restaurants, Rudinger et al. trained several coreference-chain models and evaluated their performance using a narrative cloze task.
 
-For both the human and model versions of the Narrative Cloze Task, we used event chains extracted from the ``Dinners from Hell" corpus.
+Following their work, for both the human and model versions of the Narrative Cloze Task, we used event chains extracted from the ``Dinners from Hell" corpus.
 We scraped 273 stories from the blog, and uniformly selected 17 documents for the narrative cloze tests in our experiment, excluding a few off-topic documents, e.g. letters to the editor.
 For each document in the corpus, we used CoreNLP annotators \cite{corenlp} to extract dependency parses \cite{depparse} and coreference chains \cite{coref2013a, coref2013b, coref2011, coref2010}.
 Documents varied in the number of coreference chains they contained.
@@ -169,27 +182,30 @@ All participants were native speakers of English with U.S. IP addresses.
 Due to a technical error in recording the data, we were unable to record data for approximately 5 additional participants.
 There was some bias introduced by this error, such that the participants most affected by the error were those that gave the most lengthly responses.
 
+\subsubsection{Materials}
+
+The script induction models tested by \citeA{rudinger2015learning} had access to only a small amount of linguistic information in the narrative cloze test, since each event was reduced to a single verb and the syntactic role of the protagonist.
+We wanted to test people's performance on the task under this constraint, but we also wanted to test them on more natural versions of the task.
+%The additional linguistic information in the sentences 
+%It is possible that other more complex models could leverage be tested on narrative cloze tasks with more linguistic information.
+
+We therefore manipulated the original text in three different ways.
+In one condition, we gave people the full text of every sentence that contained a mention of the protagonist.
+The full sentence containing the protagonist is much more information than the coreference chain models had access to in their version of the narrative cloze task.
+In a second condition, somewhat resembling the structure of the narrative cloze task used by \citeA{pichotta2014statistical}, we provided people with a ``caveman-speak'' version of the sentence.
+In this condition the sentence ``Just to spite him, we remained at our table for nearly 3 hours.'' was reduced to ``We remain at table for hours.''
+The ``caveman-speak" version of the sentence contained only the main verb and its principal arguments (subject, object, prepositional phrase, and possibly negation).
+For each of these pieces of the sentence, we kept only a lemmatized (e.g. ``remained" would become ``remain")\footnote{In the case of passive sentences, we used the participle form of the verb, e.g. ``We were shown to a table in the corner," would have been replaced by ``We shown table in corner."}) version of the head of the relevant phrase.
+
+In a third condition and simplest condition, we provided only the main verb and its subject. This condition was most similar to the task used to evaluate the script induction model.
+
 \subsubsection{Procedure}
 
-\subsubsection{Human Performance Metrics}
-
-\subsection{Model}
-
-\subsubsection{Training Data}
-
-\subsubsection{Model Performance Metrics}
-
-\subsection{Participants}
-
-\subsection{Materials}
-
-\citeA{rudinger2015learning} demonstrated that reasonable performance could be achieved on domain-specific natural text.
-Using ``Dinners from Hell'' \cite{dinnersfromhell}, a blog about negative experiences in restaurants, Rudinger et al. trained several coreference-chain models and evaluated their performance using a narrative cloze task.
-We used the same blog as our training corpus for the single-protagonist narrative chain PMI model and as a source of our narrative cloze tests.
-We scraped 273 stories from the blog, and uniformly selected 17 documents for the narrative cloze tests in our experiment, excluding a few off-topic documents, e.g. letters to the editor.
-For each document in the corpus, we used CoreNLP annotators \cite{corenlp} to get dependency parses \cite{depparse} and coreference chains \cite{coref2013a, coref2013b, coref2011, coref2010}.
-Documents varied in the number of coreference chains they contained. We chose up to 3 sentences from up to 2 coreference chains to create our 3 cloze tasks per document (or occassionally fewer if a document had only one coreference chain, or only short coreference chains). In each cloze task, we showed all the sentences from the coreference chain except for the chosen sentence. At that index in the coreference chain, we left a blank text input for people to freely fill in their own guess about the full sentence (Figure \ref{fig:trial}). There were a total of 46 cloze tasks, and each participant saw a random set of 17 (one for each document).
-% more details?
+The format of the task was similar across conditions.
+In order to clearly communicate to participants that the text in the simplified conditions (the ``caveman speak" and event-only linguistic conditions) was a shortened version of the original sentence, we blurred the original text behind each sentence and provided the task text for participants on top of this (Figure \ref{fig:trial}).
+Above the text box in small letters, we reminded participants to provide a full sentence that they think might have been at that position in the text.
+In earlier pilots we found that participants sometimes misunderstood the task and gave phrases or fragments instead of sentences, especially when the surrounding sentences seemed incomplete.
+We therefore confirmed that each sentence could be parsed by the CoreNLP tools \cite{corenlp} by running a webserver and parsing participants' responses in real time before accepting each of their responses and allowing them to continue to the next question.
 
 \begin{figure*}
  \centering
@@ -209,21 +225,11 @@ Documents varied in the number of coreference chains they contained. We chose up
  \label{fig:trial}
 \end{figure*}
 
+%%%%%%%% start rewriting from here!!!
 
-The models tested by \citeA{rudinger2015learning} had access to only a small amount of linguistic information in the narrative cloze test, since each event was reduced to a single verb and the syntactic role of the protagonist.
-We wanted to test people's performance on the task under this constraint, but we also wanted to test them on more natural versions of the task, since other more complex models can be tested on narrative cloze tasks with more linguistic information.
+\subsubsection{Performance Metrics}
 
-We therefore manipulated the original text in three different ways.
-In one condition, we gave people the full text of every sentence that contained a mention of the protagonist, which is much more information than the coreference chain models had access to in their version of the narrative cloze task. In a second condition, somewhat resembling the structure of the narrative cloze task used by \citeA{pichotta2014statistical}, we provided people with a ``caveman-speak'' version of the sentence that contained the lemmatized (or participle-form in the case of passive sentences) main verb and a few of its principle arguments: the head of any subject or object noun phrases and the preposition and head noun of any prepositional phrase. For example, the sentence ``Just to spite him, we remained at our table for nearly 3 hours.'' was reduced to ``We remain at table for hours.'' in this condition.
-In a third condition, we provided only the main verb and its subject.
-
-\subsection{Procedure}
-
-The format of the task was similar across conditions. We blurred the original text behind each sentence and provided the text for participants on top of this, dependent on condition (Figure \ref{fig:trial}). Above the text box in small letters, we reminded participants to provide a full sentence that they think might have been at that position in the text. In earlier pilots we found that participants sometimes misunderstood the task and gave phrases or fragments instead of sentences. We therefore confirmed that each sentence could be parsed by the CoreNLP tools \cite{corenlp} by running a webserver and parsing participants' responses in real time before accepting each of their responses and allowing them to continue to the next question.
-
-\subsection{Analyses}
-
-\subsubsection{Response processing}
+\paragraph{Response processing}
 
 We extracted main verbs from the responses using CoreNLP, and used NLTK's interface to WordNet \cite{bird2009natural, miller1998wordnet} to find all synonyms of that word in all of its synsets. If any verbs or synonym that participants mentioned was the same as the original verb, we recorded that participant's response on that cloze task as correct.
 We call this matching method ``automatic matching''.
@@ -231,7 +237,7 @@ As this resulted in very low scores, we also manually determined a single word `
 We call this matching method ``manual matching''.
 Given these two metrics for successfully matching the original event, we measured overal performance as the average success for participants across tasks.
 
-\subsubsection{Agreement Metric}
+\paragraph{Agreement Metric}
 
 Regardless of whether people are able to recover the actual underlying text, we were also interested in how consistent people's responses might be in tasks like this.
 
@@ -252,7 +258,7 @@ where $N$ is the number of participants for that task and $\hat{H}(R)$ represent
 The agreement metric tracks humans' intuition rather than the original text, and in this respect it is similar to the metric used by \citeA{pichotta2016learning} for evaluating their model's performance, since they also elicited people's judgements about held-out events. But rather than ask participants to generate narrative cloze answers, they asked participants to judge the {\em model's} top-ranking answers, and so they did not get as much information about what human performance might look like on this task.
 %They showed that their LSTM's candidate responses received an average rating of 3.67 on a 0 to 5 rating scale.
 
-\subsubsection{Single-entity Event Chain Model Comparison}
+\subsection{Model}
 
 We compare the human data to the single-entity event chain model of \citeA{chambers2008unsupervised}. In this model, the authors select corefference chains of events using Stanford CoreNLP's dependency parser \cite{corenlp,depparse}. They construct a coocurrance matrix between all pairs of events, where an event is a tuple of a main verbe and the role of the coreferenced entity (e.g. subject, direct object, object of prepositional phrase). Events are said to coocur if they are in the same coreference chain, that is if their main verbs have a correferring entity shared across the arguments of those roles. Once the coocurrance matrix is constructed, core script-like knowledge can be characterized by clusters of events. These models approach the narrative cloze task by chosing an event by maximizing the average pointwise mutual information between the target event and all of the context events provided in the narrative cloze task, with some discounting to penalize low occuring words. For the sake of evaluation of this inference, the authors looked only at verbs.
 % find narrative relations between events (evaluate with narrative cloze task)
@@ -270,6 +276,14 @@ We compare the human data to the single-entity event chain model of \citeA{chamb
 \citeA{rudinger2015learning} helpfully provided code for this model that we were able to use with only slight modification.
 We run the model with the maximum likelihood parameters from \citeA{rudinger2015script}'s experiments.
 While this is not the most recent or successful model of its kind, it performed well among the models tested by \citeA{rudinger2015script} and provides an interesting comparison to the human performance.
+
+\subsubsection{Training Data}
+
+%% this is gibberish
+
+We used the same blog for a source of our narrative cloze tests and as for our training corpus for the single-protagonist narrative chain PMI model. For each cloze task, we created a unique training corpus with the event chain for that cloze task held out. We trained on the corpus with one event chain held out and then tested on that held-out event chain.
+
+\subsubsection{Performance Metrics}
 
 The model produces ranked lists of candidate events, and various metrics have been adopted for assessing performance.
 % could throw some citations in here
@@ -364,6 +378,8 @@ While natural language is readily available in vast quantities on the internet, 
 It could be argued that given sufficiently curated corpora, narrative cloze tasks would be easier for humans and their success reflective of their commonsense knowledge.
 %One possible test of this would be to repeat all of our analyses on these more simplified crowdsourced corpora.
 
+Even with a well-curated corpus of narratives, one potential problem with the narrative cloze task would not be resolved: people say as much as they need to say to be informative. Intuitively, people usually do not spend time explicitly mentioning events that could be inferred given the rest of the story. We discuss this issue in more detail in the appendix where we use some illustrative simulations to show that given the same actual sequence of events, gaps in a narrative chain generated by an informative speaker are harder to fill in than gaps in a randomly sampled narrative chain.
+
 Our pilot experiment suggests that performance on a narrative cloze task does not clearly translate to human-like commonsense reasoning, and even the responses that humans give to the task are not sufficiently consistent across all participants to be used as an alternative gold standard for answers to the narrative cloze task.
 
 % \todo{Also, we could use word2vec, glove, or sentence2vec embeddings to check similarity between people's responses, though since manually annotating the responses didn't seem to change the results, that might not be all that worthwhile.}
@@ -381,7 +397,7 @@ Our pilot experiment suggests that performance on a narrative cloze task does no
 
 \bibliography{fyp}
 
-\subsection{Appendix: Illustrative Simulations}
+\subsection{Appendix: Simulations \label{appendix}}
 
 We performed a few different simulations of the narrative cloze task, assuming a tow ``toy'' domains with "scripts" that we hand wrote. We chose the domains to have repeated and dependent structure. In one domain (Figure \ref{fig:video-game-script}), a character plays a video game until they win or get bored. If they lose any level, they return to the first level, and so many aspects of the story might be repeated many times and some events are more or less probable in different contexts. In another domain (Figure \ref{fig:route-to-school-script}), a character travels from home to school, so their route at any given point depends on their previous decisions, and some parts of routes are more or less unique to different overall paths. The scripts for these domains form generative models of possible event sequences.
 % Example event sequences and corresponding informative stories are shown in Table \ref{tab:sampled-stories}.
